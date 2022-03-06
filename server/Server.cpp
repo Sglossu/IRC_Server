@@ -10,7 +10,7 @@ Server::Server(std::string port, int pass, std::string host_ip) : port(port), pa
 }
 
 void Server::init_server() {
-	listener = socket(AF_INET, SOCK_STREAM, 0);
+	listener = socket(PF_INET, SOCK_STREAM, 0);
 	getaddrinfo(host_ip.c_str(), port.c_str(), &hints, &res);
 }
 
