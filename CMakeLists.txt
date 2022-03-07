@@ -6,5 +6,5 @@ FILE(GLOB SRC
         "server/*.cpp"
         )
 
-set(CMAKE_CXX_STANDARD 14 "${CMAKE_C_FLAGS} -std=c99 -Wall")
+set(CMAKE_CXX_STANDARD 14 "${CMAKE_C_FLAGS} -std=c98 -Wall")
 add_executable(irc ${SRC})
