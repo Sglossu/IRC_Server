@@ -1,14 +1,18 @@
 #pragma once
 
 #include <string.h>
+#include <unistd.h>
 #include <iostream>
 #include <netdb.h>
 #include <arpa/inet.h>
+#include <poll.h>
 
 class Server {
 private:
 	fd_set			master, read_fds;	// главный сет дескрипторов и временный сет дескрипторов
-	int				fdmax, listener; 				// fdmax - макс число дескрипторов
+	int				fdmax;
+//	sruct pollfd	fds[2];
+	int				listener; 				// fdmax - макс число дескрипторов
 	int				newfd; // дескриптор для новых соединений
 	struct addrinfo	hints, *serv_addr_info;
 	socklen_t		addrlen;

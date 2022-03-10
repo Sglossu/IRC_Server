@@ -32,14 +32,28 @@ void Server::print_ip() {
 }
 
 void Server::init_server() {
+	int yes = 1;
 	if(getaddrinfo(host_ip.c_str(), port.c_str(), &hints, &serv_addr_info))
 	{
 		std::cerr << "selectserver" << std::endl;
 		exit(1);
 	}
-	listener = socket(PF_INET, SOCK_STREAM, 0);
+	for (struct addrinfo *p = serv_addr_info; p != NULL; p = p->ai_next)
+	{
+		listener = socket(p->ai_family, SOCK_STREAM, 0);
+		if (listener < 0)
+			continue;
+		setsockopt(listener, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int));
+		if (bind(listener, p->ai_addr, p->ai_addrlen) < 0)
+		{
+			close(listener);
+			std::cerr << "selectserver: failed to bindn" << std::endl;
+			exit(2);
+		}
+		break;
+	}
 	print_ip();
-
+	freeaddrinfo(serv_addr_info);
 }
 
 Server::~Server() {
@@ -47,5 +61,11 @@ Server::~Server() {
 }
 
 void Server::start() {
+	if (listen(listener, 10) < 0)
+		throw "listen";
+	FD_SET(listener, &master);
+	while (true)
+	{
 
+	}
 }
