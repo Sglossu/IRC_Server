@@ -1,8 +1,7 @@
 #include "Server.hpp"
 
 Server::Server(std::string port, int pass, std::string host_ip) : port(port), pass(pass), host_ip(host_ip) {
-	FD_ZERO(&master);
-	FD_ZERO(&read_fds);
+	memset(fds, 0, sizeof (fds));
 	memset(&hints, 0, sizeof hints);
 	hints.ai_family = AF_UNSPEC; // неважно v4 или v6
 	hints.ai_socktype = SOCK_STREAM;
@@ -63,9 +62,28 @@ Server::~Server() {
 void Server::start() {
 	if (listen(listener, 10) < 0)
 		throw "listen";
-	FD_SET(listener, &master);
+
+	fds[0].fd = 0;
+	fds[0].events = POLLIN;
+	fds[1].fd = 1;
+	fds[1].events = POLLOUT;
+
 	while (true)
 	{
+		numbers_fd = poll(fds, 2, TIMEOUT);
+		if (numbers_fd < 0)
+			throw "poll";
+		if (numbers_fd == 0)
+		{
+			std::cout << "TIMEOUT" << std::endl;
+			continue;
+		}
+		if (fds[0].revents & POLLIN)
+		{
 
+			fds[0].revents = 0;
+		}
+		if (fds[1].revents & POLLOUT)
+			fds[1].revents = 1;
 	}
 }
