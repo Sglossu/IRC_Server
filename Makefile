@@ -1,18 +1,38 @@
-SRCS =	$(wildcard */*.cpp)
-HEADERS = $(wildcard */*.hpp)
-OBJS = ${SRCS:.cpp=.o}
-NAME = ircserv
-CFLAGS = -I. -g3 -Wall -Werror
+NAME			= ircserv
+ 
+CXX				= g++
 
-all:		${NAME}
+FLAGS			= -Wall -Wextra -Werror -MMD -std=c++98
+FLAGS			= -Wall -g  -MMD
 
-${NAME}:	${OBJS} ${HEADERS}
-	clang++ -o ${NAME} ${OBJS}
+RM				= rm -rf
+
+INCLUDE			= -I inc
+
+SRCS_FILES		= main \
+				  utils \
+				  server/Server 
+
+SRC_DIR 		= src/
+
+SRCS			= $(addprefix $(SRC_DIR),$(addsuffix .cpp, $(SRCS_FILES)))
+OBJS			= $(patsubst %.cpp,%.o,$(SRCS))
+
+all:			$(NAME)
+
+%.o:			%.cpp
+				$(CXX) $(FLAGS) -c $< -o $@ $(INCLUDE) 
+
+$(NAME):		$(OBJS)
+				$(CXX) $(FLAGS) -o $(NAME) $(OBJS)		
 
 clean:
-	rm -f ${OBJS}
+				$(RM) $(OBJS) $(OBJS:.o=.d)
 
-fclean:		clean
-	rm -f ${NAME}
+fclean:			clean
+				$(RM) $(NAME) 
 
-re: fclean all
+re:				fclean $(NAME)
+
+.PHONY:			all clean fclean re bot
+-include		$(OBJS:.o=.d)

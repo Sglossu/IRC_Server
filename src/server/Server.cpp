@@ -9,7 +9,7 @@ void *get_in_addr(struct sockaddr *sa)
 	return &(((struct sockaddr_in6*)sa)->sin6_addr);
 }
 
-Server::Server(std::string port, int pass, std::string host_ip) : port(port), pass(pass), host_ip(host_ip) {
+Server::Server(std::string port, std::string pass, std::string host_ip) : port(port), pass(pass), host_ip(host_ip) {
 	memset(act_set, 0, sizeof (act_set));
 	memset(&hints, 0, sizeof hints);
 	hints.ai_family = AF_UNSPEC; // неважно v4 или v6
@@ -42,10 +42,7 @@ void Server::print_ip() {
 void Server::init_server() {
 	int yes = 1;
 	if(getaddrinfo(host_ip.c_str(), port.c_str(), &hints, &serv_addr_info))
-	{
-		std::cerr << "selectserver" << std::endl;
-		exit(1);
-	}
+		critErr("selectserver");
 	for (struct addrinfo *p = serv_addr_info; p != NULL; p = p->ai_next)
 	{
 		listener = socket(p->ai_family, SOCK_STREAM, 0);
@@ -55,8 +52,7 @@ void Server::init_server() {
 		if (bind(listener, p->ai_addr, p->ai_addrlen) < 0)
 		{
 			close(listener);
-			std::cerr << "selectserver: failed to bindn" << std::endl;
-			exit(2);
+			critErr("selectserver: failed to bindn");
 		}
 		break;
 	}
