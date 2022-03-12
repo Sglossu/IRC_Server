@@ -41,6 +41,7 @@ void Server::print_ip() {
 
 void Server::init_server() {
 	int yes = 1;
+
 	if(getaddrinfo(host_ip.c_str(), port.c_str(), &hints, &serv_addr_info))
 		critErr("selectserver");
 	for (struct addrinfo *p = serv_addr_info; p != NULL; p = p->ai_next)
@@ -52,7 +53,7 @@ void Server::init_server() {
 		if (bind(listener, p->ai_addr, p->ai_addrlen) < 0)
 		{
 			close(listener);
-			critErr("selectserver: failed to bindn");
+			critErr("selectserver: failed to bind with port =" + port);
 		}
 		break;
 	}

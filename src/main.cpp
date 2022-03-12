@@ -5,7 +5,7 @@
 int main(int argc, char** argv)
 {
 	if (argc != 3 and argc != 4)
-		critErr("Use\n./ircserv [host:port_network:password_network] <port> <password>");
+		critErr(INCORRECT_ARGV);
 	Server	server(argv[argc - 2], argv[argc - 1], "localhost");
 	server.init_server();
 	try {

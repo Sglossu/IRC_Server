@@ -10,7 +10,7 @@
 #include <sys/socket.h>
 
 
-#define TIMEOUT 1001
+#define TIMEOUT 1000
 
 class Server {
 private:
