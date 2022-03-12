@@ -14,13 +14,9 @@
 
 class Server {
 private:
-//	fd_set			master, read_fds;	// главный сет дескрипторов и временный сет дескрипторов
-//	int				fdmax;
 	struct pollfd	act_set[100];
 	int				listener; 				// fdmax  - макс число дескрипторов
-	int				newfd; // дескриптор для новых соединений
 	struct addrinfo	hints, *serv_addr_info;
-	socklen_t		addrlen;
 	std::string		port;
 	std::string		pass;
 	std::string		host_ip;

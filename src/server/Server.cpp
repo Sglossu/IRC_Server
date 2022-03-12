@@ -52,7 +52,7 @@ void Server::init_server() {
 		if (bind(listener, p->ai_addr, p->ai_addrlen) < 0)
 		{
 			close(listener);
-			critErr("selectserver: failed to bindn");
+			critErr("selectserver: failed to bind");
 		}
 		break;
 	}
