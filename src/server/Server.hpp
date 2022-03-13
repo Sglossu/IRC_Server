@@ -2,7 +2,7 @@
 
 #include "irc.hpp"
 
-#include <string.h>
+#include <string>
 #include <unistd.h>
 #include <netdb.h>
 #include <arpa/inet.h>
