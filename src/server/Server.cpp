@@ -41,6 +41,7 @@ void Server::print_ip() {
 
 void Server::init_server() {
 	int yes = 1;
+
 	if(getaddrinfo(host_ip.c_str(), port.c_str(), &hints, &serv_addr_info))
 		critErr("selectserver");
 	for (struct addrinfo *p = serv_addr_info; p != NULL; p = p->ai_next)
@@ -52,11 +53,11 @@ void Server::init_server() {
 		if (bind(listener, p->ai_addr, p->ai_addrlen) < 0)
 		{
 			close(listener);
-			critErr("selectserver: failed to bind");
+			critErr("selectserver: failed to bind with port =" + port);
 		}
 		break;
 	}
-	print_ip();
+//	print_ip();
 //	freeaddrinfo(serv_addr_info);
 }
 
@@ -105,7 +106,6 @@ void Server::start() {
 
 	struct sockaddr_storage remoteaddr;
 	socklen_t 				size_client = sizeof (remoteaddr);
-//	char remoteIP[INET6_ADDRSTRLEN];
 
 	while (true)
 	{
@@ -128,9 +128,8 @@ void Server::start() {
 					if (i == 0)
 					{
 						// обработка нового соединения
-//						inet_ntop(remoteaddr.ss_family, get_in_addr((struct sockaddr*)&remoteaddr), remoteIP, INET6_ADDRSTRLEN), newfd);
-
 						new_sock_fd = accept(act_set[i].fd, (struct sockaddr*)&remoteaddr, &size_client);
+						map_Users.insert(std::pair<int, User>(new_sock_fd, User(new_sock_fd)));
 						std::cout << "New client on port " << port << std::endl;
 						if (num_set < 100)
 						{

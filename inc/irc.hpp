@@ -1,24 +1,25 @@
 #pragma once
 
-#include <iostream> // For cout
-#include <cstdlib> // For exit() and EXIT_FAILURE
+#include <iostream> 
+#include <cstdlib>
+#include <string>
+#include <sstream>
+
 #include <vector>
 #include <map>
 #include <set>
 #include <iterator>
-#include <string>
-#include <sstream>
 
-// #include <sys/socket.h> // For socket functions
-// #include <netinet/in.h> // Fo r sockaddr_in
-// #include <arpa/inet.h> // For inet_addr("127.0.0.1")
-// #include <poll.h>
-// #include <unistd.h> // For read
-// #include <fcntl.h>// for open
-// #include <sys/stat.h> // for struct stat
-// #include <stdio.h> // for perror
-// #include <signal.h>
-// #include <fstream> //  Sfor getline
+ #include <sys/socket.h> // For socket functions
+ #include <netinet/in.h> // Fo r sockaddr_in
+ #include <arpa/inet.h> // For inet_addr("127.0.0.1")
+ #include <poll.h>
+ #include <unistd.h> // For read
+ #include <fcntl.h>// for open
+ #include <sys/stat.h> // for struct stat
+ #include <stdio.h> // for perror
+ #include <signal.h>
+ #include <fstream> //  Sfor getline
 
 # define BLACK "\x1b[30m"
 # define RED "\x1b[31m"
@@ -36,14 +37,14 @@
 # define BgCYAN "\x1b[46m"
 # define BgWHITE "\x1b[47m"
 
-# define PORT 8888
-# define BACKLOG 100 // the maximum number of connections that will be queued
-# define BUFFER_SIZE 10240
+# define MAX_CLIENT		256
+// # define BACKLOG 100 
+// # define BUFFER_SIZE 10240
 
-# define DEFAULT_PORT		8080
-# define DEFAULT_ERROR_PAGE	"errors/404.html"
-# define DEFAULT_INDEX		"index.html"
-# define DEFAULT_MAX_BODY	1024 * 1024
+# define INCORRECT_ARGV		"Use\n./ircserv [host:port_network:password_network] <port> <password>"
+// # define DEFAULT_ERROR_PAGE	"errors/404.html"
+// # define DEFAULT_INDEX		"index.html"
+// # define DEFAULT_MAX_BODY	1024 * 1024
 
 
 
