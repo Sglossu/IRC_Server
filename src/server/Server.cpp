@@ -67,8 +67,12 @@ Server::~Server() {
 void Server::working_with_client(int fd)
 {
 	int		nbytes;
-	char	buf[256];
+	char	buf[512];
 
+	if (!map_Users.count(fd)) {
+		std::cout << "Unprocees errors: not found user with this fd-key" << std::endl;
+		return ;
+	}
 	if ((nbytes = recv(fd, buf, sizeof buf, 0)) <= 0)
 	{
 		// получена ошибка или соединение закрыто клиентом
@@ -80,10 +84,13 @@ void Server::working_with_client(int fd)
 			throw "recv";
 		}
 		close(fd);
+		map_Users.erase(fd);
 	}
 	else
 	{
 		// у нас есть какие-то данные от клиента
+		map_Users[fd].processIncommingMessage(buf);
+
 		for(size_t j = 1; j < act_set.size(); j++)
 		{
 			// отсылаем данные всем!
