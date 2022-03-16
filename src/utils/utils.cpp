@@ -1,4 +1,5 @@
-#include "irc.hpp"
+//#include "irc.hpp"
+#include "../../inc/irc.hpp"
 
 void    critErr(std::string msg) {
     std::cerr << msg << std::endl;

@@ -10,16 +10,18 @@
 #include <set>
 #include <iterator>
 
-// #include <sys/socket.h> // For socket functions
-// #include <netinet/in.h> // Fo r sockaddr_in
-// #include <arpa/inet.h> // For inet_addr("127.0.0.1")
-// #include <poll.h>
-// #include <unistd.h> // For read
-// #include <fcntl.h>// for open
-// #include <sys/stat.h> // for struct stat
-// #include <stdio.h> // for perror
-// #include <signal.h>
-// #include <fstream> //  Sfor getline
+#include <cstring>
+
+#include <sys/socket.h> // For socket functions
+#include <netinet/in.h> // Fo r sockaddr_in
+#include <arpa/inet.h> // For inet_addr("127.0.0.1")
+#include <poll.h>
+#include <unistd.h> // For read
+#include <fcntl.h>// for open
+#include <sys/stat.h> // for struct stat
+#include <stdio.h> // for perror
+#include <signal.h>
+#include <fstream> //  Sfor getline
 
 # define BLACK "\x1b[30m"
 # define RED "\x1b[31m"

@@ -1,4 +1,4 @@
-#include "irc.hpp"
+#include "../inc/irc.hpp"
 #include "server/Server.hpp"
 
 

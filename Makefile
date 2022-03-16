@@ -10,8 +10,10 @@ RM				= rm -rf
 INCLUDE			= -I inc
 
 SRCS_FILES		= main \
-				  utils \
-				  server/Server 
+				  utils/utils \
+				  user/User \
+				  server/Server \
+				  server/ServerException
 
 SRC_DIR 		= src/
 
