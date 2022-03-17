@@ -102,59 +102,77 @@ void Server::working_with_client(int fd)
 	}
 }
 
+
+
 void Server::start() {
-	if (listen(listener, 10) < 0)
-		throw "listen";
+//	if (listen(listener, 10) < 0)
+//		throw "listen";
+//
+//	pollfd	new_Pollfd = {listener, POLLIN, 0};
+//	act_set.push_back(new_Pollfd);
+//
+//	struct sockaddr_storage remoteaddr;
+//	socklen_t 				size_client = sizeof (remoteaddr);
 
-	pollfd	new_Pollfd = {listener, POLLIN, 0};
-	act_set.push_back(new_Pollfd);
+//	while (true)
+//	{
+//		struct pollfd * act_set_pointer = &act_set[0]; // указатель на первый элемент вектора act_set
+//		int ret = poll(act_set_pointer, act_set.size(), -1);
+//		if (ret < 0)
+//			throw "server: poll failure";
+//		else if (ret == 0)
+//		{
+//			std::cout << "Timeout" << std::endl;
+//			continue;
+//		}
+//
+//		else if (ret > 0)
+//		{
+//			for (size_t i = 0; i < act_set.size(); i++)
+//			{
+//				if (act_set[i].revents & POLLIN)
+//				{
+//					std::cout << "POLLINT at fd " << act_set[i].fd << std::endl;
+//					act_set[i].revents &= ~POLLIN;
+//					if (act_set[i].fd == act_set[0].fd) // проверка что это listening
+//					{
+//						// обработка нового соединения
+//						new_sock_fd = accept(act_set[0].fd, (struct sockaddr*)&remoteaddr, &size_client);
+//						// а он может кривой инт вернуть? не помню
+//						map_users[new_sock_fd] = new User(new_sock_fd);
+//						std::cout << "New client on port " << port << std::endl;
+//						struct pollfd new_Pollfd = {new_sock_fd, POLLIN, 0};
+//						act_set.push_back(new_Pollfd);
+//					}
+//					else
+//					{
+//						// пришли данные, работаем с ними в существующем соединении
+//						working_with_client(act_set[i].fd);
+//					}
+//				}
+//			}
+//		}
+//		// Этнические чистки
+//		clear_disconnected();
+//
+//
+//	}
+}
 
-	struct sockaddr_storage remoteaddr;
-	socklen_t 				size_client = sizeof (remoteaddr);
-
-	while (true)
+void Server::new_connection(int i, struct sockaddr_storage remoteaddr, socklen_t size_client) {
+	std::cout << "POLLINT at fd " << act_set[i].fd << std::endl;
+	act_set[i].revents &= ~POLLIN;
+	if (act_set[i].fd == act_set[0].fd) // проверка что это listening
 	{
-		struct pollfd * act_set_pointer = &act_set[0]; // указатель на первый элемент вектора act_set
-		int ret = poll(act_set_pointer, act_set.size(), -1);
-		if (ret < 0)
-			throw "server: poll failure";
-		else if (ret == 0)
-		{
-			std::cout << "Timeout" << std::endl;
-			continue;
-		}
-
-		else if (ret > 0)
-		{
-			for (size_t i = 0; i < act_set.size(); i++)
-			{
-				if (act_set[i].revents & POLLIN)
-				{
-					std::cout << "POLLINT at fd " << act_set[i].fd << std::endl;
-					act_set[i].revents &= ~POLLIN;
-					if (act_set[i].fd == act_set[0].fd) // проверка что это listening
-					{
-						// обработка нового соединения
-						new_sock_fd = accept(act_set[0].fd, (struct sockaddr*)&remoteaddr, &size_client);
-						// а он может кривой инт вернуть? не помню
-						map_users[new_sock_fd] = new User(new_sock_fd);
-						std::cout << "New client on port " << port << std::endl;
-						struct pollfd new_Pollfd = {new_sock_fd, POLLIN, 0};
-						act_set.push_back(new_Pollfd);
-					}
-					else
-					{
-						// пришли данные, работаем с ними в существующем соединении
-						working_with_client(act_set[i].fd);
-					}
-				}
-			}
-		}
-		// Этнические чистки
-		clear_disconnected();
-
-
-	}
+		// обработка нового соединения
+		new_sock_fd = accept(act_set[0].fd, (struct sockaddr *) &remoteaddr, &size_client);
+		// а он может кривой инт вернуть? не помню
+		map_users[new_sock_fd] = new User(new_sock_fd);
+		std::cout << "New client on port " << port << std::endl;
+		struct pollfd new_Pollfd = {new_sock_fd, POLLIN, 0};
+		act_set.push_back(new_Pollfd);
+	} else
+		working_with_client(act_set[i].fd);
 }
 
 // Удаляет сломанные фдшники и отключенных пользователей
@@ -170,12 +188,13 @@ void	Server::clear_disconnected() {
 			act_set.erase(it + i);
 			--i;
 		}
-	
 	// printf("len pollfd after cleaning %zu\n len users %zu\n", act_set.size(), map_Users.size());
-
-	
-	
-	
 }
 
-std::map<int, User *> &Server::getMapUsers() { return map_users; }
+std::map<int, User *> &Server::getMapUsers() {
+	return map_users;
+}
+
+std::vector<struct pollfd> &Server::getActSet(){
+	return act_set;
+}

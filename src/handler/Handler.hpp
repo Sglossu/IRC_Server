@@ -14,5 +14,6 @@ public:
 
 	Server *getPserver() const;
 	std::map<int, User *> *getPmapUsers() const;
+	void	start_game();
 };
 

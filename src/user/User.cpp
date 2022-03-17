@@ -42,7 +42,7 @@ void	User::processIncommingMessage(std::string buf) {
 void	User::parceComand(std::string cmnd) {
 	std::cout << "User <fd " << _fd_sock << _username << "> parce cmnd: "  << cmnd << std::endl;
 	// todoshen'ka
-//	if (!_pass)
+
 
 }
 
