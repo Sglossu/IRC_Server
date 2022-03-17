@@ -2,12 +2,10 @@
 
 #include "../../inc/irc.hpp"
 #include "../user/User.hpp"
-<<<<<<< HEAD
-// #include "irc.hpp"
-=======
+
 //#include "User.hpp"
 //#include "irc.hpp"
->>>>>>> 9c5a24a32f4b79018ca7185e49537e4f05ef9966
+
 
 #include <string>
 #include <unistd.h>
