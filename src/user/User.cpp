@@ -18,14 +18,14 @@ void	User::processIncommingMessage(std::string buf) {
 	const char *s = buf.c_str();
 	printf(" |\n");
 	for (size_t i = 0; i < buf.size(); i++) {
-		printf(" %d", s[i]);
+		printf(" %c", s[i]);
 		if (s[i] == '\n')
 			printf("\n");
 	}
 	printf(" |\n");
 	std::cout << "User <" << _fd_sock << ", " << _username
-			  << "> incooming msg(" << _msg_buf.size() <<"): "  << _msg_buf << std::endl;
-	while (1) {
+			  << "> incoming msg(" << _msg_buf.size() <<"): "  << _msg_buf << std::endl;
+	while (!_msg_buf.empty()) {
 		pos = _msg_buf.find(CR_LF);
 		std::cout << "pos = " << pos << std::endl;
 		if (pos == _msg_buf.npos)
@@ -37,7 +37,7 @@ void	User::processIncommingMessage(std::string buf) {
 }
 
 void	User::parceComand(std::string cmnd) {
-	std::cout << "User <%d, " << _fd_sock << _username << "> parce cmnd: "  << cmnd << std::endl;
+	std::cout << "User < " << _fd_sock << _username << "> parce cmnd: "  << cmnd << std::endl;
 	// todoshen'ka
 }
 

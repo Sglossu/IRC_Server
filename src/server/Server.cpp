@@ -69,7 +69,7 @@ void Server::working_with_client(int fd)
 	int		nbytes;
 	char	buf[513];
 
-	if (!map_Users.count(fd)) {
+	if (!map_users.count(fd)) {
 		std::cout << "Unprocees errors: not found user with this fd-key" << std::endl;
 		return ;
 	}
@@ -83,14 +83,14 @@ void Server::working_with_client(int fd)
 			std::cout << fd << std::endl;
 			throw "recv";
 		}
-		map_Users[fd]->set_flag(DISCONNECTED);
+		map_users[fd]->set_flag(DISCONNECTED);
 	}
 	else
 	{
 		// у нас есть какие-то данные от клиента
 		buf[nbytes] = 0;
-		if (!(map_Users[fd]->get_flags() & DISCONNECTED))
-			map_Users[fd]->processIncommingMessage(buf);
+		if (!(map_users[fd]->get_flags() & DISCONNECTED))
+			map_users[fd]->processIncommingMessage(buf);
 
 		// for(size_t j = 1; j < act_set.size(); j++)
 		// {
@@ -115,7 +115,7 @@ void Server::start() {
 
 	while (true)
 	{
-		struct pollfd * act_set_pointer = &act_set[0];
+		struct pollfd * act_set_pointer = &act_set[0]; // указатель на первый элемент вектора act_set
 		int ret = poll(act_set_pointer, act_set.size(), -1);
 		if (ret < 0)
 			throw "server: poll failure";
@@ -168,7 +168,7 @@ void Server::start() {
 						// обработка нового соединения
 						new_sock_fd = accept(act_set[0].fd, (struct sockaddr*)&remoteaddr, &size_client);
 						// а он может кривой инт вернуть? не помню
-						map_Users[new_sock_fd] = new User(new_sock_fd);
+						map_users[new_sock_fd] = new User(new_sock_fd);
 						std::cout << "New client on port " << port << std::endl;
 						struct pollfd new_Pollfd = {new_sock_fd, POLLIN, 0};
 						act_set.push_back(new_Pollfd);
@@ -195,8 +195,8 @@ void	Server::clear_disconnected() {
 	it = act_set.begin();
 	// printf("len pollfd before cleaning %zu\n len users %zu\n", act_set.size(), map_Users.size());
 	for (size_t i = 1; i < act_set.size(); i++)
-		if (map_Users[act_set[i].fd]->get_flags() & DISCONNECTED) {
-			map_Users.erase(act_set[i].fd);
+		if (map_users[act_set[i].fd]->get_flags() & DISCONNECTED) {
+			map_users.erase(act_set[i].fd);
 			close(act_set[i].fd);
 			act_set.erase(it + i);
 			--i;

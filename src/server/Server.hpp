@@ -28,7 +28,7 @@ private:
 	std::string					host_ip;
 //	int							num_set; // количество fd
 	int							new_sock_fd;
-	std::map<int, User *>			map_Users;
+	std::map<int, User *>			map_users;
 public:
 	Server(std::string port, std::string pass, std::string host_ip);
 	~Server();
