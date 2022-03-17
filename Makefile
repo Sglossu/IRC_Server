@@ -13,7 +13,9 @@ SRCS_FILES		= main \
 				  utils/utils \
 				  user/User \
 				  server/Server \
-				  server/ServerException
+				  server/ServerException \
+				  handler/Handler \
+				  commands/pass \
 
 SRC_DIR 		= src/
 

@@ -5,7 +5,9 @@ FILE(GLOB SRC
         "src/main.cpp",
         "src/server/*.cpp",
         "src/user/*.cpp",
-        "src/utils/*.cpp"
+        "src/utils/*.cpp",
+        "src/commands/*.cpp",
+        "src/handler'*cpp"
         )
 
 set(CMAKE_CXX_STANDARD 14 "${CMAKE_C_FLAGS} -std=c98 -Wall")

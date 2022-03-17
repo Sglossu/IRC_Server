@@ -14,7 +14,6 @@
 #include <poll.h>
 #include <sys/socket.h>
 
-
 #define TIMEOUT 1000
 
 class Server {
@@ -37,6 +36,8 @@ public:
 	void	working_with_client(int fd);
 	void	start();
 	void	clear_disconnected();
+
+	std::map<int, User *> &getMapUsers();
 private:
 	void	print_ip();
 };

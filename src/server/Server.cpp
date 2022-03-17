@@ -108,7 +108,6 @@ void Server::start() {
 
 	pollfd	new_Pollfd = {listener, POLLIN, 0};
 	act_set.push_back(new_Pollfd);
-	// std::vector<struct pollfd>::iterator	iter = act_set.begin();
 
 	struct sockaddr_storage remoteaddr;
 	socklen_t 				size_client = sizeof (remoteaddr);
@@ -124,37 +123,7 @@ void Server::start() {
 			std::cout << "Timeout" << std::endl;
 			continue;
 		}
-//______________________ПЕРВЫЙ ВАРИАНТ. ЗДЕСЬ НА 125 СТРОКЕ ОШИБКА - ПОЧЕМУ-ТО it_pollfd ВО 2Й ИТЕРАЦИИ ХРАНИТ ФИГНЮ_________
 
-//		if (ret > 0)
-//		{
-//			pollfd	i;
-//			for (std::vector<pollfd>::iterator it_pollfd = act_set.begin(); it_pollfd != act_set.end(); it_pollfd++)
-//			{
-//				i = *it_pollfd;// todo why вторая итерация даёт не те значения??
-//				if (i.revents & POLLIN)
-//				{
-//					std::cout << "POLLINT at fd " << i.fd << std::endl;
-//					i.revents &= ~POLLIN;
-//					if (i.fd == act_set[0].fd) // проверка что это listening
-//					{
-//						// обработка нового соединения
-//						new_sock_fd = accept(act_set[0].fd, (struct sockaddr*)&remoteaddr, &size_client);
-//						map_Users.insert(std::pair<int, User>(new_sock_fd, User(new_sock_fd)));
-//						std::cout << "New client on port " << port << std::endl;
-//						new_Pollfd = {new_sock_fd, POLLIN, 0};
-//						act_set.push_back(new_Pollfd);
-//					}
-//					else
-//					{
-//						// пришли данные, работаем с ними в существующем соединении
-//						working_with_client(i.fd);
-//					}
-//				}
-//			}
-//		}
-
-//_________________________ВТОРОЙ ВАРИАНТ: ЗДЕСЬ ДЛЯ НОВЫХ ПОДКЛЮЧЕНИЙ НЕ МЕНЯЕТСЯ REVENTS______________
 		else if (ret > 0)
 		{
 			for (size_t i = 0; i < act_set.size(); i++)
@@ -208,3 +177,5 @@ void	Server::clear_disconnected() {
 	
 	
 }
+
+std::map<int, User *> &Server::getMapUsers() { return map_users; }
