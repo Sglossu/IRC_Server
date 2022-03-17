@@ -1,5 +1,6 @@
 #include "User.hpp"
 
+<<<<<<< HEAD
 User::User(int fd_sock) : _fd_sock(fd_sock) {
     _flags = 0;
 }
@@ -49,3 +50,8 @@ void	User::set_flag(unsigned char flag)
 const unsigned char   User::get_flags() const {return _flags;}
 
 const std::string     &User::get_name() const { return _username; }
+=======
+User::User(int fd_sock) : _fd_sock(fd_sock) {}
+
+User::~User() {}
+>>>>>>> 9c5a24a32f4b79018ca7185e49537e4f05ef9966
