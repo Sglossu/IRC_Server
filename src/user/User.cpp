@@ -1,37 +1,30 @@
 #include "User.hpp"
 
-User::User(int fd_sock) : _fd_sock(fd_sock) {}
-
-User::User(const User &other) {
-    _fd_sock = other._fd_sock;
-    _username = other._username;
-    _realname = other._realname;
-    _nick = other._nick;
-    _message = other._message;
-
+User::User(int fd_sock) : _fd_sock(fd_sock) {
+    _flags = 0;
 }
 
-User& User::operator=(const User& other) {
-    if (this == &other)
-        return *this;
-    _fd_sock = other._fd_sock;
-    _username = other._username;
-    _realname = other._realname;
-    _nick = other._nick;
-    _message = other._message;
-    return *this;
-}
 
-User::~User() {}
+User::~User() {
+    // чистка пользователя со всех групп
+    // отправка сообщения об отключении
+}
 
 void	User::processIncommingMessage(std::string buf) {
     size_t      pos;
     std::string msg_line;
-    std::string cr_lf = "\r\n";
 
-    std::cout << "User <" << _fd_sock << ", " << _username 
-            << "> incooming msg(" << buf.size() <<"): "  << buf << std::endl;
     _msg_buf += buf;
+    const char *s = buf.c_str();
+    printf(" |\n");
+    for (size_t i = 0; i < buf.size(); i++) {
+        printf(" %d", s[i]);
+        if (s[i] == '\n')
+            printf("\n");
+    }
+    printf(" |\n");
+    std::cout << "User <" << _fd_sock << ", " << _username 
+            << "> incooming msg(" << _msg_buf.size() <<"): "  << _msg_buf << std::endl;
     while (1) {
         pos = _msg_buf.find(CR_LF);
         std::cout << "pos = " << pos << std::endl;
@@ -45,5 +38,14 @@ void	User::processIncommingMessage(std::string buf) {
 
 void	User::parceComand(std::string cmnd) {
     std::cout << "User <%d, " << _fd_sock << _username << "> parce cmnd: "  << cmnd << std::endl;
-    
+    // todoshen'ka
 }
+
+void	User::set_flag(unsigned char flag)
+{
+	_flags |= flag;
+}
+
+const unsigned char   User::get_flags() const {return _flags;}
+
+const std::string     &User::get_name() const { return _username; }

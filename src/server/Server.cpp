@@ -67,37 +67,38 @@ Server::~Server() {
 void Server::working_with_client(int fd)
 {
 	int		nbytes;
-	char	buf[512];
+	char	buf[513];
 
 	if (!map_Users.count(fd)) {
 		std::cout << "Unprocees errors: not found user with this fd-key" << std::endl;
 		return ;
 	}
-	if ((nbytes = recv(fd, buf, sizeof buf, 0)) <= 0)
+	if ((nbytes = recv(fd, buf, 512, 0)) <= 0)
 	{
 		// получена ошибка или соединение закрыто клиентом
 		if (nbytes == 0)
 			// соединение закрыто
-			std::cerr << "selectserver: socket %d hung upn" << fd << std::endl;
+			std::cerr << "selectserver: socket"  << fd << " hung up"<<  std::endl;
 		else{
 			std::cout << fd << std::endl;
 			throw "recv";
 		}
-		close(fd);
-		map_Users.erase(fd);
+		map_Users[fd]->set_flag(DISCONNECTED);
 	}
 	else
 	{
 		// у нас есть какие-то данные от клиента
-		map_Users[fd].processIncommingMessage(buf);
+		buf[nbytes] = 0;
+		if (!(map_Users[fd]->get_flags() & DISCONNECTED))
+			map_Users[fd]->processIncommingMessage(buf);
 
-		for(size_t j = 1; j < act_set.size(); j++)
-		{
-			// отсылаем данные всем!
-			if (act_set[j].fd != fd)
-				if (send(act_set[j].fd, buf, nbytes, 0) == -1)
-					throw "send";
-		}
+		// for(size_t j = 1; j < act_set.size(); j++)
+		// {
+		// 	// отсылаем данные всем!
+		// 	if (act_set[j].fd != fd)
+		// 		if (send(act_set[j].fd, buf, nbytes, 0) == -1)
+		// 			throw "send";
+		// }
 	}
 }
 
@@ -118,7 +119,7 @@ void Server::start() {
 		int ret = poll(act_set_pointer, act_set.size(), -1);
 		if (ret < 0)
 			throw "server: poll failure";
-		if (ret == 0)
+		else if (ret == 0)
 		{
 			std::cout << "Timeout" << std::endl;
 			continue;
@@ -154,7 +155,7 @@ void Server::start() {
 //		}
 
 //_________________________ВТОРОЙ ВАРИАНТ: ЗДЕСЬ ДЛЯ НОВЫХ ПОДКЛЮЧЕНИЙ НЕ МЕНЯЕТСЯ REVENTS______________
-		if (ret > 0)
+		else if (ret > 0)
 		{
 			for (size_t i = 0; i < act_set.size(); i++)
 			{
@@ -167,7 +168,7 @@ void Server::start() {
 						// обработка нового соединения
 						new_sock_fd = accept(act_set[0].fd, (struct sockaddr*)&remoteaddr, &size_client);
 						// а он может кривой инт вернуть? не помню
-						map_Users[new_sock_fd] = User(new_sock_fd);
+						map_Users[new_sock_fd] = new User(new_sock_fd);
 						std::cout << "New client on port " << port << std::endl;
 						new_Pollfd = {new_sock_fd, POLLIN, 0};
 						act_set.push_back(new_Pollfd);
@@ -180,6 +181,30 @@ void Server::start() {
 				}
 			}
 		}
+		// Этнические чистки
+		clear_disconnected();
+
 
 	}
+}
+
+// Удаляет сломанные фдшники и отключенных пользователей
+void	Server::clear_disconnected() {
+	std::vector<struct pollfd>::iterator it;
+
+	it = act_set.begin();
+	// printf("len pollfd before cleaning %zu\n len users %zu\n", act_set.size(), map_Users.size());
+	for (size_t i = 1; i < act_set.size(); i++)
+		if (map_Users[act_set[i].fd]->get_flags() & DISCONNECTED) {
+			map_Users.erase(act_set[i].fd);
+			close(act_set[i].fd);
+			act_set.erase(it + i);
+			--i;
+		}
+	
+	// printf("len pollfd after cleaning %zu\n len users %zu\n", act_set.size(), map_Users.size());
+
+	
+	
+	
 }

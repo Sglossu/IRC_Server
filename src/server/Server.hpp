@@ -1,8 +1,8 @@
 #pragma once
 
-// #include "../../inc/irc.hpp"
+#include "../../inc/irc.hpp"
 #include "../user/User.hpp"
-#include "irc.hpp"
+// #include "irc.hpp"
 
 #include <string>
 #include <unistd.h>
@@ -17,6 +17,7 @@
 class Server {
 private:
 	std::vector<struct pollfd>	act_set;
+	// std::set<int>				fd_to_del;
 	int							listener; 				// fdmax  - макс число дескрипторов
 	struct addrinfo				hints, *serv_addr_info;
 	std::string					port;
@@ -24,7 +25,7 @@ private:
 	std::string					host_ip;
 //	int							num_set; // количество fd
 	int							new_sock_fd;
-	std::map<int, User>			map_Users;
+	std::map<int, User *>			map_Users;
 public:
 	Server(std::string port, std::string pass, std::string host_ip);
 	~Server();
@@ -32,6 +33,7 @@ public:
 	void	init_server();
 	void	working_with_client(int fd);
 	void	start();
+	void	clear_disconnected();
 private:
 	void	print_ip();
 };
