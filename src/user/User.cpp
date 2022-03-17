@@ -24,7 +24,7 @@ void	User::processIncommingMessage(std::string buf) {
     }
     printf(" |\n");
     std::cout << "User <" << _fd_sock << ", " << _username 
-            << "> incooming msg(" << _msg_buf.size() <<"): "  << _msg_buf << std::endl;
+            << "> incoming msg(" << _msg_buf.size() <<"): "  << _msg_buf << std::endl;
     while (1) {
         pos = _msg_buf.find(CR_LF);
         std::cout << "pos = " << pos << std::endl;

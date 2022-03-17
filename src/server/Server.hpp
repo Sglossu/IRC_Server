@@ -16,12 +16,8 @@
 
 class Server {
 private:
-<<<<<<< HEAD
 	std::vector<struct pollfd>	act_set;
 	// std::set<int>				fd_to_del;
-=======
-	std::vector<pollfd>			act_set;
->>>>>>> 9c5a24a (task: connect client to server - not completed - 2 ways to solve)
 	int							listener; 				// fdmax  - макс число дескрипторов
 	struct addrinfo				hints, *serv_addr_info;
 	std::string					port;

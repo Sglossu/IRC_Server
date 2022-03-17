@@ -170,7 +170,7 @@ void Server::start() {
 						// а он может кривой инт вернуть? не помню
 						map_Users[new_sock_fd] = new User(new_sock_fd);
 						std::cout << "New client on port " << port << std::endl;
-						new_Pollfd = {new_sock_fd, POLLIN, 0};
+						struct pollfd new_Pollfd = {new_sock_fd, POLLIN, 0};
 						act_set.push_back(new_Pollfd);
 					}
 					else

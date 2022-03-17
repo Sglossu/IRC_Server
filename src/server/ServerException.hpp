@@ -2,7 +2,7 @@
 
 #include <string>
 
-class ServerException : public std::exception {
+class ServerException {
     private:
         std::string _msg;
     public:
