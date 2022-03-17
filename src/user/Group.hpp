@@ -16,5 +16,6 @@ public:
 
 	void delete_user(std::string &username);
 	const std::vector<std::string> &get_users() const;
+	
 
 };

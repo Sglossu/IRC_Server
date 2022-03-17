@@ -12,6 +12,7 @@
 class User {
 private:
 	const int		_fd_sock;
+	// const Server    _server;
 	std::string		_msg_buf;
 	std::string		_username;
 	std::string		_realname;
@@ -31,6 +32,8 @@ public:
 	void	process_incomming_message(std::string buf);
 	void	parce_comand(std::string cmnd);
 	void	set_flag(unsigned char flag);
+
+	void	join_group(std::string &group_name);
 
 	const unsigned char		get_flags() const;
 	const std::string		&get_name() const;

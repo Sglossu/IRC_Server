@@ -9,8 +9,8 @@ User::User(int fd_sock) : _fd_sock(fd_sock) {
 
 User::~User() {
 	std::cout << "delete constructor called, named = " << this->_username << std::endl;
-	// чистка пользователя со всех групп
-	// отправка сообщения об отключении
+	// todo: чистка пользователя со всех групп
+	// todo: отправка сообщения об отключении
 }
 
 void	User::process_incomming_message(std::string buf) {
@@ -42,6 +42,20 @@ void	User::set_flag(unsigned char flag)
 {
 	_flags |= flag;
 }
+
+void	User::join_group(std::string &group_name) {
+	// временный джоин для реализации работы логики групп
+
+	// todo проверка что имя группы корректно
+	// todo проверка что пользователь есть. 
+	// что группа есть.
+	// что его там нет
+	// что он может туда присоединиться
+
+	std::cout << "join group " << group_name << std::endl;
+	
+}
+
 
 const unsigned char   User::get_flags() const {return _flags;}
 

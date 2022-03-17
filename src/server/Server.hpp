@@ -27,6 +27,7 @@ private:
 	std::string					host_ip;
 	int							new_sock_fd;
 	std::map<int, User *>		map_users;
+	std::map<int, Group *>		groups;
 
 	void	working_with_client(int fd);
 	void	clear_disconnected();

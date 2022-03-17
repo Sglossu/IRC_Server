@@ -90,7 +90,7 @@ void Server::working_with_client(int fd)
 		// у нас есть какие-то данные от клиента
 		buf[nbytes] = 0;
 		if (!(map_users[fd]->get_flags() & DISCONNECTED))
-			map_users[fd]->processIncommingMessage(buf);
+			map_users[fd]->process_incomming_message(buf);
 
 		// for(size_t j = 1; j < act_set.size(); j++)
 		// {

@@ -9,6 +9,8 @@
 #include <map>
 #include <set>
 #include <iterator>
+#include <algorithm>
+
 #include <cstring>
 
 #include <sys/socket.h> // For socket functions
