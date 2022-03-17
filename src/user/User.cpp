@@ -8,6 +8,7 @@ User::User(int fd_sock) : _fd_sock(fd_sock) {
 
 
 User::~User() {
+	std::cout << "delete constructor called, named = " << this->_username << std::endl;
 	// чистка пользователя со всех групп
 	// отправка сообщения об отключении
 }
@@ -17,16 +18,8 @@ void	User::process_incomming_message(std::string buf) {
 	std::string msg_line;
 
 	_msg_buf += buf;
-//	const char *s = buf.c_str();
-//	printf(" |\n");
-//	for (size_t i = 0; i < buf.size(); i++) {
-//		printf(" %c", s[i]);
-//		if (s[i] == '\n')
-//			printf("\n");
-//	}
-//	printf(" |\n");
-//	std::cout << "User <" << _fd_sock << ", " << _username
-//			  << "> incoming msg(" << _msg_buf.size() <<"): "  << _msg_buf << std::endl;
+	std::cout << "User <" << _fd_sock << ", " << _username
+			  << "> incoming msg(" << _msg_buf.size() <<"): "  << _msg_buf << std::endl;
 	while (!_msg_buf.empty()) {
 		pos = _msg_buf.find(CR_LF);
 		if (pos == _msg_buf.npos)

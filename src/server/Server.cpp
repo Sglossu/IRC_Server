@@ -162,7 +162,6 @@ void	Server::clear_disconnected() {
 	std::vector<struct pollfd>::iterator it;
 
 	it = act_set.begin();
-	// printf("len pollfd before cleaning %zu\n len users %zu\n", act_set.size(), map_Users.size());
 	for (size_t i = 1; i < act_set.size(); i++)
 		if (map_users[act_set[i].fd]->get_flags() & DISCONNECTED) {
 			map_users.erase(act_set[i].fd);
@@ -170,12 +169,7 @@ void	Server::clear_disconnected() {
 			act_set.erase(it + i);
 			--i;
 		}
-	
-	// printf("len pollfd after cleaning %zu\n len users %zu\n", act_set.size(), map_Users.size());
-
-	
-	
-	
 }
 
 std::map<int, User *> &Server::getMapUsers() { return map_users; }
+

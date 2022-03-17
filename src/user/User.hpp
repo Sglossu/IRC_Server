@@ -1,5 +1,6 @@
 #pragma once
 #include "../../inc/irc.hpp"
+#include "Group.hpp"
 
 #define CR_LF	"\r\n"
 //#define CR_LF	"\n"
