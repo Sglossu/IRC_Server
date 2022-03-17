@@ -12,6 +12,7 @@ INCLUDE			= -I inc
 SRCS_FILES		= main \
 				  utils/utils \
 				  user/User \
+				  user/Group \
 				  server/Server \
 				  server/ServerException \
 				  handler/Handler \

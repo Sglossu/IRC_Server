@@ -12,7 +12,7 @@ User::~User() {
 	// отправка сообщения об отключении
 }
 
-void	User::processIncommingMessage(std::string buf) {
+void	User::process_incomming_message(std::string buf) {
 	size_t      pos;
 	std::string msg_line;
 
@@ -29,7 +29,6 @@ void	User::processIncommingMessage(std::string buf) {
 //			  << "> incoming msg(" << _msg_buf.size() <<"): "  << _msg_buf << std::endl;
 	while (!_msg_buf.empty()) {
 		pos = _msg_buf.find(CR_LF);
-		std::cout << "pos = " << pos << std::endl;
 		if (pos == _msg_buf.npos)
 			break ;
 		msg_line = _msg_buf.substr(0, pos);

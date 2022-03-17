@@ -27,11 +27,11 @@ public:
 	User(int fd_sock);
 	~User();
 
-	void	processIncommingMessage(std::string buf);
-	void	parceComand(std::string cmnd);
+	void	process_incomming_message(std::string buf);
+	void	parce_comand(std::string cmnd);
 	void	set_flag(unsigned char flag);
 
-	const unsigned char	get_flags() const;
-	const std::string	&get_name() const;
+	const unsigned char		get_flags() const;
+	const std::string		&get_name() const;
 
 };
