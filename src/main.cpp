@@ -12,8 +12,10 @@ int main(int argc, char** argv)
 	Server	server(argv[argc - 2], argv[argc - 1], "localhost");
 	Handler	handler(&server);
 	handler.getPserver()->init_server();
+
 	try {
-		handler.getPserver()->start();
+		handler.start_game();
+//		handler.getPserver()->start();
 	}
 	catch (const char *exception) {
 		critErr("Error: " + std::string(exception));

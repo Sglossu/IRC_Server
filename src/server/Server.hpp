@@ -39,6 +39,12 @@ public:
 
 	void	init_server();
 	void	start();
+	void	clear_disconnected();
+	void	new_connection(int i, struct sockaddr_storage remoteaddr, socklen_t size_client);
 
 	std::map<int, User *> &getMapUsers();
+	std::vector<struct pollfd> &getActSet();
+
 };
+
+
