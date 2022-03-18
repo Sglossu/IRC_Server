@@ -1,6 +1,6 @@
 #pragma once
 #include "../../inc/irc.hpp"
-#include "Group.hpp"
+// #include "Group.hpp"
 
 #define CR_LF	"\r\n"
 //#define CR_LF	"\n"
@@ -29,8 +29,8 @@ public:
 	User(int fd_sock);
 	~User();
 
-	void	process_incomming_message(std::string buf);
-	void	parce_comand(std::string cmnd);
+	
+	
 	void	set_flag(unsigned char flag);
 
 	void	join_group(std::string &group_name);

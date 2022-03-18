@@ -3,6 +3,7 @@
 #include "../../inc/irc.hpp"
 #include "../user/User.hpp"
 #include "../user/Group.hpp"
+// #include "../handler/Handler.hpp"
 
 //#include "User.hpp"
 //#include "irc.hpp"
@@ -17,14 +18,19 @@
 
 #define TIMEOUT 1000
 
+class Handler;
+
 class Server {
+	friend class	Handler;
+
 private:
+	const std::string			port;
+	const std::string			pass;
+	const std::string			host_ip;
+	Handler						*handler;
 	std::vector<struct pollfd>	act_set;
 	int							listener;
 	struct addrinfo				hints, *serv_addr_info;
-	std::string					port;
-	std::string					pass;
-	std::string					host_ip;
 	int							new_sock_fd;
 	std::map<int, User *>		map_users;
 	std::map<int, Group *>		groups;
@@ -39,7 +45,6 @@ public:
 
 	void	init_server();
 	void	start();
-	void	clear_disconnected();
 	void	new_connection(int i, struct sockaddr_storage remoteaddr, socklen_t size_client);
 
 	std::map<int, User *> &getMapUsers();

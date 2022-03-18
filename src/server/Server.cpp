@@ -1,4 +1,5 @@
 #include "Server.hpp"
+#include "../handler/Handler.hpp"
 
 void *get_in_addr(struct sockaddr *sa)
 {
@@ -9,11 +10,12 @@ void *get_in_addr(struct sockaddr *sa)
 	return &(((struct sockaddr_in6*)sa)->sin6_addr);
 }
 
-Server::Server(std::string port, std::string pass, std::string host_ip) : port(port), pass(pass), host_ip(host_ip) {
+Server::Server(std::string port, std::string pass, std::string host_ip) : port(port), pass(pass), host_ip(host_ip), handler(new Handler(*this)) {
 	memset(&hints, 0, sizeof hints);
 	hints.ai_family = AF_UNSPEC; // неважно v4 или v6
 	hints.ai_socktype = SOCK_STREAM;
 	hints.ai_flags = AI_PASSIVE; // назначение сокету адрес хоста
+	// handler = new Handler(this);
 }
 
 void Server::print_ip() {
@@ -90,7 +92,7 @@ void Server::working_with_client(int fd)
 		// у нас есть какие-то данные от клиента
 		buf[nbytes] = 0;
 		if (!(map_users[fd]->get_flags() & DISCONNECTED))
-			map_users[fd]->process_incomming_message(buf);
+			handler->process_incomming_message(fd, buf);
 
 		// for(size_t j = 1; j < act_set.size(); j++)
 		// {
@@ -103,60 +105,59 @@ void Server::working_with_client(int fd)
 }
 
 
-
 void Server::start() {
-//	if (listen(listener, 10) < 0)
-//		throw "listen";
-//
-//	pollfd	new_Pollfd = {listener, POLLIN, 0};
-//	act_set.push_back(new_Pollfd);
-//
-//	struct sockaddr_storage remoteaddr;
-//	socklen_t 				size_client = sizeof (remoteaddr);
+	if (listen(listener, 10) < 0)
+		throw "listen";
 
-//	while (true)
-//	{
-//		struct pollfd * act_set_pointer = &act_set[0]; // указатель на первый элемент вектора act_set
-//		int ret = poll(act_set_pointer, act_set.size(), -1);
-//		if (ret < 0)
-//			throw "server: poll failure";
-//		else if (ret == 0)
-//		{
-//			std::cout << "Timeout" << std::endl;
-//			continue;
-//		}
-//
-//		else if (ret > 0)
-//		{
-//			for (size_t i = 0; i < act_set.size(); i++)
-//			{
-//				if (act_set[i].revents & POLLIN)
-//				{
-//					std::cout << "POLLINT at fd " << act_set[i].fd << std::endl;
-//					act_set[i].revents &= ~POLLIN;
-//					if (act_set[i].fd == act_set[0].fd) // проверка что это listening
-//					{
-//						// обработка нового соединения
-//						new_sock_fd = accept(act_set[0].fd, (struct sockaddr*)&remoteaddr, &size_client);
-//						// а он может кривой инт вернуть? не помню
-//						map_users[new_sock_fd] = new User(new_sock_fd);
-//						std::cout << "New client on port " << port << std::endl;
-//						struct pollfd new_Pollfd = {new_sock_fd, POLLIN, 0};
-//						act_set.push_back(new_Pollfd);
-//					}
-//					else
-//					{
-//						// пришли данные, работаем с ними в существующем соединении
-//						working_with_client(act_set[i].fd);
-//					}
-//				}
-//			}
-//		}
-//		// Этнические чистки
-//		clear_disconnected();
-//
-//
-//	}
+	pollfd	new_Pollfd = {listener, POLLIN, 0};
+	act_set.push_back(new_Pollfd);
+
+	struct sockaddr_storage remoteaddr;
+	socklen_t 				size_client = sizeof (remoteaddr);
+
+	while (true)
+	{
+		struct pollfd * act_set_pointer = &act_set[0]; // указатель на первый элемент вектора act_set
+		int ret = poll(act_set_pointer, act_set.size(), -1);
+		if (ret < 0)
+			throw "server: poll failure";
+		else if (ret == 0)
+		{
+			std::cout << "Timeout" << std::endl;
+			continue;
+		}
+
+		else if (ret > 0)
+		{
+			for (size_t i = 0; i < act_set.size(); i++)
+			{
+				if (act_set[i].revents & POLLIN)
+				{
+					std::cout << "POLLINT at fd " << act_set[i].fd << std::endl;
+					act_set[i].revents &= ~POLLIN;
+					if (act_set[i].fd == act_set[0].fd) // проверка что это listening
+					{
+						// обработка нового соединения
+						new_sock_fd = accept(act_set[0].fd, (struct sockaddr*)&remoteaddr, &size_client);
+						// а он может кривой инт вернуть? не помню
+						map_users[new_sock_fd] = new User(new_sock_fd);
+						std::cout << "New client on port " << port << std::endl;
+						struct pollfd new_Pollfd = {new_sock_fd, POLLIN, 0};
+						act_set.push_back(new_Pollfd);
+					}
+					else
+					{
+						// пришли данные, работаем с ними в существующем соединении
+						working_with_client(act_set[i].fd);
+					}
+				}
+			}
+		}
+		// Этнические чистки
+		clear_disconnected();
+
+
+	}
 }
 
 void Server::new_connection(int i, struct sockaddr_storage remoteaddr, socklen_t size_client) {
@@ -183,12 +184,15 @@ void	Server::clear_disconnected() {
 	for (size_t i = 1; i < act_set.size(); i++)
 		if (map_users[act_set[i].fd]->get_flags() & DISCONNECTED) {
 			map_users.erase(act_set[i].fd);
+			handler.clear_buf(act_set[i].fd);
 			close(act_set[i].fd);
 			act_set.erase(it + i);
 			--i;
 		}
 	// printf("len pollfd after cleaning %zu\n len users %zu\n", act_set.size(), map_Users.size());
 }
+
+
 
 std::map<int, User *> &Server::getMapUsers() {
 	return map_users;

@@ -10,11 +10,10 @@ int main(int argc, char** argv)
 		critErr(INCORRECT_ARGV);
 
 	Server	server(argv[argc - 2], argv[argc - 1], "localhost");
-	Handler	handler(&server);
-	handler.getPserver()->init_server();
+	server.init_server();
 
 	try {
-		handler.start_game();
+		server.start();
 //		handler.getPserver()->start();
 	}
 	catch (const char *exception) {
