@@ -39,7 +39,6 @@ public:
 
 	void	init_server();
 	void	start();
-	void	clear_disconnected();
 
 	std::map<int, User *> &getMapUsers();
 };

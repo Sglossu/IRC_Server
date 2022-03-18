@@ -27,11 +27,11 @@ void	User::process_incomming_message(std::string buf) {
 		msg_line = _msg_buf.substr(0, pos);
 		_msg_buf = _msg_buf.substr(pos + 2); // раскоменить когда считывается /r
 //		_msg_buf = _msg_buf.substr(pos + 1); // закоментить, если верхняя строка раскоменчена
-		parceComand(msg_line);
+		parce_comand(msg_line);
 	}
 }
 
-void	User::parceComand(std::string cmnd) {
+void	User::parce_comand(std::string cmnd) {
 	std::cout << "User <fd " << _fd_sock << _username << "> parce cmnd: "  << cmnd << std::endl;
 	// todoshen'ka
 //	if (!_pass)
