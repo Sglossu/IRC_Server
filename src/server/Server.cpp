@@ -184,7 +184,7 @@ void	Server::clear_disconnected() {
 	for (size_t i = 1; i < act_set.size(); i++)
 		if (map_users[act_set[i].fd]->get_flags() & DISCONNECTED) {
 			map_users.erase(act_set[i].fd);
-			handler.clear_buf(act_set[i].fd);
+			handler->clear_buf(act_set[i].fd);
 			close(act_set[i].fd);
 			act_set.erase(it + i);
 			--i;
