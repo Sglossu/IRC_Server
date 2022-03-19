@@ -36,4 +36,6 @@ public:
 	const unsigned char		get_flags() const;
 	const std::string		&get_name() const;
 	const int 				getFdSock() const;
+	const std::string 		&getNick() const;
+	void 					setNick(const std::string &nick);
 };

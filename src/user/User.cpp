@@ -40,3 +40,11 @@ const std::string     &User::get_name() const { return _username; }
 const int User::getFdSock() const {
 	return _fd_sock;
 }
+
+void User::setNick(const std::string &nick) {
+	_nick = nick;
+}
+
+const std::string &User::getNick() const {
+	return _nick;
+}
