@@ -36,3 +36,7 @@ void	User::join_group(std::string &group_name) {
 const unsigned char   User::get_flags() const {return _flags;}
 
 const std::string     &User::get_name() const { return _username; }
+
+const int User::getFdSock() const {
+	return _fd_sock;
+}

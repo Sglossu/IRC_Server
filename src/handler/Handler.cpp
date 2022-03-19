@@ -7,7 +7,6 @@ Handler::Handler(Server &server): _server(server) {
 
 Handler::~Handler() {}
 
-
 void	Handler::process_incomming_message(int fd, std::string buf) {
 	size_t      pos;
 	std::string msg_line;
@@ -21,18 +20,19 @@ void	Handler::process_incomming_message(int fd, std::string buf) {
 	std::cout << "User <" << fd << ", " << user->get_name()
 			  << "> incoming msg(" << _bufs[fd].size() <<"): "  << _bufs[fd] << std::endl;
 	while (!_bufs[fd].empty()) {
+		_res_execute = 0;
 		pos = _bufs[fd].find(CR_LF);
 		if (pos == _bufs[fd].npos)
 			break ;
 		msg_line = _bufs[fd].substr(0, pos);
-		_bufs[fd] = _bufs[fd].substr(pos + 2); // раскоменить когда считывается /r
-//		_msg_buf = _msg_buf.substr(pos + 1); // закоментить, если верхняя строка раскоменчена
+//		_bufs[fd] = _bufs[fd].substr(pos + 2); // раскоменить когда считывается /r
+		_bufs[fd] = _bufs[fd].substr(pos + 1); // закоментить, если верхняя строка раскоменчена
 
 		Message	msg(msg_line);
 		if (msg.get_cmd().empty() or !_commands.count(msg.get_cmd())) {
 			std::cout << "!Unknown command: " << msg.get_cmd() << std::endl;
+
 			// todo send user any message?
-			return ;
 		}
 
 		// Самая Классная Строчка

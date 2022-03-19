@@ -66,6 +66,13 @@ Server::~Server() {
 	freeaddrinfo(serv_addr_info); // todo воткнуть куда-то
 }
 
+void Server::write_to_client(int fd, const std::string &msg) {
+	int nbytes = msg.size();
+
+	if (send(fd, msg.c_str(), nbytes, 0) == -1)
+				throw "send";
+}
+
 void Server::working_with_client(int fd)
 {
 	int		nbytes;
@@ -200,4 +207,8 @@ std::map<int, User *> &Server::getMapUsers() {
 
 std::vector<struct pollfd> &Server::getActSet(){
 	return act_set;
+}
+
+const std::string &Server::getPass() const {
+	return pass;
 }

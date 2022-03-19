@@ -2,8 +2,8 @@
 #include "../../inc/irc.hpp"
 // #include "Group.hpp"
 
-#define CR_LF	"\r\n"
-//#define CR_LF	"\n"
+//#define CR_LF	"\r\n"
+#define CR_LF	"\n"
 #define REGISTERED		0b00000001
 #define ADMIN			0b00000010
 #define DISCONNECTED	0b10000000
@@ -31,11 +31,9 @@ public:
 
 	
 	
-	void	set_flag(unsigned char flag);
-
-	void	join_group(std::string &group_name);
-
+	void					set_flag(unsigned char flag);
+	void					join_group(std::string &group_name);
 	const unsigned char		get_flags() const;
 	const std::string		&get_name() const;
-
+	const int 				getFdSock() const;
 };

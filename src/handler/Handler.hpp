@@ -12,27 +12,28 @@ private:
 	Server							&_server;
 	std::map<int, std::string>		_bufs;
 	std::map<std::string, cmd_func>	_commands;
+	int 							_res_execute;
 	// std::map<int, User *>			*_pmap_users;
 
-	bool	_is_valid_nick(std::string nick);
-	bool	_is_valid_groupname(std::string	name);
+	bool		_is_valid_nick(std::string nick);
+	bool		_is_valid_groupname(std::string	name);
 
 
-	void	_registration_commands();
-	void	_test1(Message &msg, User &user);
+	void		_registration_commands();
+	void		_test1(Message &msg, User &user);
 
-	void	_cmd_pass(Message &msg, User &user);
-	void	_cmd_nick(Message &msg, User &user);
-	void	_cmd_user(Message &msg, User &user);
-
+	void		_cmd_pass(Message &msg, User &user);
+	void 		_cmd_nick(Message &msg, User &user);
+	void 		_cmd_user(Message &msg, User &user);
 
 
 public:
 	Handler(Server &server);
 	~Handler();
 
-	void	process_incomming_message(int fd, std::string buf);
-	void	clear_buf(int fd);
+	void		process_incomming_message(int fd, std::string buf);
+	void		clear_buf(int fd);
+	void		_error_msg(Message *msg, User *user, int er);
 
 	
 };

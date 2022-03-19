@@ -6,9 +6,9 @@ FILE(GLOB SRC
         "src/server/*.cpp",
         "src/user/*.cpp",
         "src/utils/*.cpp",
-        "src/commands/*.cpp",
-        "src/handler'*cpp"
+        "src/handler/*.cpp"
+        "src/message/*.cpp"
         )
 
 set(CMAKE_CXX_STANDARD 14 "${CMAKE_C_FLAGS} -std=c98 -Wall")
-add_executable(irc ${SRC})
+add_executable(irc ${SRC} src/handler/error_msg.cpp)

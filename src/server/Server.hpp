@@ -48,7 +48,9 @@ public:
 	void	new_connection(int i, struct sockaddr_storage remoteaddr, socklen_t size_client);
 
 	std::map<int, User *> &getMapUsers();
+	const std::string &getPass() const;
 	std::vector<struct pollfd> &getActSet();
+	void	write_to_client(int fd, const std::string &msg);
 
 };
 
