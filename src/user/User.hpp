@@ -15,6 +15,8 @@ private:
 	// const Server    _server;
 	std::string		_msg_buf;
 	std::string		_username;
+	std::string		_hostname;
+	std::string		_servername;
 	std::string		_realname;
 	std::string		_nick;
 	std::string		_message;
@@ -29,12 +31,19 @@ public:
 	User(int fd_sock);
 	~User();
 
-	
-	
+	const std::string		&getUsername() const;
+	void 					setUsername(const std::string &username);
+	const 					std::string &getHostname() const;
+	void					setHostname(const std::string &hostname);
+	const std::string		&getServername() const;
+	void					setServername(const std::string &servername);
+	const std::string		&getRealname() const;
+	void					setRealname(const std::string &realname);
+
 	void					set_flag(unsigned char flag);
 	void					join_group(std::string &group_name);
 	const unsigned char		get_flags() const;
-	const std::string		&get_name() const;
+//	const std::string		&get_name() const;
 	const int 				getFdSock() const;
 	const std::string 		&getNick() const;
 	void 					setNick(const std::string &nick);
