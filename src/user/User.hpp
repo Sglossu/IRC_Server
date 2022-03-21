@@ -20,8 +20,11 @@ private:
 	std::string		_realname;
 	std::string		_nick;
 	std::string		_message;
+	std::string		_pass;
 	unsigned char	_flags;
-	bool 			_pass;
+	bool 			_enter_pass;
+	bool 			_enter_nick;
+	bool 			_enter_name;
 //	std::vector<>	_chanels; // придумать какой тип данных. массив для каналов юзера
 	User();
 	User(const User &other);
@@ -43,8 +46,20 @@ public:
 	void					set_flag(unsigned char flag);
 	void					join_group(std::string &group_name);
 	const unsigned char		get_flags() const;
-//	const std::string		&get_name() const;
 	const int 				getFdSock() const;
 	const std::string 		&getNick() const;
 	void 					setNick(const std::string &nick);
+
+	bool 					isEnterPass() const;
+	bool 					isEnterNick() const;
+
+	const std::string 		&getPass() const;
+	void 					setPass(const std::string &pass);
+
+	bool 					isEnterName() const;
+	void 					setEnterPass(bool enterPass);
+	void 					setEnterNick(bool enterNick);
+	void 					setEnterName(bool enterName);
 };
+
+

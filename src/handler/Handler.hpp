@@ -25,6 +25,8 @@ private:
 	void		_cmd_pass(Message &msg, User &user);
 	void 		_cmd_nick(Message &msg, User &user);
 	void 		_cmd_user(Message &msg, User &user);
+	void		_cmd_oper(Message &msg, User &user);
+	void		_cmd_quit(Message &msg, User &user);
 
 
 public:

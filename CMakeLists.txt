@@ -6,7 +6,8 @@ FILE(GLOB SRC
         "src/server/*.cpp",
         "src/user/*.cpp",
         "src/utils/*.cpp",
-        "src/handler/*.cpp"
+        "src/handler/*.cpp",
+        "src/handler/commands/*.cpp",
         "src/message/*.cpp"
         )
 

@@ -101,13 +101,13 @@ void Server::working_with_client(int fd)
 		if (!(map_users[fd]->get_flags() & DISCONNECTED))
 			handler->process_incomming_message(fd, buf);
 
-		// for(size_t j = 1; j < act_set.size(); j++)
-		// {
-		// 	// отсылаем данные всем!
-		// 	if (act_set[j].fd != fd)
-		// 		if (send(act_set[j].fd, buf, nbytes, 0) == -1)
-		// 			throw "send";
-		// }
+//		 for(size_t j = 1; j < act_set.size(); j++)
+//		 {
+//		 	// отсылаем данные всем!
+//		 	if (act_set[j].fd != fd)
+//		 		if (send(act_set[j].fd, buf, nbytes, 0) == -1)
+//		 			throw "send";
+//		 }
 	}
 }
 

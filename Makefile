@@ -16,8 +16,9 @@ SRCS_FILES		= main \
 				  server/Server \
 				  server/ServerException \
 				  handler/Handler \
-				  handler/commands \
+				  handler/commands/commands \
 				  handler/error_msg \
+				  handler/commands/registration \
 				  message/Message
 
 SRC_DIR 		= src/
