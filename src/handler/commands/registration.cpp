@@ -101,11 +101,9 @@ void	Handler::_cmd_oper(Message &msg, User &user) {
 		}
 	}
 	std::string 	chiper_pass = sha256(msg.get_params()[1]);
-	std::cout << "sha256('"<< msg.get_params()[1] << "'): " << chiper_pass << std::endl;
+	std::string ret_config = getConfig()["operators." + user.getUsername()];
 
-	std::cout << "chiper_pass: " << chiper_pass << "config: " << getConfig()["operators." + user.getUsername()];
-
-	if (getConfig()["opeartors." + user.getUsername()] != chiper_pass)
+	if (chiper_pass.compare(ret_config))
 		_error_msg(&msg, &user, 464);
 	else {
 		_cmd_responses(&msg, &user, 381);

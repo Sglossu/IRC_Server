@@ -2,7 +2,6 @@
 
 Handler::Handler(Server &server): _server(server) {
 	_registration_commands();
-	_config.loadFile();
 	// std::cout << "handler constructor. server port: " << server.port << std::endl;
 }
 

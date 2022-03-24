@@ -9,12 +9,11 @@ YamlParser::~YamlParser() {}
 void YamlParser::loadFile() {
 	file.open ("./conf/IRCconf.yaml", std::ifstream::in);
 
-//	std::cout << "file open: " << file.is_open() << std::endl;
-	std::vector<std::string> total_vec;
-	std::string total_line = "";
-	std::string line;
-	size_t space_count = 0;
-	size_t last_space_count = 0;
+	std::vector<std::string>	total_vec;
+	std::string					total_line = "";
+	std::string					line;
+	size_t						space_count = 0;
+	size_t						last_space_count = 0;
 
 	while (getline(file, line)) {
 		if (line.front() == ' ') {
