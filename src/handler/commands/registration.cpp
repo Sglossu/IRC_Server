@@ -13,12 +13,14 @@ bool	is_nickname_correct(std::string nick) {
 void	Handler::_cmd_pass(Message &msg, User &user) {
 	std::cout << "cmd_pass " << user.getUsername() << std::endl;
 
-	if (user.isEnterPass())
-		_error_msg(&msg, &user, 462);
-	else if  (!msg.get_params().size())
+//	if (user.getPass().empty())
+//		_error_msg(&msg, &user, 462);
+	if  (!msg.get_params().size())
 		_error_msg(&msg, &user, 461);
-//	else if (msg.get_params()[0].compare(_server.getPass()))
-//		_error_msg(&msg, &user, 461);
+	else if (msg.get_params()[0].compare(_server.getPass())) {
+		std::cout << "<User: fd " << user.getFdSock() << "> password is incorrect" << std::endl;
+		_error_msg(&msg, &user, 464);
+	}
 	else {
 		std::cout << "<User: fd " << user.getFdSock() << "> password is correct" << std::endl;
 		user.setEnterPass(true);
@@ -40,7 +42,7 @@ void	Handler::_cmd_nick(Message &msg, User &user) {
 	{
 		for (std::map<int, User *>::iterator it = _server.map_users.begin(); it != _server.map_users.end(); it++)
 		{
-			if (!it->second->getUsername().compare(msg.get_params()[0])) {
+			if (!it->second->getNick().compare(msg.get_params()[0])) {
 				_error_msg(&msg, &user, 433);
 				return ;
 			}
@@ -79,11 +81,37 @@ void	Handler::_cmd_user(Message &msg, User &user) {
 	}
 	user.setEnterName(true);
 	std::cout << "<User: fd " << user.getFdSock() << "> has username: " << user.getUsername() <<
-			  ", hostname:" << user.getHostname() <<
-			  ", servername:" << user.getServername() <<
+			  ", hostname: " << user.getHostname() <<
+			  ", servername: " << user.getServername() <<
 			  ", realname: "<< user.getRealname() << std::endl;
 }
 
-void	Handler::_cmd_oper(Message &msg, User &user) {}
+void	Handler::_cmd_oper(Message &msg, User &user) {
+	std::cout << "cmd_oper " << user.getUsername() << std::endl;
+
+	if (msg.get_params().size() < 2) {
+		_error_msg(&msg, &user, 461);
+		return ;
+	}
+	for (std::map<int, User *>::iterator it = _server.map_users.begin(); it != _server.map_users.end(); it++)
+	{
+		if (it->second->getUsername().compare(msg.get_params()[0])) {
+			_error_msg(&msg, &user, 464);
+			return ;
+		}
+	}
+	std::string 	chiper_pass = sha256(msg.get_params()[1]);
+	std::cout << "sha256('"<< msg.get_params()[1] << "'): " << chiper_pass << std::endl;
+
+	std::cout << "chiper_pass: " << chiper_pass << "config: " << getConfig()["operators." + user.getUsername()];
+
+	if (getConfig()["opeartors." + user.getUsername()] != chiper_pass)
+		_error_msg(&msg, &user, 464);
+	else {
+		_cmd_responses(&msg, &user, 381);
+		user.setIrcOperator(true);
+	}
+
+}
 
 void	Handler::_cmd_quit(Message &msg, User &user) {}

@@ -25,6 +25,7 @@ private:
 	bool 			_enter_pass;
 	bool 			_enter_nick;
 	bool 			_enter_name;
+	bool 			_irc_operator;
 //	std::vector<>	_chanels; // придумать какой тип данных. массив для каналов юзера
 	User();
 	User(const User &other);
@@ -34,6 +35,8 @@ public:
 	User(int fd_sock);
 	~User();
 
+	bool 					isIrcOperator() const;
+	void 					setIrcOperator(bool ircOperator);
 	const std::string		&getUsername() const;
 	void 					setUsername(const std::string &username);
 	const 					std::string &getHostname() const;

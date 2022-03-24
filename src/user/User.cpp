@@ -109,3 +109,11 @@ const std::string &User::getPass() const {
 void User::setPass(const std::string &pass) {
 	_pass = pass;
 }
+
+bool User::isIrcOperator() const {
+	return _irc_operator;
+}
+
+void User::setIrcOperator(bool ircOperator) {
+	_irc_operator = ircOperator;
+}

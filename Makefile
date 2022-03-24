@@ -19,6 +19,8 @@ SRCS_FILES		= main \
 				  handler/commands/commands \
 				  handler/error_msg \
 				  handler/commands/registration \
+				  handler/sha256/Sha256 \
+				  handler/yaml_parser/YamlParser \
 				  message/Message
 
 SRC_DIR 		= src/
