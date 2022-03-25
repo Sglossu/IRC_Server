@@ -3,7 +3,7 @@ NAME			= ircserv
 CXX				= g++
 
 FLAGS			= -Wall -Wextra -Werror -MMD -std=c++98
-FLAGS			= -Wall -g  -MMD
+FLAGS			= -Wall -g -MMD
 
 RM				= rm -rf
 
@@ -19,6 +19,8 @@ SRCS_FILES		= main \
 				  handler/commands/commands \
 				  handler/error_msg \
 				  handler/commands/registration \
+				  handler/sha256/Sha256 \
+				  handler/yaml_parser/YamlParser \
 				  message/Message
 
 SRC_DIR 		= src/

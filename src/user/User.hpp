@@ -7,6 +7,11 @@
 #define REGISTERED		0b00000001
 #define ADMIN			0b00000010
 #define DISCONNECTED	0b10000000
+#define ENTER_PASS		0b01000000
+#define ENTER_NICK		0b00100000
+#define ENTER_NAME		0b00010000
+#define IRC_OPERATOR	0b00001000
+
 
 
 class User {
@@ -22,9 +27,6 @@ private:
 	std::string		_message;
 	std::string		_pass;
 	unsigned char	_flags;
-	bool 			_enter_pass;
-	bool 			_enter_nick;
-	bool 			_enter_name;
 //	std::vector<>	_chanels; // придумать какой тип данных. массив для каналов юзера
 	User();
 	User(const User &other);
@@ -33,6 +35,7 @@ private:
 public:
 	User(int fd_sock);
 	~User();
+
 
 	const std::string		&getUsername() const;
 	void 					setUsername(const std::string &username);
@@ -50,16 +53,14 @@ public:
 	const std::string 		&getNick() const;
 	void 					setNick(const std::string &nick);
 
-	bool 					isEnterPass() const;
-	bool 					isEnterNick() const;
+
 
 	const std::string 		&getPass() const;
 	void 					setPass(const std::string &pass);
 
-	bool 					isEnterName() const;
-	void 					setEnterPass(bool enterPass);
-	void 					setEnterNick(bool enterNick);
-	void 					setEnterName(bool enterName);
+
+
+
 };
 
 
