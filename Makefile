@@ -3,7 +3,7 @@ NAME			= ircserv
 CXX				= g++
 
 FLAGS			= -Wall -Wextra -Werror -MMD -std=c++98
-FLAGS			= -Wall -g  -MMD
+FLAGS			= -Wall -g -MMD
 
 RM				= rm -rf
 
