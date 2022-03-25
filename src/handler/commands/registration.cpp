@@ -13,8 +13,6 @@ bool	is_nickname_correct(std::string nick) {
 void	Handler::_cmd_pass(Message &msg, User &user) {
 	std::cout << "cmd_pass " << user.getUsername() << std::endl;
 
-//	if (user.getPass().empty())
-//		_error_msg(&msg, &user, 462);
 	if  (!msg.get_params().size())
 		_error_msg(&msg, &user, 461);
 	else if (msg.get_params()[0].compare(_server.getPass())) {
@@ -23,16 +21,15 @@ void	Handler::_cmd_pass(Message &msg, User &user) {
 	}
 	else {
 		std::cout << "<User: fd " << user.getFdSock() << "> password is correct" << std::endl;
-		user.setEnterPass(true);
 		user.setPass(msg.get_params()[0]);
-		// todo проверить когда всё установлено что пароль верный
+		user.set_flag(ENTER_PASS);
 	}
 }
 
 void	Handler::_cmd_nick(Message &msg, User &user) {
 	std::cout << "cmd_nick " << user.getUsername() << std::endl;
 
-	if (user.isEnterNick())
+	if (!(user.get_flags() & ENTER_PASS))
 		_error_msg(&msg, &user, 462);
 	else if (!msg.get_params().size())
 		_error_msg(&msg, &user, 431);
@@ -48,14 +45,14 @@ void	Handler::_cmd_nick(Message &msg, User &user) {
 			}
 		}
 		user.setNick(msg.get_params()[0]);
-		user.setEnterNick(true);
+		user.set_flag(ENTER_NICK);
 		std::cout << "<User: fd " << user.getFdSock() << "> has nick " << user.getNick() <<std::endl;
 	}
 }
 
 void	Handler::_cmd_user(Message &msg, User &user) {
 	std::cout << "cmd_user " << user.getUsername() << std::endl;
-	if (user.isEnterName()) {
+	if (user.get_flags() & ENTER_NAME) {
 		_error_msg(&msg, &user, 462);
 		return ;
 	}
@@ -66,24 +63,12 @@ void	Handler::_cmd_user(Message &msg, User &user) {
 	user.setUsername(msg.get_params()[0]);
 	user.setHostname(msg.get_params()[1]);
 	user.setServername(msg.get_params()[2]);
-
-	if (msg.get_params()[3][0] != ':')
-		user.setRealname(msg.get_params()[3]);
-	else {
-		std::string realname = "";
-		for (int i = 3; i < msg.get_params().size(); i++) {
-			if (i != 3) {
-				realname += " ";
-			}
-			realname += msg.get_params()[i];
-		}
-		user.setRealname(realname);
-	}
-	user.setEnterName(true);
+	user.setRealname(msg.get_params()[3]);
+	user.set_flag(ENTER_NAME);
 	std::cout << "<User: fd " << user.getFdSock() << "> has username: " << user.getUsername() <<
 			  ", hostname: " << user.getHostname() <<
 			  ", servername: " << user.getServername() <<
-			  ", realname: "<< user.getRealname() << std::endl;
+			  ", realname: {"<< user.getRealname() << "}" << std::endl;
 }
 
 void	Handler::_cmd_oper(Message &msg, User &user) {
@@ -107,9 +92,14 @@ void	Handler::_cmd_oper(Message &msg, User &user) {
 		_error_msg(&msg, &user, 464);
 	else {
 		_cmd_responses(&msg, &user, 381);
-		user.setIrcOperator(true);
+		user.set_flag(IRC_OPERATOR);
 	}
 
 }
 
-void	Handler::_cmd_quit(Message &msg, User &user) {}
+void	Handler::_cmd_quit(Message &msg, User &user) {
+	std::cout << "cmd_quit " << user.getUsername() << std::endl;
+
+	// todo удалить пользователя из канала (и проверить, что quit-сообщение туда отправилось)
+	user.set_flag(DISCONNECTED);
+}

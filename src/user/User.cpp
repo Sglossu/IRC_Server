@@ -78,42 +78,10 @@ void User::setRealname(const std::string &realname) {
 	_realname = realname;
 }
 
-bool User::isEnterPass() const {
-	return _enter_pass;
-}
-
-bool User::isEnterNick() const {
-	return _enter_nick;
-}
-
-bool User::isEnterName() const {
-	return _enter_name;
-}
-
-void User::setEnterPass(bool enterPass) {
-	_enter_pass = enterPass;
-}
-
-void User::setEnterNick(bool enterNick) {
-	_enter_nick = enterNick;
-}
-
-void User::setEnterName(bool enterName) {
-	_enter_name = enterName;
-}
-
 const std::string &User::getPass() const {
 	return _pass;
 }
 
 void User::setPass(const std::string &pass) {
 	_pass = pass;
-}
-
-bool User::isIrcOperator() const {
-	return _irc_operator;
-}
-
-void User::setIrcOperator(bool ircOperator) {
-	_irc_operator = ircOperator;
 }

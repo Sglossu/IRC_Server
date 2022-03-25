@@ -11,9 +11,18 @@ Message::Message(std::string line)
 		_prefix = item.substr(1);
 	}
 	std::getline(ss, _cmd, sep);
-	while (std::getline(ss, item, sep))
-        _params.push_back(item);
-	
+	while (std::getline(ss, item, sep)) {
+		if (item[0] == ':') {
+			std::string		tail;
+			std::getline(ss, tail, '\n');
+			item = item.substr(1);
+			if (!tail.empty())
+				item = item + " " + tail;
+			ss.clear();
+		}
+		_params.push_back(item);
+	}
+
 	std::cout << "Init msg\n| prefix\t" << _prefix << "\n| cmd   \t" << _cmd <<"\n| params\t" << _params.size() << std::endl;
 }
 

@@ -12,7 +12,7 @@ class Handler {
 
 private:
 	Server							&_server;
-	std::map<int, std::string>		_bufs;
+	std::map<int, std::string>		_bufs; // буфер - содержит сообщения по кусочкам, если они таковыми пришли
 	std::map<std::string, cmd_func>	_commands;
 	YamlParser						_config;
 

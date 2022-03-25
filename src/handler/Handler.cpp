@@ -49,13 +49,13 @@ bool	Handler::check_registration(Message *msg, User &user) {
 	if (!msg->get_cmd().compare("PASS"))
 		return true;
 	if (!msg->get_cmd().compare("USER") || !msg->get_cmd().compare("NICK"))
-		if (!user.isEnterPass()) {
+		if (!(user.get_flags() & ENTER_PASS)) {
 			_error_msg(msg, &user, 502);
 			return false;
 		}
 	if (msg->get_cmd().compare("USER") && msg->get_cmd().compare("NICK")
 		&& msg->get_cmd().compare("PASS")) {
-			if (!user.isEnterPass() || !user.isEnterName() || !user.isEnterNick()) {
+		if (!(user.get_flags() & ENTER_PASS) || !(user.get_flags() & ENTER_NAME) || !(user.get_flags() & ENTER_NICK)) {
 				_error_msg(msg, &user, 451);
 				return false;
 			}

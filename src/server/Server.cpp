@@ -166,22 +166,22 @@ void Server::start() {
 
 	}
 }
-
-void Server::new_connection(int i, struct sockaddr_storage remoteaddr, socklen_t size_client) {
-	std::cout << "POLLINT at fd " << act_set[i].fd << std::endl;
-	act_set[i].revents &= ~POLLIN;
-	if (act_set[i].fd == act_set[0].fd) // проверка что это listening
-	{
-		// обработка нового соединения
-		new_sock_fd = accept(act_set[0].fd, (struct sockaddr *) &remoteaddr, &size_client);
-		// а он может кривой инт вернуть? не помню
-		map_users[new_sock_fd] = new User(new_sock_fd);
-		std::cout << "New client on port " << port << std::endl;
-		struct pollfd new_Pollfd = {new_sock_fd, POLLIN, 0};
-		act_set.push_back(new_Pollfd);
-	} else
-		working_with_client(act_set[i].fd);
-}
+//
+//void Server::new_connection(int i, struct sockaddr_storage remoteaddr, socklen_t size_client) {
+//	std::cout << "POLLINT at fd " << act_set[i].fd << std::endl;
+//	act_set[i].revents &= ~POLLIN;
+//	if (act_set[i].fd == act_set[0].fd) // проверка что это listening
+//	{
+//		// обработка нового соединения
+//		new_sock_fd = accept(act_set[0].fd, (struct sockaddr *) &remoteaddr, &size_client);
+//		// а он может кривой инт вернуть? не помню
+//		map_users[new_sock_fd] = new User(new_sock_fd);
+//		std::cout << "New client on port " << port << std::endl;
+//		struct pollfd new_Pollfd = {new_sock_fd, POLLIN, 0};
+//		act_set.push_back(new_Pollfd);
+//	} else
+//		working_with_client(act_set[i].fd);
+//}
 
 // Удаляет сломанные фдшники и отключенных пользователей
 void	Server::clear_disconnected() {
