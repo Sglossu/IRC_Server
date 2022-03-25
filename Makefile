@@ -5,9 +5,9 @@ CXX				= g++
 FLAGS			= -Wall -Wextra -Werror -MMD -std=c++98
 FLAGS			= -Wall -g -MMD
 
-RM				= rm -rf
+RM				= rm  -rf
 
-INCLUDE			= -I inc
+INCLUDE			= -I  inc
 
 SRCS_FILES		= main \
 				  utils/utils \
