@@ -29,7 +29,8 @@ void	Handler::_cmd_pass(Message &msg, User &user) {
 void	Handler::_cmd_nick(Message &msg, User &user) {
 	std::cout << "cmd_nick " << user.getUsername() << std::endl;
 
-	if (!(user.get_flags() & ENTER_PASS))
+	std::cout << msg.get_prefix().empty() << !(user.get_flags() & ENTER_NICK) << std::endl;
+	if (!(user.get_flags() & ENTER_NICK) && !msg.get_prefix().empty())
 		_error_msg(&msg, &user, 462);
 	else if (!msg.get_params().size())
 		_error_msg(&msg, &user, 431);

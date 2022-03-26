@@ -2,6 +2,7 @@
 #include "../../inc/irc.hpp"
 #include "../server/Server.hpp"
 #include "../user/User.hpp"
+#include "../user/Channel.hpp"
 #include "../message/Message.hpp"
 #include "sha256/Sha256.hpp"
 #include "yaml_parser/YamlParser.hpp"
@@ -20,18 +21,21 @@ private:
 	// std::map<int, User *>			*_pmap_users;
 
 	bool		_is_valid_nick(std::string nick);
-	bool		_is_valid_groupname(std::string	name);
+	bool		_is_valid_channelname(std::string	name);
 
 
 	void				_registration_commands();
 	void				_test1(Message &msg, User &user);
 
+	// registration
 	void				_cmd_pass(Message &msg, User &user);
 	void 				_cmd_nick(Message &msg, User &user);
 	void 				_cmd_user(Message &msg, User &user);
 	void				_cmd_oper(Message &msg, User &user);
 	void				_cmd_quit(Message &msg, User &user);
 
+	// channels
+	void				_cmd_join(Message &msg, User &user);
 
 public:
 	Handler(Server &server);

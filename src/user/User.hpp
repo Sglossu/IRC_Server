@@ -1,6 +1,6 @@
 #pragma once
 #include "../../inc/irc.hpp"
-// #include "Group.hpp"
+// #include "Channel.hpp"
 
 //#define CR_LF	"\r\n"
 #define CR_LF	"\n"
@@ -27,7 +27,7 @@ private:
 	std::string		_message;
 	std::string		_pass;
 	unsigned char	_flags;
-//	std::vector<>	_chanels; // придумать какой тип данных. массив для каналов юзера
+//	std::vector<>	_chanels; // придумать какой тип данных. массив для каналов юзера?
 	User();
 	User(const User &other);
 	User& operator=(const User& other);
@@ -47,7 +47,7 @@ public:
 	void					setRealname(const std::string &realname);
 
 	void					set_flag(unsigned char flag);
-	void					join_group(std::string &group_name);
+	void					join_channel(std::string &channel_name);
 	const unsigned char		get_flags() const;
 	const int 				getFdSock() const;
 	const std::string 		&getNick() const;

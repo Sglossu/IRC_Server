@@ -2,7 +2,7 @@
 
 #include "../../inc/irc.hpp"
 #include "../user/User.hpp"
-#include "../user/Group.hpp"
+#include "../user/Channel.hpp"
 // #include "../handler/Handler.hpp"
 
 //#include "User.hpp"
@@ -33,7 +33,7 @@ private:
 	struct addrinfo				hints, *serv_addr_info;
 	int							new_sock_fd;
 	std::map<int, User *>		map_users;
-	std::map<int, Group *>		groups;
+	std::map<int, Сhannel *>	map_channels;
 
 	void	working_with_client(int fd);
 	void	clear_disconnected();
@@ -45,12 +45,11 @@ public:
 
 	void	init_server();
 	void	start();
-	void	new_connection(int i, struct sockaddr_storage remoteaddr, socklen_t size_client);
 
-	std::map<int, User *> &getMapUsers();
-	const std::string &getPass() const;
-	std::vector<struct pollfd> &getActSet();
-	void	write_to_client(int fd, const std::string &msg);
+	const std::string 				&getPass() const;
+	void							write_to_client(int fd, const std::string &msg);
+	const std::map<int, Сhannel *> 	&getMapChannels() const;
+	void 							setMapChannels(const std::map<int, Сhannel *> &mapChannels);
 
 };
 

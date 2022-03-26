@@ -14,4 +14,4 @@ FILE(GLOB SRC
         )
 
 set(CMAKE_CXX_STANDARD 14 "${CMAKE_C_FLAGS} -std=c98 -Wall")
-add_executable(irc ${SRC} )
+add_executable(irc ${SRC})

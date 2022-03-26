@@ -12,13 +12,14 @@ INCLUDE			= -I  inc
 SRCS_FILES		= main \
 				  utils/utils \
 				  user/User \
-				  user/Group \
+				  user/Channel \
 				  server/Server \
 				  server/ServerException \
 				  handler/Handler \
 				  handler/commands/commands \
 				  handler/error_msg \
 				  handler/commands/registration \
+				  handler/commands/channels \
 				  handler/sha256/Sha256 \
 				  handler/yaml_parser/YamlParser \
 				  message/Message

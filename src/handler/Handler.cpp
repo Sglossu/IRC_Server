@@ -68,7 +68,7 @@ bool	Handler::_is_valid_nick(std::string	nick) {
 	return true;
 }
 
-bool	Handler::_is_valid_groupname(std::string name) {
+bool	Handler::_is_valid_channelname(std::string name) {
 	// todo
 	return true;
 }
