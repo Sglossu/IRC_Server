@@ -47,8 +47,9 @@ public:
 	const YamlParser	&getConfig() const;
 	bool				check_registration(Message *msg, User &user);
 	void				clear_buf(int fd);
-	void				_error_msg(Message *msg, User *user, int er);
-	void 				_cmd_responses(Message *msg, User *user, int er);
-	
+	void				_error_msg(User *user, int er);
+	void 				_cmd_responses(User *user, int er);
+	bool				is_channel_exist(std::string name_channel);
+
 };
 

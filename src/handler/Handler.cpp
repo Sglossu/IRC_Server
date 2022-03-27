@@ -30,7 +30,7 @@ void	Handler::process_incomming_message(int fd, std::string buf) {
 		Message	msg(msg_line);
 		if (msg.get_cmd().empty() or !_commands.count(msg.get_cmd())) {
 			std::cout << "!Unknown command: " << msg.get_cmd() << std::endl;
-			_error_msg(&msg, user, 421);
+			_error_msg(user, 421);
 			return ;
 		}
 
@@ -50,13 +50,13 @@ bool	Handler::check_registration(Message *msg, User &user) {
 		return true;
 	if (!msg->get_cmd().compare("USER") || !msg->get_cmd().compare("NICK"))
 		if (!(user.get_flags() & ENTER_PASS)) {
-			_error_msg(msg, &user, 502);
+			_error_msg(&user, 502);
 			return false;
 		}
 	if (msg->get_cmd().compare("USER") && msg->get_cmd().compare("NICK")
 		&& msg->get_cmd().compare("PASS")) {
 		if (!(user.get_flags() & ENTER_PASS) || !(user.get_flags() & ENTER_NAME) || !(user.get_flags() & ENTER_NICK)) {
-				_error_msg(msg, &user, 451);
+				_error_msg(&user, 451);
 				return false;
 			}
 		}

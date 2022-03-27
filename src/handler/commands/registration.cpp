@@ -14,10 +14,10 @@ void	Handler::_cmd_pass(Message &msg, User &user) {
 	std::cout << "cmd_pass " << user.getUsername() << std::endl;
 
 	if  (!msg.get_params().size())
-		_error_msg(&msg, &user, 461);
+		_error_msg(&user, 461);
 	else if (msg.get_params()[0].compare(_server.getPass())) {
 		std::cout << "<User: fd " << user.getFdSock() << "> password is incorrect" << std::endl;
-		_error_msg(&msg, &user, 464);
+		_error_msg(&user, 464);
 	}
 	else {
 		std::cout << "<User: fd " << user.getFdSock() << "> password is correct" << std::endl;
@@ -31,17 +31,17 @@ void	Handler::_cmd_nick(Message &msg, User &user) {
 
 	std::cout << msg.get_prefix().empty() << !(user.get_flags() & ENTER_NICK) << std::endl;
 	if (!(user.get_flags() & ENTER_NICK) && !msg.get_prefix().empty())
-		_error_msg(&msg, &user, 462);
+		_error_msg(&user, 462);
 	else if (!msg.get_params().size())
-		_error_msg(&msg, &user, 431);
+		_error_msg(&user, 431);
 	else if (!is_nickname_correct(msg.get_params()[0]))
-		_error_msg(&msg, &user, 432);
+		_error_msg(&user, 432);
 	else
 	{
 		for (std::map<int, User *>::iterator it = _server.map_users.begin(); it != _server.map_users.end(); it++)
 		{
 			if (!it->second->getNick().compare(msg.get_params()[0])) {
-				_error_msg(&msg, &user, 433);
+				_error_msg(&user, 433);
 				return ;
 			}
 		}
@@ -54,11 +54,11 @@ void	Handler::_cmd_nick(Message &msg, User &user) {
 void	Handler::_cmd_user(Message &msg, User &user) {
 	std::cout << "cmd_user " << user.getUsername() << std::endl;
 	if (user.get_flags() & ENTER_NAME) {
-		_error_msg(&msg, &user, 462);
+		_error_msg(&user, 462);
 		return ;
 	}
 	else if (msg.get_params().size() < 4) {
-		_error_msg(&msg, &user, 461);
+		_error_msg(&user, 461);
 		return ;
 	}
 	user.setUsername(msg.get_params()[0]);
@@ -76,13 +76,13 @@ void	Handler::_cmd_oper(Message &msg, User &user) {
 	std::cout << "cmd_oper " << user.getUsername() << std::endl;
 
 	if (msg.get_params().size() < 2) {
-		_error_msg(&msg, &user, 461);
+		_error_msg(&user, 461);
 		return ;
 	}
 	for (std::map<int, User *>::iterator it = _server.map_users.begin(); it != _server.map_users.end(); it++)
 	{
 		if (it->second->getUsername().compare(msg.get_params()[0])) {
-			_error_msg(&msg, &user, 464);
+			_error_msg(&user, 464);
 			return ;
 		}
 	}
@@ -90,9 +90,9 @@ void	Handler::_cmd_oper(Message &msg, User &user) {
 	std::string ret_config = getConfig()["operators." + user.getUsername()];
 
 	if (chiper_pass.compare(ret_config))
-		_error_msg(&msg, &user, 464);
+		_error_msg(&user, 464);
 	else {
-		_cmd_responses(&msg, &user, 381);
+		_cmd_responses(&user, 381);
 		user.set_flag(IRC_OPERATOR);
 	}
 

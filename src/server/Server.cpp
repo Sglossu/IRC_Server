@@ -189,10 +189,6 @@ const std::string &Server::getPass() const {
 	return pass;
 }
 
-const std::map<int, Сhannel *> &Server::getMapChannels() const {
-	return map_channels;
-}
 
-void Server::setMapChannels(const std::map<int, Сhannel *> &mapChannels) {
-	map_channels = mapChannels;
-}
+
+
