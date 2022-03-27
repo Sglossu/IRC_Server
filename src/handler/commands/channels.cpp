@@ -21,7 +21,7 @@ void	Handler::_cmd_join(Message &msg, User &user) {
 	std::cout << "cmd_join " << user.getUsername() << std::endl;
 
 	if (!msg.get_params().size())
-		_error_msg(&user, 461);
+		_error_msg(user, 461);
 
 	std::stringstream						ss_name(msg.get_params()[0]);
 	std::string								item;
@@ -48,13 +48,13 @@ void	Handler::_cmd_join(Message &msg, User &user) {
 	// отдаём каждый канал классу Channel для обработки
 	for (int i = 0; i < vector_arg.size(); i++) {
 		if (!is_channelname_correct(vector_arg[i]))
-			_error_msg(&user, 403);
+			_error_msg(user, 403);
 		else {
 			if (!is_channel_exist(vector_arg[i]))
 				// если канала ещё нет, создаём
 				_server.map_channels[user.getUsername()] = new Channel(vector_arg[i], user, arg[vector_arg[i]], this);
 			else
-				_server.map_channels[user.getUsername()]->_join_user(&user, arg[vector_arg[i]]);
+				_server.map_channels[user.getUsername()]->_join_user(user, arg[vector_arg[i]]);
 		}
 	}
 

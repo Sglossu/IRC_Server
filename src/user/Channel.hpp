@@ -10,14 +10,15 @@ private:
 	std::string					_name;
 	std::vector<std::string>	_users;
 	std::string 				_pass;
+	std::string 				_topic;
 	Handler						*_handler;
 public:
 	Channel(std::string name, User &user, std::string pass, Handler *handler);
 	~Channel();
 
 	void				_delete_user(std::string &username);
-	void				_join_user(User *user, std::string pass);
-	void 				_topic();
+	void				_join_user(User &user, std::string pass);
+	void 				_return_topic(User &user);
 
 	const std::string	&getName() const;
 	void				setName(const std::string &name);
