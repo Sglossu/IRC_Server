@@ -6,6 +6,7 @@ void	Handler::_error_msg(User &user, int er) {
 	std::string	error_msg;
 	switch (er) {
 		case 403: error_msg = ":IrcServer 403 " + user.getUsername() + " :No such channel\r\n"; break;
+		case 405: error_msg = ":IrcServer 405 " + user.getUsername() + " :You have joined too many channelsl\r\n"; break;
 		case 421: error_msg = ":IrcServer 421 " + user.getUsername() + " :Unknown command\r\n"; break;
 		case 431: error_msg = ":IrcServer 431 " + user.getUsername() + " :No nickname given\r\n"; break;
 		case 432: error_msg = ":IrcServer 432 " + user.getUsername() + " :Erroneus nickname\r\n"; break;

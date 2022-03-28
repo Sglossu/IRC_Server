@@ -37,19 +37,33 @@ void Channel::_delete_user(std::string &username) {
 */
 void	Channel::_join_user(User &user, std::string pass) {
 	// todo check if invite-only
+	/*473     ERR_INVITEONLYCHAN
+		"<channel> :Cannot join channel (+i)"*/
+
 	// todo ban
+	/* 474     ERR_BANNEDFROMCHAN
+		"<channel> :Cannot join channel (+b)" */
 
 	// check pass
 	if (_has_pass && _pass.compare(pass))
 		_handler->_error_msg(user, 475);
+	else if (user.getChanels().size() > 10) {
+		_handler->_error_msg(user, 405);
+	}
+	else if(std::find(_users.begin(), _users.end(), user.getNick()) != _users.end())
+		return ;
 	else {
+		user.join_channel(_name);
 		_users.push_back(user.getNick());
 		_return_topic(user);
 	}
 }
 
 void Channel::_return_topic(User &user) {
-	_handler->_cmd_responses(_name, user, 331);
+	if (_topic.empty())
+		_handler->_cmd_responses(_name, user, 331);
+	else
+		_handler->_cmd_responses(_name + " :" + _topic, user, 332);
 
 	std::string names = "= " + _name + " :";
 	for (int i = 0; i < _users.size(); i++) {

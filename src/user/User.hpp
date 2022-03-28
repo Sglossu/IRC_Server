@@ -16,18 +16,18 @@
 
 class User {
 private:
-	const int		_fd_sock;
-	// const Server    _server;
-	std::string		_msg_buf;
-	std::string		_username;
-	std::string		_hostname;
-	std::string		_servername;
-	std::string		_realname;
-	std::string		_nick;
-	std::string		_message;
-	std::string		_pass;
-	unsigned char	_flags;
-//	std::vector<>	_chanels; // придумать какой тип данных. массив для каналов юзера?
+	const int					_fd_sock;
+	// const Server 			   _server;
+	std::string					_msg_buf;
+	std::string					_username;
+	std::string					_hostname;
+	std::string					_servername;
+	std::string					_realname;
+	std::string					_nick;
+	std::string					_message;
+	std::string					_pass;
+	unsigned char				_flags;
+	std::vector<std::string>	_chanels;
 	User();
 	User(const User &other);
 	User& operator=(const User& other);
@@ -50,6 +50,9 @@ public:
 	void					join_channel(std::string &channel_name);
 	const unsigned char		get_flags() const;
 	const int 				getFdSock() const;
+
+	const std::vector<std::string> &getChanels() const;
+
 	const std::string 		&getNick() const;
 	void 					setNick(const std::string &nick);
 

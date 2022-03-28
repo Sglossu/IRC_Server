@@ -1,6 +1,7 @@
 #pragma once
 #include "../../inc/irc.hpp"
 #include "User.hpp"
+#include "algorithm"
 //#include "../handler/Handler.hpp"
 
 class Handler;

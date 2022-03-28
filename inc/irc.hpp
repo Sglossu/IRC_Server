@@ -61,6 +61,7 @@ std::string numberToString ( T Number )
 
 void		critErr(std::string msg);
 int			stringToNumber (std::string &text);
+bool 		exist_in_vector(std::vector<std::string> &vec, std::string &obj);
 
 
 // bool		isPositiveDigit(std::string &s);
