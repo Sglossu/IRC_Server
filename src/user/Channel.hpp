@@ -11,6 +11,7 @@ private:
 	std::vector<std::string>	_users;
 	std::string 				_pass;
 	std::string 				_topic;
+	bool 						_has_pass;
 	Handler						*_handler;
 public:
 	Channel(std::string name, User &user, std::string pass, Handler *handler);
@@ -18,6 +19,7 @@ public:
 
 	void				_delete_user(std::string &username);
 	void				_join_user(User &user, std::string pass);
+
 	void 				_return_topic(User &user);
 
 	const std::string	&getName() const;

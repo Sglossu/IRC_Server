@@ -52,14 +52,10 @@ void	Handler::_cmd_join(Message &msg, User &user) {
 		else {
 			if (!is_channel_exist(vector_arg[i]))
 				// если канала ещё нет, создаём
-				_server.map_channels[user.getUsername()] = new Channel(vector_arg[i], user, arg[vector_arg[i]], this);
-			else
-				_server.map_channels[user.getUsername()]->_join_user(user, arg[vector_arg[i]]);
+				_server.map_channels[vector_arg[i]] = new Channel(vector_arg[i], user, arg[vector_arg[i]], this);
+
+			_server.map_channels[vector_arg[i]]->_join_user(user, arg[vector_arg[i]]);
 		}
 	}
 
-
-//	if (!is_channelname_correct(item_name))
-//		_error_msg(&msg, &user, 403);
-//	_server.getMapChannels()[user.getFdSock()] = new Channel(, user);
 }

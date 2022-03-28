@@ -3,9 +3,14 @@
 
 Channel::Channel(std::string name, User &user, std::string pass, Handler *handler) {
 	_name = name;
-	_pass = pass;
+	if (pass.empty())
+		_has_pass = false;
+	else {
+		_has_pass = true;
+		_pass = pass;
+	}
 	_handler = handler;
-	_join_user(user, pass);
+//	_join_user(user, pass);
 }
 
 Channel::~Channel() {
@@ -35,10 +40,10 @@ void	Channel::_join_user(User &user, std::string pass) {
 	// todo ban
 
 	// check pass
-	if (_pass.compare(pass))
+	if (_has_pass && _pass.compare(pass))
 		_handler->_error_msg(user, 475);
 	else {
-		_users.push_back(user.getUsername());
+		_users.push_back(user.getNick());
 		_return_topic(user);
 	}
 }
@@ -65,4 +70,5 @@ const std::string &Channel::getName() const {
 void Channel::setName(const std::string &name) {
 	_name = name;
 }
+
 
