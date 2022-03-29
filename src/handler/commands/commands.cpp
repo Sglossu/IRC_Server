@@ -9,6 +9,7 @@ void	Handler::_registration_commands() {
 
 	_commands["JOIN"] = &Handler::_cmd_join;
 	_commands["INVITE"] = &Handler::_cmd_invite;
+	_commands["KICK"] = &Handler::_cmd_kick;
 
 
 }
