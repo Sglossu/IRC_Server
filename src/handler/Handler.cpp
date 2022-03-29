@@ -16,7 +16,7 @@ void	Handler::process_incomming_message(int fd, std::string buf) {
 		_bufs[fd] += buf;
 	else
 		_bufs[fd] = buf;
-	user = _server.map_users[fd];
+	user = _server.map_users[UserKey(fd)];
 	std::cout << "User <" << fd << ", " << user->getUsername()
 			  << "> incoming msg(" << _bufs[fd].size() <<"): "  << _bufs[fd] << std::endl;
 	while (!_bufs[fd].empty()) {

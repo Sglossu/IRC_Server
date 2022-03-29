@@ -37,7 +37,7 @@ void	Handler::_cmd_nick(Message &msg, User &user) {
 		_error_msg(&msg, &user, 432);
 	else
 	{
-		for (std::map<int, User *>::iterator it = _server.map_users.begin(); it != _server.map_users.end(); it++)
+		for (std::map<UserKey, User *>::iterator it = _server.map_users.begin(); it != _server.map_users.end(); it++)
 		{
 			if (!it->second->getNick().compare(msg.get_params()[0])) {
 				_error_msg(&msg, &user, 433);
@@ -78,7 +78,7 @@ void	Handler::_cmd_oper(Message &msg, User &user) {
 		_error_msg(&msg, &user, 461);
 		return ;
 	}
-	for (std::map<int, User *>::iterator it = _server.map_users.begin(); it != _server.map_users.end(); it++)
+	for (std::map<UserKey, User *>::iterator it = _server.map_users.begin(); it != _server.map_users.end(); it++)
 	{
 		if (it->second->getUsername().compare(msg.get_params()[0])) {
 			_error_msg(&msg, &user, 464);

@@ -15,10 +15,12 @@ SRCS_FILES		= main \
 				  user/Group \
 				  server/Server \
 				  server/ServerException \
+				  server/UserKey \
 				  handler/Handler \
 				  handler/commands/commands \
 				  handler/error_msg \
 				  handler/commands/registration \
+				  handler/commands/user_cmds \
 				  handler/sha256/Sha256 \
 				  handler/yaml_parser/YamlParser \
 				  message/Message

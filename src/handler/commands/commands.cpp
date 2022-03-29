@@ -6,6 +6,7 @@ void	Handler::_registration_commands() {
 	_commands["USER"] = &Handler::_cmd_user;
 	_commands["OPER"] = &Handler::_cmd_oper;
 	_commands["QUIT"] = &Handler::_cmd_quit;
+    _commands["PRIVMSG"] = &Handler::_cmd_privmsg;
 
 
 	_commands["PIZDATIY_TEST1"] = &Handler::_test1;

@@ -78,7 +78,7 @@ void Server::working_with_client(int fd)
 	int		nbytes;
 	char	buf[513];
 
-	if (!map_users.count(fd)) {
+	if (!map_users.count(UserKey(fd))) {
 		std::cout << "Unprocees errors: not found user with this fd-key" << std::endl;
 		return ;
 	}
@@ -92,13 +92,13 @@ void Server::working_with_client(int fd)
 			std::cout << fd << std::endl;
 			throw "recv";
 		}
-		map_users[fd]->set_flag(DISCONNECTED);
+		map_users[UserKey(fd)]->set_flag(DISCONNECTED);
 	}
 	else
 	{
 		// у нас есть какие-то данные от клиента
 		buf[nbytes] = 0;
-		if (!(map_users[fd]->get_flags() & DISCONNECTED))
+		if (!(map_users[UserKey(fd)]->get_flags() & DISCONNECTED))
 			handler->process_incomming_message(fd, buf);
 
 //		 for(size_t j = 1; j < act_set.size(); j++)
@@ -147,7 +147,7 @@ void Server::start() {
 						// обработка нового соединения
 						new_sock_fd = accept(act_set[0].fd, (struct sockaddr*)&remoteaddr, &size_client);
 						// а он может кривой инт вернуть? не помню
-						map_users[new_sock_fd] = new User(new_sock_fd);
+						map_users[UserKey(new_sock_fd)] = new User(new_sock_fd);
 						std::cout << "New client on port " << port << std::endl;
 						struct pollfd new_Pollfd = {new_sock_fd, POLLIN, 0};
 						act_set.push_back(new_Pollfd);
@@ -201,7 +201,7 @@ void	Server::clear_disconnected() {
 
 
 
-std::map<int, User *> &Server::getMapUsers() {
+std::map<UserKey, User *> &Server::getMapUsers() {
 	return map_users;
 }
 

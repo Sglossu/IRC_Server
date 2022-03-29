@@ -17,7 +17,7 @@ private:
 	YamlParser						_config;
 
 
-	// std::map<int, User *>			*_pmap_users;
+	// std::map<UserKey, User *>			*_pmap_users;
 
 	bool		_is_valid_nick(std::string nick);
 	bool		_is_valid_groupname(std::string	name);
