@@ -16,7 +16,7 @@ void	Handler::process_incomming_message(int fd, std::string buf) {
 		_bufs[fd] += buf;
 	else
 		_bufs[fd] = buf;
-	user = _server.map_users[fd];
+	user = _server.mapfd_users[fd];
 	std::cout << "User <" << fd << ", " << user->getUsername()
 			  << "> incoming msg(" << _bufs[fd].size() <<"): "  << _bufs[fd] << std::endl;
 	while (!_bufs[fd].empty()) {
@@ -36,11 +36,20 @@ void	Handler::process_incomming_message(int fd, std::string buf) {
 
 		// Самая Классная Строчка
 		// Запускает нужную команду. Синтаксис пиздец...
-		if (!check_registration(&msg, *user))
+		if ((user->get_flags() & REGISTERED) || !check_registration(&msg, *user))
 //			_error_msg(&msg, user, 451);
 			return ;
 		else
 			(this->*_commands[msg.get_cmd()])(msg, *user);
+
+		// если пользователь заполнил все поля для регистрации
+		if ((user->get_flags() & ENTER_NAME) &&
+			(user->get_flags() & ENTER_NICK) &&
+			(user->get_flags() & ENTER_NAME)) {
+				user->set_flag(REGISTERED);
+				_server.mapnick_users[user->getNick()] = user;
+				std::cout << "<User: fd " << user->getFdSock() << " has been registered" << std::endl;
+		}
 	}
 }
 
@@ -61,6 +70,31 @@ bool	Handler::check_registration(Message *msg, User &user) {
 			}
 		}
 	return true;
+}
+
+// проверка существования канала
+bool	Handler::_is_channel_exist(std::string name_channel) {
+	if (_server.map_channels.find(name_channel) != _server.map_channels.end())
+		return true;
+	return false;
+}
+
+// проверка существования ника вообще на всём сервере
+bool	Handler::_is_nick_exist(std::string nick) {
+	if (_server.mapnick_users.find(nick) != _server.mapnick_users.end())
+		return true;
+	return false;
+}
+
+void	Handler::_write_to_channel(std::string name_channel, User &user, std::string msg) {
+	(void)user;
+	std::vector<std::string>  operators = _server.map_channels[name_channel]->getOperators();
+	std::vector<std::string>  users = _server.map_channels[name_channel]->getOperators();
+
+	for (int i = 0; i < operators.size(); i++)
+		_server.write_to_client(operators[i], msg);
+	for (int i = 0; i < users.size(); i++)
+		_server.write_to_client(users[i], msg);
 }
 
 bool	Handler::_is_valid_nick(std::string	nick) {

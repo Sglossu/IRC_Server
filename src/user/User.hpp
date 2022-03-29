@@ -4,20 +4,20 @@
 
 //#define CR_LF	"\r\n"
 #define CR_LF	"\n"
-#define REGISTERED		0b00000001
-#define ADMIN			0b00000010
+
 #define DISCONNECTED	0b10000000
 #define ENTER_PASS		0b01000000
 #define ENTER_NICK		0b00100000
 #define ENTER_NAME		0b00010000
 #define IRC_OPERATOR	0b00001000
+#define REGISTERED		0b00000010
+
 
 
 
 class User {
 private:
 	const int					_fd_sock;
-	// const Server 			   _server;
 	std::string					_msg_buf;
 	std::string					_username;
 	std::string					_hostname;

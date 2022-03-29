@@ -4,25 +4,35 @@
 #include "algorithm"
 //#include "../handler/Handler.hpp"
 
+#define HAS_PASS		0b10000000
+#define INVITE_ONLY		0b01000000
+
 class Handler;
 
 class Channel {
 private:
 	std::string					_name;
 	std::vector<std::string>	_users;
+	std::vector<std::string>	_operators;
 	std::string 				_pass;
 	std::string 				_topic;
-	bool 						_has_pass;
+	unsigned char				_flags;
 	Handler						*_handler;
 public:
 	Channel(std::string name, User &user, std::string pass, Handler *handler);
 	~Channel();
 
 	void				_delete_user(std::string &username);
-	void				_join_user(User &user, std::string pass);
-
+	void				_join_user(User &user, std::string pass, bool after_invite);
+	bool				_is_user_on_channel(std::string nick);
+	bool				_is_user_operator(std::string nick);
 	void 				_return_topic(User &user);
 
-	const std::string	&getName() const;
-	void				setName(const std::string &name);
+	const std::string				&getName() const;
+	void							setName(const std::string &name);
+	unsigned char 					getFlags() const;
+	const std::vector<std::string> 	&getUsers() const;
+	const std::vector<std::string> 	&getOperators() const;
+
+	void 							setFlags(unsigned char flag);
 };

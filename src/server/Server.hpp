@@ -32,7 +32,8 @@ private:
 	int									listener;
 	struct addrinfo						hints, *serv_addr_info;
 	int									new_sock_fd;
-	std::map<int, User *>				map_users;
+	std::map<int, User *>				mapfd_users;
+	std::map<std::string, User *>		mapnick_users;
 	std::map<std::string, Channel *>	map_channels;
 
 	void	working_with_client(int fd);
@@ -48,7 +49,9 @@ public:
 
 	const std::string 				&getPass() const;
 	void							write_to_client(int fd, const std::string &msg);
-
+	void							write_to_client(std::string nick, const std::string &msg);
+	bool							is_nick_exist(std::string &nick);
+	bool							_is_user_on_channel(std::string channel, std::string nick);
 
 
 

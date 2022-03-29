@@ -38,7 +38,7 @@ void	Handler::_cmd_nick(Message &msg, User &user) {
 		_error_msg(user, 432);
 	else
 	{
-		for (std::map<int, User *>::iterator it = _server.map_users.begin(); it != _server.map_users.end(); it++)
+		for (std::map<int, User *>::iterator it = _server.mapfd_users.begin(); it != _server.mapfd_users.end(); it++)
 		{
 			if (!it->second->getNick().compare(msg.get_params()[0])) {
 				_error_msg(user, 433);
@@ -79,7 +79,7 @@ void	Handler::_cmd_oper(Message &msg, User &user) {
 		_error_msg(user, 461);
 		return ;
 	}
-	for (std::map<int, User *>::iterator it = _server.map_users.begin(); it != _server.map_users.end(); it++)
+	for (std::map<int, User *>::iterator it = _server.mapfd_users.begin(); it != _server.mapfd_users.end(); it++)
 	{
 		if (it->second->getUsername().compare(msg.get_params()[0])) {
 			_error_msg(user, 464);
@@ -101,6 +101,8 @@ void	Handler::_cmd_oper(Message &msg, User &user) {
 void	Handler::_cmd_quit(Message &msg, User &user) {
 	std::cout << "cmd_quit " << user.getUsername() << std::endl;
 
+	_server.mapnick_users.erase(user.getNick());
+	// остальное очистится на стороне сервера
 	// todo удалить пользователя из канала (и проверить, что quit-сообщение туда отправилось)
 	user.set_flag(DISCONNECTED);
 }
