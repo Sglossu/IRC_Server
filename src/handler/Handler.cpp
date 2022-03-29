@@ -36,8 +36,9 @@ void	Handler::process_incomming_message(int fd, std::string buf) {
 
 		// Самая Классная Строчка
 		// Запускает нужную команду. Синтаксис пиздец...
-		if ((user->get_flags() & REGISTERED) || !check_registration(&msg, *user))
-//			_error_msg(&msg, user, 451);
+		if ((user->get_flags() & REGISTERED))
+			(this->*_commands[msg.get_cmd()])(msg, *user);
+		else if (!check_registration(&msg, *user))
 			return ;
 		else
 			(this->*_commands[msg.get_cmd()])(msg, *user);
@@ -88,11 +89,12 @@ bool	Handler::_is_nick_exist(std::string nick) {
 
 void	Handler::_write_to_channel(std::string name_channel, User &user, std::string msg) {
 	(void)user;
-	std::vector<std::string>  operators = _server.map_channels[name_channel]->getOperators();
-	std::vector<std::string>  users = _server.map_channels[name_channel]->getOperators();
+//	std::vector<std::string>  operators = _server.map_channels[name_channel]->getOperators();
+	std::vector<std::string>  users = _server.map_channels[name_channel]->getUsers();
 
-	for (int i = 0; i < operators.size(); i++)
-		_server.write_to_client(operators[i], msg);
+//	for (int i = 0; i < operators.size(); i++)
+//		_server.write_to_client(operators[i], msg);
+//	for (int i = 0; i < users.size() - operators.size(); i++)
 	for (int i = 0; i < users.size(); i++)
 		_server.write_to_client(users[i], msg);
 }

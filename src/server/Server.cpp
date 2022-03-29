@@ -36,6 +36,7 @@ void Server::print_ip() {
 		char ipstr[INET6_ADDRSTRLEN];
 		// преобразуем IP в строку и выводим его:
 		inet_ntop(p->ai_family, addr, ipstr, sizeof ipstr);
+		this->ipstr.push_back(ipstr);
 		printf(" %s: %s\n", ipver, ipstr);
 	}
 }
@@ -204,6 +205,10 @@ bool	Server::is_nick_exist(std::string &nick) {
 
 const std::string &Server::getPass() const {
 	return pass;
+}
+
+const std::vector<std::string> &Server::getIpstr() const {
+	return ipstr;
 }
 
 

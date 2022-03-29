@@ -12,9 +12,6 @@
 #define IRC_OPERATOR	0b00001000
 #define REGISTERED		0b00000010
 
-
-
-
 class User {
 private:
 	const int					_fd_sock;

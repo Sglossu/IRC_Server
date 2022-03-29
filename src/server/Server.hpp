@@ -35,10 +35,11 @@ private:
 	std::map<int, User *>				mapfd_users;
 	std::map<std::string, User *>		mapnick_users;
 	std::map<std::string, Channel *>	map_channels;
+	std::vector<std::string>			ipstr;
 
-	void	working_with_client(int fd);
-	void	clear_disconnected();
-	void	print_ip();
+	void							working_with_client(int fd);
+	void							clear_disconnected();
+	void							print_ip();
 
 public:
 	Server(std::string port, std::string pass, std::string host_ip);
@@ -54,7 +55,7 @@ public:
 	bool							_is_user_on_channel(std::string channel, std::string nick);
 
 
-
+	const std::vector<std::string> &getIpstr() const;
 };
 
 

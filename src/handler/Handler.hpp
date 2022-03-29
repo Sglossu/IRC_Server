@@ -38,6 +38,7 @@ private:
 	// channels
 	void				_cmd_join(Message &msg, User &user);
 	void				_cmd_invite(Message &msg, User &user);
+	void				_cmd_kick(Message &msg, User &user);
 
 public:
 	Handler(Server &server);

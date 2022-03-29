@@ -48,22 +48,28 @@ void	Channel::_join_user(User &user, std::string pass, bool after_invite) {
 		_handler->_error_msg(user, 405);
 	}
 	// если такой пользователь уже есть
-	else if(!_is_user_on_channel(user.getNick()))
+	else if(_is_user_on_channel(user.getNick()))
 		_handler->_error_msg(user, 443);
 	else {
 		if (!_operators.size())
 			_operators.push_back(user.getNick());
 		user.join_channel(_name);
 		_users.push_back(user.getNick());
-		if (after_invite)
+		if (!after_invite) {
+			std::string ms = user.getNick() + "!" + user.getNick() + "@" + "127.0.0.1" + "JOIN" + _name + "\r\n";
+			_handler->_write_to_channel(_name, user, ms);
 			_return_topic(user);
+		}
+//		else {
+//			std::string ms = user.getNick() + "!" + user.getNick() + "@" + "127.0.0.1" + "JOIN" + _name + "\r\n";
+//			_handler->_write_to_channel(_name, user, ms);
+//		}
 	}
 }
 
 void Channel::_return_topic(User &user) {
 	// todo поменять 127,0,0,1 на вызов переменной
-	std::string ms = user.getNick() + "!" + user.getNick() + "@" + "127.0.0.1" + "INVITE" + _name;
-	_handler->_write_to_channel(_name, user, ms);
+
 	if (_topic.empty())
 		_handler->_cmd_responses(_name, user, 331);
 	else
@@ -76,11 +82,11 @@ void Channel::_return_topic(User &user) {
 		else
 			names += " @" + _operators[i];
 	}
-	for (int i = 0; i < _users.size(); i++) {
+	for (int i = _operators.size(); i < _users.size(); i++) {
 		if (i == 0 && !_operators.size())
 			names += _users[i];
 		else
-			names += "  " + _users[i];
+			names += " " + _users[i];
 	}
 	_handler->_cmd_responses(names, user, 353);
 	_handler->_cmd_responses(_name, user, 366);
@@ -88,7 +94,8 @@ void Channel::_return_topic(User &user) {
 }
 
 bool	Channel::_is_user_on_channel(std::string nick) {
-	if (std::find(_users.begin(), _users.end(), nick) != _users.end())
+	if (std::find(_users.begin(), _users.end(), nick) != _users.end() ||
+			std::find(_operators.begin(), _operators.end(), nick) != _operators.end())
 		return true;
 	return false;
 }

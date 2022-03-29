@@ -19,7 +19,7 @@ void	User::set_flag(unsigned char flag)
 
 void	User::join_channel(std::string &channel_name) {
 	_chanels.push_back(channel_name);
-	std::cout << "join channel " << channel_name << std::endl;
+	std::cout << "User " << _nick << "join channel " << channel_name << std::endl;
 }
 
 

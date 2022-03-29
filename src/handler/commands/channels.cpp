@@ -61,21 +61,19 @@ void	Handler::_cmd_invite(Message &msg, User &user) {
 		_error_msg(user, 401);
 	}
 	// приглашает неизвестного
-	else if (!_is_nick_exist(msg.get_params()[1])) {
+	else if (!_is_nick_exist(msg.get_params()[0])) {
 		_error_msg(user, 401);
 	}
 	// пригласивший сам не на канале
 	else if (!_server._is_user_on_channel(msg.get_params()[1], user.getNick()))
 		_error_msg(user, 442);
 	// если чел, кого приглашают, уже на канале - обрабатывается в канале в join user
-//	else if (_server._is_user_on_channel(msg.get_params()[1], msg.get_params()[0]))
-//		_error_msg(user, 443);
 	// пригласивший - не оператор
 	else if (!_server.map_channels[msg.get_params()[1]]->_is_user_operator(user.getNick()))
 		_error_msg(user, 482);
 	// else DONE! подключить к каналу)
 	else {
-		_cmd_responses(msg.get_params()[1] + msg.get_params()[0], user, 341);
+		_cmd_responses(msg.get_params()[1] + " " + msg.get_params()[0], user, 341);
 		_server.map_channels[msg.get_params()[1]]->
 			_join_user(*_server.mapnick_users[msg.get_params()[0]], "", true);
 		std::string nick = msg.get_params()[0];
@@ -84,5 +82,9 @@ void	Handler::_cmd_invite(Message &msg, User &user) {
 		_write_to_channel(msg.get_params()[1], user, ms);
 	}
 
+}
 
+void	Handler::_cmd_kick(Message &msg, User &user) {
+//	Параметры: <channel> <user> [<comment>]
+	return ;
 }
