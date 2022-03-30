@@ -5,14 +5,14 @@ CXX				= g++
 FLAGS			= -Wall -Wextra -Werror -MMD -std=c++98
 FLAGS			= -Wall -g -MMD
 
-RM				= rm -rf
+RM				= rm  -rf
 
-INCLUDE			= -I inc
+INCLUDE			= -I  inc
 
 SRCS_FILES		= main \
 				  utils/utils \
 				  user/User \
-				  user/Group \
+				  user/Channel \
 				  server/Server \
 				  server/ServerException \
 				  server/UserKey \
@@ -21,6 +21,7 @@ SRCS_FILES		= main \
 				  handler/error_msg \
 				  handler/commands/registration \
 				  handler/commands/user_cmds \
+				  handler/commands/channels \
 				  handler/sha256/Sha256 \
 				  handler/yaml_parser/YamlParser \
 				  message/Message

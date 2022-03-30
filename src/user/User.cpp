@@ -17,17 +17,9 @@ void	User::set_flag(unsigned char flag)
 	_flags |= flag;
 }
 
-void	User::join_group(std::string &group_name) {
-	// временный джоин для реализации работы логики групп
-
-	// todo проверка что имя группы корректно
-	// todo проверка что пользователь есть. 
-	// что группа есть.
-	// что его там нет
-	// что он может туда присоединиться
-
-	std::cout << "join group " << group_name << std::endl;
-	
+void	User::join_channel(std::string &channel_name) {
+	_chanels.push_back(channel_name);
+	std::cout << "User " << _nick << "join channel " << channel_name << std::endl;
 }
 
 
@@ -84,4 +76,8 @@ const std::string &User::getPass() const {
 
 void User::setPass(const std::string &pass) {
 	_pass = pass;
+}
+
+const std::vector<std::string> &User::getChanels() const {
+	return _chanels;
 }

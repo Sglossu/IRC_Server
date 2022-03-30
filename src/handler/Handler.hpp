@@ -2,6 +2,7 @@
 #include "../../inc/irc.hpp"
 #include "../server/Server.hpp"
 #include "../user/User.hpp"
+#include "../user/Channel.hpp"
 #include "../message/Message.hpp"
 #include "sha256/Sha256.hpp"
 #include "yaml_parser/YamlParser.hpp"
@@ -17,10 +18,11 @@ private:
 	YamlParser						_config;
 
 
-	// std::map<UserKey, User *>			*_pmap_users;
+	// std::map<int, User *>			*_pmapfd_users;
 
 	bool		_is_valid_nick(std::string nick);
-	bool		_is_valid_groupname(std::string	name);
+	bool		_is_valid_channelname(std::string	name);
+
 
 
 	void				_registration_commands();
@@ -34,6 +36,10 @@ private:
 	
 	void		_cmd_privmsg(Message &msg, User &user);
 
+	// channels
+	void				_cmd_join(Message &msg, User &user);
+	void				_cmd_invite(Message &msg, User &user);
+	void				_cmd_kick(Message &msg, User &user);
 
 public:
 	Handler(Server &server);
@@ -45,8 +51,10 @@ public:
 	const YamlParser	&getConfig() const;
 	bool				check_registration(Message *msg, User &user);
 	void				clear_buf(int fd);
-	void				_error_msg(Message *msg, User *user, int er);
-	void 				_cmd_responses(Message *msg, User *user, int er);
-	
+	void				_error_msg(User &user, int er);
+	void 				_cmd_responses(std::string mgs, User &user, int er);
+	bool				_is_channel_exist(std::string name_channel);
+	bool				_is_nick_exist(std::string nick);
+	void				_write_to_channel(std::string name_channel, User &user, std::string msg);
 };
 

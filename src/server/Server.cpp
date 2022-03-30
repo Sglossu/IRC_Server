@@ -36,6 +36,7 @@ void Server::print_ip() {
 		char ipstr[INET6_ADDRSTRLEN];
 		// преобразуем IP в строку и выводим его:
 		inet_ntop(p->ai_family, addr, ipstr, sizeof ipstr);
+		this->ipstr.push_back(ipstr);
 		printf(" %s: %s\n", ipver, ipstr);
 	}
 }
@@ -73,12 +74,20 @@ void Server::write_to_client(int fd, const std::string &msg) {
 				throw "send";
 }
 
+void Server::write_to_client(std::string nick, const std::string &msg) {
+	int nbytes = msg.size();
+	int fd = mapnick_users[nick]->getFdSock();
+
+	if (send(fd, msg.c_str(), nbytes, 0) == -1)
+		throw "send";
+}
+
 void Server::working_with_client(int fd)
 {
 	int		nbytes;
 	char	buf[513];
 
-	if (!map_users.count(UserKey(fd))) {
+	if (!mapfd_users.count(fd)) {
 		std::cout << "Unprocees errors: not found user with this fd-key" << std::endl;
 		return ;
 	}
@@ -92,13 +101,13 @@ void Server::working_with_client(int fd)
 			std::cout << fd << std::endl;
 			throw "recv";
 		}
-		map_users[UserKey(fd)]->set_flag(DISCONNECTED);
+		mapfd_users[fd]->set_flag(DISCONNECTED);
 	}
 	else
 	{
 		// у нас есть какие-то данные от клиента
 		buf[nbytes] = 0;
-		if (!(map_users[UserKey(fd)]->get_flags() & DISCONNECTED))
+		if (!(mapfd_users[fd]->get_flags() & DISCONNECTED))
 			handler->process_incomming_message(fd, buf);
 
 //		 for(size_t j = 1; j < act_set.size(); j++)
@@ -147,7 +156,7 @@ void Server::start() {
 						// обработка нового соединения
 						new_sock_fd = accept(act_set[0].fd, (struct sockaddr*)&remoteaddr, &size_client);
 						// а он может кривой инт вернуть? не помню
-						map_users[UserKey(new_sock_fd)] = new User(new_sock_fd);
+						mapfd_users[new_sock_fd] = new User(new_sock_fd);
 						std::cout << "New client on port " << port << std::endl;
 						struct pollfd new_Pollfd = {new_sock_fd, POLLIN, 0};
 						act_set.push_back(new_Pollfd);
@@ -166,22 +175,7 @@ void Server::start() {
 
 	}
 }
-//
-//void Server::new_connection(int i, struct sockaddr_storage remoteaddr, socklen_t size_client) {
-//	std::cout << "POLLINT at fd " << act_set[i].fd << std::endl;
-//	act_set[i].revents &= ~POLLIN;
-//	if (act_set[i].fd == act_set[0].fd) // проверка что это listening
-//	{
-//		// обработка нового соединения
-//		new_sock_fd = accept(act_set[0].fd, (struct sockaddr *) &remoteaddr, &size_client);
-//		// а он может кривой инт вернуть? не помню
-//		map_users[new_sock_fd] = new User(new_sock_fd);
-//		std::cout << "New client on port " << port << std::endl;
-//		struct pollfd new_Pollfd = {new_sock_fd, POLLIN, 0};
-//		act_set.push_back(new_Pollfd);
-//	} else
-//		working_with_client(act_set[i].fd);
-//}
+
 
 // Удаляет сломанные фдшники и отключенных пользователей
 void	Server::clear_disconnected() {
@@ -189,26 +183,34 @@ void	Server::clear_disconnected() {
 
 	it = act_set.begin();
 	for (size_t i = 1; i < act_set.size(); i++)
-		if (map_users[act_set[i].fd]->get_flags() & DISCONNECTED) {
-			map_users.erase(act_set[i].fd);
+		if (mapfd_users[act_set[i].fd]->get_flags() & DISCONNECTED) {
+			mapfd_users.erase(act_set[i].fd);
 			handler->clear_buf(act_set[i].fd);
 			close(act_set[i].fd);
 			act_set.erase(it + i);
 			--i;
 		}
-	// printf("len pollfd after cleaning %zu\n len users %zu\n", act_set.size(), map_Users.size());
+	// printf("len pollfd after cleaning %zu\n len users %zu\n", act_set.size(), mapfd_users.size());
 }
 
-
-
-std::map<UserKey, User *> &Server::getMapUsers() {
-	return map_users;
+bool	Server::_is_user_on_channel(std::string channel, std::string nick) {
+	if (map_channels[channel]->_is_user_on_channel(nick))
+		return true;
+	return false;
 }
 
-std::vector<struct pollfd> &Server::getActSet(){
-	return act_set;
+bool	Server::is_nick_exist(std::string &nick) {
+	return true;
 }
 
 const std::string &Server::getPass() const {
 	return pass;
 }
+
+const std::vector<std::string> &Server::getIpstr() const {
+	return ipstr;
+}
+
+
+
+
