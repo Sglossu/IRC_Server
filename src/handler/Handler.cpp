@@ -43,14 +43,19 @@ void	Handler::process_incomming_message(int fd, std::string buf) {
 			return ;
 		else
 			(this->*_commands[msg.get_cmd()])(msg, *user);
-
 		// если пользователь заполнил все поля для регистрации
-		if ((user->get_flags() & ENTER_NAME) &&
+		if (!(user->get_flags() & REGISTERED) &&
+			(user->get_flags() & ENTER_NAME) &&
 			(user->get_flags() & ENTER_NICK) &&
 			(user->get_flags() & ENTER_NAME)) {
 				user->set_flag(REGISTERED);
+				user->set_flag(PRINT_MOTD);
 				_server.mapnick_users[user->getNick()] = user;
 				std::cout << "<User: fd " << user->getFdSock() << " has been registered" << std::endl;
+		}
+		if (user->get_flags() & PRINT_MOTD) {
+			_cmd_msgoftheday(*user);
+			user->del_flag(PRINT_MOTD);
 		}
 	}
 }

@@ -2,8 +2,8 @@
 #include "../../inc/irc.hpp"
 // #include "Channel.hpp"
 
-#define CR_LF	"\r\n"
-//#define CR_LF	"\n"
+//#define CR_LF	"\r\n"
+#define CR_LF	"\n"
 
 #define DISCONNECTED	0b10000000
 #define ENTER_PASS		0b01000000
@@ -11,6 +11,7 @@
 #define ENTER_NAME		0b00010000
 #define IRC_OPERATOR	0b00001000
 #define REGISTERED		0b00000010
+#define PRINT_MOTD		0b00000001
 
 class User {
 private:
@@ -44,6 +45,7 @@ public:
 	void					setRealname(const std::string &realname);
 
 	void					set_flag(unsigned char flag);
+	void					del_flag(unsigned char flag);
 	void					join_channel(std::string &channel_name);
 	const unsigned char		get_flags() const;
 	const int 				getFdSock() const;

@@ -55,6 +55,7 @@ public:
 	void				clear_buf(int fd);
 	void				_error_msg(User &user, int er);
 	void 				_cmd_responses(std::string mgs, User &user, int er);
+	void				_cmd_msgoftheday(User &user);
 	bool				_is_channel_exist(std::string name_channel);
 	bool				_is_nick_exist(std::string nick);
 	void				_write_to_channel(std::string name_channel, User &user, std::string msg);

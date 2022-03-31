@@ -40,3 +40,23 @@ void Handler::_cmd_responses(std::string msg, User &user, int er) {
 	_server.write_to_client(user.getFdSock(), resp_msg);
 }
 
+void Handler::_cmd_msgoftheday(User &user) {
+	std::string motd = "IrcServer Message of the day - \r\n";
+
+	std::string first = ":IrcServer 372 " + user.getNick() + " :";
+	_server.write_to_client(user.getFdSock(), first + motd);
+	_server.write_to_client(user.getFdSock(), first + "⋱ ⋮ ⋰\r\n");
+	_server.write_to_client(user.getFdSock(), first + "⋯ ◯ ⋯ ︵ 　　　　　　^v^\r\n");
+	_server.write_to_client(user.getFdSock(), first + "¸︵︵( ░░ )︵.︵.︵　　\r\n");
+	_server.write_to_client(user.getFdSock(), first + "(´░░░░░░ ') ░░░' )\r\n");
+	_server.write_to_client(user.getFdSock(), first + "`´︶´¯`︶´`︶´︶´`　^v^　　^v^\r\n");
+	_server.write_to_client(user.getFdSock(), first + "╔┓┏╦━━╦┓╔┓╔━━╗╔╗\r\n");
+	_server.write_to_client(user.getFdSock(), first + "║┗┛║┗━╣┃║┃║╯╰║║║\r\n");
+	_server.write_to_client(user.getFdSock(), first + "║┏┓║┏━╣┗╣┗╣╰╯║╠╣\r\n");
+	_server.write_to_client(user.getFdSock(), first + "╚┛┗╩━━╩━╩━╩━━╝╚╝\r\n");
+	_server.write_to_client(user.getFdSock(), first + "♪♫•*¨*•.¸¸❤¸¸.•*¨*•♫♪\r\n");
+
+	motd = ":IrcServer 376 " + user.getNick() + " :End of /MOTD" + CR_LF;
+	_server.write_to_client(user.getFdSock(), motd);
+
+}
