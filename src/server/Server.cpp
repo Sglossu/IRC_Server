@@ -59,7 +59,7 @@ void Server::init_server() {
 		}
 		break;
 	}
-//	print_ip();
+	print_ip();
 //	freeaddrinfo(serv_addr_info);
 }
 
@@ -128,7 +128,7 @@ void Server::start() {
 	pollfd	new_Pollfd = {listener, POLLIN, 0};
 	act_set.push_back(new_Pollfd);
 
-	struct sockaddr_storage remoteaddr;
+	struct sockaddr_in remoteaddr;
 	socklen_t 				size_client = sizeof (remoteaddr);
 
 	while (true)
@@ -155,6 +155,7 @@ void Server::start() {
 					{
 						// обработка нового соединения
 						new_sock_fd = accept(act_set[0].fd, (struct sockaddr*)&remoteaddr, &size_client);
+                        std::cout << "user pi " << remoteaddr.sin_addr.s_addr << std::endl;
 						// а он может кривой инт вернуть? не помню
 						mapfd_users[new_sock_fd] = new User(new_sock_fd);
 						std::cout << "New client on port " << port << std::endl;

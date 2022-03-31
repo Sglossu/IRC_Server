@@ -23,7 +23,7 @@ private:
 	bool		_is_valid_nick(std::string nick);
 	bool		_is_valid_channelname(std::string	name);
 
-
+    const std::string form_privmsg(const Message &raw_msg, const User &sender);
 
 	void				_registration_commands();
 	void				_test1(Message &msg, User &user);

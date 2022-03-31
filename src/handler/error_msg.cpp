@@ -8,6 +8,8 @@ void	Handler::_error_msg(User &user, int er) {
 		case 401: error_msg = ":IrcServer 401 " + user.getUsername() + " :No such nick/channel\r\n"; break;
 		case 403: error_msg = ":IrcServer 403 " + user.getUsername() + " :No such channel\r\n"; break;
 		case 405: error_msg = ":IrcServer 405 " + user.getUsername() + " :You have joined too many channelsl\r\n"; break;
+        case 411: error_msg = ":IrcServer 411 " + user.getNick() + " :No recipient given (<command>)\r\n"; break;
+        case 412: error_msg = ":IrcServer 412 " + user.getNick() + " :No text to send\r\n"; break;
 		case 421: error_msg = ":IrcServer 421 " + user.getUsername() + " :Unknown command\r\n"; break;
 		case 431: error_msg = ":IrcServer 431 " + user.getUsername() + " :No nickname given\r\n"; break;
 		case 432: error_msg = ":IrcServer 432 " + user.getUsername() + " :Erroneus nickname\r\n"; break;
