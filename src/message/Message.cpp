@@ -6,7 +6,7 @@ Message::Message(std::string line)
     std::string			item;
 	char				sep = ' ';
 	
-	if (line.size() and line[1] == ':') {
+	if (line.size() and line[0] == ':') {
 		std::getline(ss, item, sep);
 		_prefix = item.substr(1);
 	}

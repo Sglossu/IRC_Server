@@ -24,8 +24,9 @@ void	Handler::process_incomming_message(int fd, std::string buf) {
 		if (pos == _bufs[fd].npos)
 			break ;
 		msg_line = _bufs[fd].substr(0, pos);
-//		_bufs[fd] = _bufs[fd].substr(pos + 2); // раскоменить когда считывается /r
-		_bufs[fd] = _bufs[fd].substr(pos + 1); // закоментить, если верхняя строка раскоменчена
+
+		_bufs[fd] = _bufs[fd].substr(pos + std::strlen(CR_LF)); // раскоменить когда считывается /r
+//		_bufs[fd] = _bufs[fd].substr(pos + 1); // закоментить, если верхняя строка раскоменчена
 
 		Message	msg(msg_line);
 		if (msg.get_cmd().empty() or !_commands.count(msg.get_cmd())) {
@@ -89,12 +90,8 @@ bool	Handler::_is_nick_exist(std::string nick) {
 
 void	Handler::_write_to_channel(std::string name_channel, User &user, std::string msg) {
 	(void)user;
-//	std::vector<std::string>  operators = _server.map_channels[name_channel]->getOperators();
 	std::vector<std::string>  users = _server.map_channels[name_channel]->getUsers();
 
-//	for (int i = 0; i < operators.size(); i++)
-//		_server.write_to_client(operators[i], msg);
-//	for (int i = 0; i < users.size() - operators.size(); i++)
 	for (int i = 0; i < users.size(); i++)
 		_server.write_to_client(users[i], msg);
 }

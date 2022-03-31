@@ -56,7 +56,7 @@ void	Channel::_join_user(User &user, std::string pass, bool after_invite) {
 		user.join_channel(_name);
 		_users.push_back(user.getNick());
 		if (!after_invite) {
-			std::string ms = user.getNick() + "!" + user.getNick() + "@" + "127.0.0.1" + "JOIN" + _name + "\r\n";
+			std::string ms = user.getNick() + "!" + user.getNick() + "@" + "127.0.0.1 " + "JOIN " + _name + "\r\n";
 			_handler->_write_to_channel(_name, user, ms);
 			_return_topic(user);
 		}

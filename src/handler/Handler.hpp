@@ -28,12 +28,14 @@ private:
 	void				_registration_commands();
 	void				_test1(Message &msg, User &user);
 
+	// registration
 	void		_cmd_pass(Message &msg, User &user);
 	void 		_cmd_nick(Message &msg, User &user);
 	void 		_cmd_user(Message &msg, User &user);
 	void		_cmd_oper(Message &msg, User &user);
 	void		_cmd_quit(Message &msg, User &user);
-	
+
+	// user_cmd
 	void		_cmd_privmsg(Message &msg, User &user);
 
 	// channels

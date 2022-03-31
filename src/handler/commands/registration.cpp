@@ -12,7 +12,7 @@ bool	is_nickname_correct(std::string nick) {
 
 void	Handler::_cmd_pass(Message &msg, User &user) {
 	std::cout << "cmd_pass " << user.getUsername() << std::endl;
-
+	std::cout << "Incoming pass: " << msg.get_params()[0] << "size (" << msg.get_params()[0].size() << ")" << std::endl;
 	if  (!msg.get_params().size())
 		_error_msg(user, 461);
 	else if (msg.get_params()[0].compare(_server.getPass())) {
