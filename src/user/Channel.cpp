@@ -33,10 +33,9 @@ void Channel::_delete_user(std::string &username) {
           3.  Если установлен пароль, но должен быть верным.
 */
 void	Channel::_join_user(User &user, std::string pass, bool after_invite) {
-	// todo check if invite-only
-	/*473     ERR_INVITEONLYCHAN
-		"<channel> :Cannot join channel (+i)"*/
-
+	// check if invite-only
+	if (!after_invite && (_flags & INVITE_ONLY))
+		_handler->_error_msg(user, 473);
 	// todo ban
 	/* 474     ERR_BANNEDFROMCHAN
 		"<channel> :Cannot join channel (+b)" */
