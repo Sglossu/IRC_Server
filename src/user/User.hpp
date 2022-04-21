@@ -2,8 +2,6 @@
 #include "../../inc/irc.hpp"
 // #include "Channel.hpp"
 
-//#define CR_LF	"\r\n"
-#define CR_LF	"\n"
 
 #define DISCONNECTED	0b10000000
 #define ENTER_PASS		0b01000000

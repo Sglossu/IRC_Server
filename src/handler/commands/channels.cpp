@@ -30,7 +30,7 @@ void	Handler::_cmd_join(Message &msg, User &user) {
 	if (msg.get_params().size() > 1)
 	{
 		std::stringstream		ss_pass(msg.get_params()[1]);
-		int						i = 0;
+		size_t					i = 0;
 		while (std::getline(ss_pass, item, sep) && i < vector_arg.size())
 		{
 			arg[vector_arg[i]] = item;
@@ -38,7 +38,7 @@ void	Handler::_cmd_join(Message &msg, User &user) {
 		}
 	}
 	// отдаём каждый канал классу Channel для обработки
-	for (int i = 0; i < vector_arg.size(); i++) {
+	for (size_t i = 0; i < vector_arg.size(); i++) {
 		if (!is_channelname_correct(vector_arg[i]))
 			_error_msg(user, 403);
 		else {

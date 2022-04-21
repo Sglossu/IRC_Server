@@ -28,6 +28,9 @@ private:
 	void				_registration_commands();
 	void				_test1(Message &msg, User &user);
 
+	// system
+	void		_cmd_ping_pong(Message &msg, User &user);
+
 	// registration
 	void		_cmd_pass(Message &msg, User &user);
 	void 		_cmd_nick(Message &msg, User &user);

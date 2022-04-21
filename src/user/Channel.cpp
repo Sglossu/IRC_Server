@@ -76,13 +76,13 @@ void Channel::_return_topic(User &user) {
 		_handler->_cmd_responses(_name + " :" + _topic, user, 332);
 
 	std::string names = "= " + _name + " :";
-	for (int i = 0; i < _operators.size(); i++) {
+	for (size_t i = 0; i < _operators.size(); i++) {
 		if (i == 0)
 			names += "@" + _operators[i];
 		else
 			names += " @" + _operators[i];
 	}
-	for (int i = _operators.size(); i < _users.size(); i++) {
+	for (size_t i = _operators.size(); i < _users.size(); i++) {
 		if (i == 0 && !_operators.size())
 			names += _users[i];
 		else

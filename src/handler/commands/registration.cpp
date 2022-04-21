@@ -3,7 +3,7 @@
 bool	is_nickname_correct(std::string nick) {
 	if (!std::isalpha(nick[0]))
 		return false;
-	for (int i = 1; i < nick.size(); i++) {
+	for (size_t i = 1; i < nick.size(); i++) {
 		if (!std::isalpha(nick[i]) && !std::isdigit(nick[i]))
 			return false;
 	}

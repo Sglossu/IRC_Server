@@ -32,7 +32,7 @@ void	Handler::process_incomming_message(int fd, std::string buf) {
 		if (msg.get_cmd().empty() or !_commands.count(msg.get_cmd())) {
 			std::cout << "!Unknown command: " << msg.get_cmd() << std::endl;
 			_error_msg(*user, 421);
-			return ;
+			continue ;
 		}
 
 		// Самая Классная Строчка
@@ -40,7 +40,7 @@ void	Handler::process_incomming_message(int fd, std::string buf) {
 		if ((user->get_flags() & REGISTERED))
 			(this->*_commands[msg.get_cmd()])(msg, *user);
 		else if (!check_registration(&msg, *user))
-			return ;
+			continue ;
 		else
 			(this->*_commands[msg.get_cmd()])(msg, *user);
 		// если пользователь заполнил все поля для регистрации
@@ -97,7 +97,7 @@ void	Handler::_write_to_channel(std::string name_channel, User &user, std::strin
 	(void)user;
 	std::vector<std::string>  users = _server.map_channels[name_channel]->getUsers();
 
-	for (int i = 0; i < users.size(); i++)
+	for (size_t i = 0; i < users.size(); i++)
 		_server.write_to_client(users[i], msg);
 }
 

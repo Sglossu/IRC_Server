@@ -16,6 +16,10 @@ void	Handler::_registration_commands() {
 	_commands["INVITE"] = &Handler::_cmd_invite;
 	_commands["KICK"] = &Handler::_cmd_kick;
 
+	// system
+	_commands["PING"] = &Handler::_cmd_ping_pong;
+
+
 
 }
 
