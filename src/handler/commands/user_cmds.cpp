@@ -33,12 +33,12 @@ void    Handler::_cmd_privmsg(Message &msg, User &user) {
         if (receiver_nick[0] == '@' or receiver_nick[0] == '#') {
             // todo add send to channel
         }
-        else if (receiver_nick.size()) {
-            it = _server.mapnick_users.find(receiver_nick);
-            if (it != _server.mapnick_users.end()) {
+        else {
+            // it = _server.mapnick_users.find(receiver_nick);
+            // if (it != _server.mapnick_users.end()) {
                 // std::cout << "send prv msg from" << user.getNick() << " to " << it->second->getFdSock() << std::endl;
-                _server.write_to_client(it->second->getFdSock(), privmsg); // хотел сделать отправку по нику но хуй
-            }
+            _server.write_to_client(receiver_nick, privmsg); // хотел сделать отправку по нику но хуй
+            // }
         }
     }
 }
