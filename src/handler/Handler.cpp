@@ -24,14 +24,13 @@ void	Handler::process_incomming_message(int fd, std::string buf) {
 		if (pos == _bufs[fd].npos)
 			break ;
 		msg_line = _bufs[fd].substr(0, pos);
-		msg_line = msg_line.substr(0, msg_line.find('\r'));
 
-		_bufs[fd] = _bufs[fd].substr(pos + 1); // раскоменить когда считывается /r
+		_bufs[fd] = _bufs[fd].substr(pos + std::strlen(CR_LF)); // раскоменить когда считывается /r
 //		_bufs[fd] = _bufs[fd].substr(pos + 1); // закоментить, если верхняя строка раскоменчена
 
 		Message	msg(msg_line);
 		if (msg.get_cmd().empty() or !_commands.count(msg.get_cmd())) {
-			std::cout << "|!Unknown command: |" << msg.get_cmd() << std::endl;
+			std::cout << "!Unknown command: " << msg.get_cmd() << std::endl;
 			_error_msg(*user, 421);
 			continue ;
 		}
@@ -52,7 +51,7 @@ void	Handler::process_incomming_message(int fd, std::string buf) {
 				user->set_flag(REGISTERED);
 				user->set_flag(PRINT_MOTD);
 				_server.mapnick_users[user->getNick()] = user;
-				std::cout << "<User: fd " << user->getFdSock() << "> has been registered" << std::endl;
+				std::cout << "<User: fd " << user->getFdSock() << " has been registered" << std::endl;
 		}
 		if (user->get_flags() & PRINT_MOTD) {
 			_cmd_msgoftheday(*user);
