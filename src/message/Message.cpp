@@ -23,7 +23,7 @@ Message::Message(std::string line)
 		_params.push_back(item);
 	}
 
-	std::cout << "Init msg\n| prefix\t" << _prefix << "\n| cmd   \t" << _cmd <<"\n| params\t" << _params.size() << std::endl;
+//	std::cout << "Init msg\n| prefix\t" << _prefix << "\n| cmd   \t" << _cmd <<"\n| params\t" << _params.size() << std::endl;
 }
 
 Message::~Message() {}

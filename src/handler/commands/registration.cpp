@@ -12,7 +12,7 @@ bool	is_nickname_correct(std::string nick) {
 
 void	Handler::_cmd_pass(Message &msg, User &user) {
 	std::cout << "cmd_pass " << user.getUsername() << std::endl;
-	std::cout << "Incoming pass: " << msg.get_params()[0] << "size (" << msg.get_params()[0].size() << ")" << std::endl;
+	std::cout << "Incoming pass: " << msg.get_params()[0] << " size (" << msg.get_params()[0].size() << ")" << std::endl;
 	if  (!msg.get_params().size())
 		_error_msg(user, 461);
 	else if (msg.get_params()[0].compare(_server.getPass())) {
@@ -29,7 +29,6 @@ void	Handler::_cmd_pass(Message &msg, User &user) {
 void	Handler::_cmd_nick(Message &msg, User &user) {
 	std::cout << "cmd_nick " << user.getUsername() << std::endl;
 
-	std::cout << msg.get_prefix().empty() << !(user.get_flags() & ENTER_NICK) << std::endl;
 	if (!(user.get_flags() & ENTER_NICK) && !msg.get_prefix().empty())
 		_error_msg(user, 462);
 	else if (!msg.get_params().size())
@@ -47,7 +46,7 @@ void	Handler::_cmd_nick(Message &msg, User &user) {
 		}
 		user.setNick(msg.get_params()[0]);
 		user.set_flag(ENTER_NICK);
-		std::cout << "<User: fd " << user.getFdSock() << "> has nick " << user.getNick() <<std::endl;
+		std::cout << "<User: fd " << user.getFdSock() << "> has nick {" << user.getNick() << "}" <<std::endl;
 	}
 }
 
@@ -66,10 +65,10 @@ void	Handler::_cmd_user(Message &msg, User &user) {
 	user.setServername(msg.get_params()[2]);
 	user.setRealname(msg.get_params()[3]);
 	user.set_flag(ENTER_NAME);
-	std::cout << "<User: fd " << user.getFdSock() << "> has username: " << user.getUsername() <<
-			  ", hostname: " << user.getHostname() <<
-			  ", servername: " << user.getServername() <<
-			  ", realname: {"<< user.getRealname() << "}" << std::endl;
+	std::cout << "<User: fd " << user.getFdSock() << "> has username: {" << user.getUsername() <<
+			  "}, hostname: {" << user.getHostname() <<
+			  "}, servername: {" << user.getServername() <<
+			  "}, realname: {"<< user.getRealname() << "}" << std::endl;
 }
 
 void	Handler::_cmd_oper(Message &msg, User &user) {
@@ -104,5 +103,6 @@ void	Handler::_cmd_quit(Message &msg, User &user) {
 	_server.mapnick_users.erase(user.getNick());
 	// остальное очистится на стороне сервера
 	// todo удалить пользователя из канала (и проверить, что quit-сообщение туда отправилось)
+
 	user.set_flag(DISCONNECTED);
 }
