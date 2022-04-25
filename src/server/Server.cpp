@@ -38,6 +38,7 @@ void Server::print_ip() {
 		inet_ntop(p->ai_family, addr, ipstr, sizeof ipstr);
 		this->ipstr.push_back(ipstr);
 		printf(" %s: %s\n", ipver, ipstr);
+
 	}
 }
 
@@ -60,7 +61,7 @@ void Server::init_server() {
 		break;
 	}
 	print_ip();
-//	freeaddrinfo(serv_addr_info);
+	handler->setHost(ipstr[1]);
 }
 
 Server::~Server() {

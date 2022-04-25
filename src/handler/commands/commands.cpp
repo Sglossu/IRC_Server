@@ -20,7 +20,9 @@ void	Handler::_registration_commands() {
 	// system
 	_commands["PING"] = &Handler::_cmd_ping_pong;
 
+}
 
-
+void	Handler::_registration_modes() {
+	_modes['o'] = &Handler::_mode_o;
 }
 

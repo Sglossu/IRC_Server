@@ -129,4 +129,17 @@ const std::vector<std::string> &Channel::getOperators() const {
 	return _operators;
 }
 
+void Channel::setOperators(std::string &nick_user) {
+	_operators.push_back(nick_user);
+}
+
+void Channel::delOperators(std::string &nick_user) {
+	for (std::vector<std::string>::iterator it = _operators.begin(); it != _operators.end(); it++) {
+		if (*it == nick_user) {
+			_operators.erase(it);
+			return ;
+		}
+	}
+}
+
 

@@ -27,12 +27,15 @@ public:
 	bool				_is_user_on_channel(std::string nick);
 	bool				_is_user_operator(std::string nick);
 	void 				_return_topic(User &user);
+	void				_msg_to_channel(User &user);
 
 	const std::string				&getName() const;
 	void							setName(const std::string &name);
 	unsigned char 					getFlags() const;
 	const std::vector<std::string> 	&getUsers() const;
-	const std::vector<std::string> 	&getOperators() const;
 
+	void 							setOperators(std::string &nick_user);
+	void 							delOperators(std::string &nick_user);
+	const std::vector<std::string> 	&getOperators() const;
 	void 							setFlags(unsigned char flag);
 };

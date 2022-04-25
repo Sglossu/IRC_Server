@@ -87,3 +87,7 @@ void	Handler::_cmd_kick(Message &msg, User &user) {
 //	Параметры: <channel> <user> [<comment>]
 	return ;
 }
+
+void Handler::setHost(const std::string &host) {
+	_host = host;
+}

@@ -10,16 +10,22 @@
 #include "yaml_parser/YamlParser.hpp"
 
 typedef  void (Handler::*cmd_func) ( Message &, User &);
+typedef  void (Handler::*modes_func) ( const std::vector<std::string> &, Channel &, User &, bool);
 
 class Handler {
 
 private:
-	Server							&_server;
-	std::map<int, std::string>		_bufs; // буфер - содержит сообщения по кусочкам, если они таковыми пришли
-	std::map<std::string, cmd_func>	_commands;
-	YamlParser						_config;
-	std::set<char> 			_set_modes;
+	Server								&_server;
+	std::map<int, std::string>			_bufs; // буфер - содержит сообщения по кусочкам, если они таковыми пришли
+	std::map<std::string, cmd_func>		_commands;
+	YamlParser							_config;
+public:
+	void setHost(const std::string &host);
 
+private:
+	std::set<char> 						_set_modes;
+	std::map<char, modes_func>			_modes;
+	std::string 						_host;
 
 	// std::map<int, User *>			*_pmapfd_users;
 
@@ -29,7 +35,10 @@ private:
     const std::string _form_privmsg(const Message &raw_msg, const User &sender, std::string &receiver_nick);
 
 	void				_registration_commands();
-	void				_test1(Message &msg, User &user);
+	void				_registration_modes();
+
+	// modes
+	void		_mode_o(const std::vector<std::string> &param, Channel &channel, User &user, bool flag);
 
 	// system
 	void		_cmd_ping_pong(Message &msg, User &user);

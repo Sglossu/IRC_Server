@@ -2,6 +2,7 @@
 
 Handler::Handler(Server &server): _server(server) {
 	_registration_commands();
+	_registration_modes();
 	char tmp[] = {'p', 'o', 's', 'i', 't', 'n', 'm', 'l', 'b', 'v', 'k'};
 	int tmp_size = 11;
 	for (int i = 0; i < tmp_size; i++)
@@ -99,11 +100,13 @@ bool	Handler::_is_nick_exist(std::string nick) {
 }
 
 void	Handler::_write_to_channel(std::string name_channel, User &user, std::string msg) {
-	(void)user;
-	std::vector<std::string>  users = _server.map_channels[name_channel]->getUsers();
+	std::string nick_user = user.getNick();
+	std::string preview = ":" + nick_user + "!" + nick_user + "@" + _host + " ";
+	std::string res = preview + msg + "\r\n";
 
+	std::vector<std::string>  users = _server.map_channels[name_channel]->getUsers();
 	for (size_t i = 0; i < users.size(); i++)
-		_server.write_to_client(users[i], msg);
+		_server.write_to_client(users[i], res);
 }
 
 bool	Handler::_is_valid_nick(std::string	nick) {
