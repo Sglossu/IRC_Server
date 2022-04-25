@@ -40,16 +40,10 @@ void	Handler::_cmd_mode(Message &msg, User &user) {
 		modes.erase(0, 1);
 		std::cout << "modes: " << modes <<std::endl;
 		for (int i = 0; i < modes.size(); i++) {
-//			std::set<std::string>::iterator it_s_begin = _set_modes.begin();
-//			std::set<std::string>::iterator it_s_end = _set_modes.end();
-//			for (std::set<std::string>::iterator _it = it_s_begin; _it != it_s_end; _it++){
-//				if (*_it != static_cast<std::string>(modes[i])) {
-//					_error_msg(user, 472);
-//					return ;
-//				}
-
-//			if (_set_modes.count(modes[i]))
-//			}
+			if (_set_modes.count(modes[i]) == 0) {
+				_error_msg(user, 472);
+				return;
+			}
 		}
 	}
 

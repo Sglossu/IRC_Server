@@ -18,7 +18,7 @@ private:
 	std::map<int, std::string>		_bufs; // буфер - содержит сообщения по кусочкам, если они таковыми пришли
 	std::map<std::string, cmd_func>	_commands;
 	YamlParser						_config;
-	std::set<std::string> 			_set_modes;
+	std::set<char> 			_set_modes;
 
 
 	// std::map<int, User *>			*_pmapfd_users;
