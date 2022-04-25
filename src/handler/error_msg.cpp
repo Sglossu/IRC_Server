@@ -21,6 +21,7 @@ void	Handler::_error_msg(User &user, int er) {
 		case 462: error_msg = ":IrcServer 462 " + user.getUsername() + " :You may not reregister\r\n"; break;
 		case 464: error_msg = ":IrcServer 464 " + user.getUsername() + " :Password incorrect\r\n"; break;
 		case 473: error_msg = ":IrcServer 473 " + user.getUsername() + " :Cannot join channel (+i)\r\n"; break;
+		case 472: error_msg = ":IrcServer 472 " + user.getUsername() + " :is unknown mode char to me\r\n"; break;
 		case 475: error_msg = ":IrcServer 475 " + user.getUsername() + " :Cannot join channel (+k)\r\n"; break;
 		case 482: error_msg = ":IrcServer 482 " + user.getUsername() + " :You're not channel operator\r\n"; break;
 		case 502: error_msg = ":IrcServer 502 " + user.getUsername() + " :Password is not entered\r\n"; break;
@@ -61,3 +62,4 @@ void Handler::_cmd_msgoftheday(User &user) {
 	_server.write_to_client(user.getFdSock(), motd);
 
 }
+

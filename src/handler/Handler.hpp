@@ -1,4 +1,6 @@
 #pragma once
+#include <algorithm>
+#include <set>
 #include "../../inc/irc.hpp"
 #include "../server/Server.hpp"
 #include "../user/User.hpp"
@@ -16,6 +18,7 @@ private:
 	std::map<int, std::string>		_bufs; // буфер - содержит сообщения по кусочкам, если они таковыми пришли
 	std::map<std::string, cmd_func>	_commands;
 	YamlParser						_config;
+	std::set<std::string> 			_set_modes;
 
 
 	// std::map<int, User *>			*_pmapfd_users;
@@ -45,6 +48,9 @@ private:
 	void				_cmd_join(Message &msg, User &user);
 	void				_cmd_invite(Message &msg, User &user);
 	void				_cmd_kick(Message &msg, User &user);
+	void				_cmd_mode(Message &msg, User &user);
+
+	void				_mode_o();
 
 public:
 	Handler(Server &server);

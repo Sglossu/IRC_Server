@@ -49,8 +49,9 @@
 // # define DEFAULT_INDEX		"index.html"
 // # define DEFAULT_MAX_BODY	1024 * 1024
 
-#define CR_LF	"\r\n"
-// #define CR_LF	"\n"
+//#define CR_LF	"\r\n"
+ #define CR_LF	"\n"
+# include <algorithm>
 
 template <typename T>
 std::string numberToString ( T Number )

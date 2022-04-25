@@ -2,6 +2,10 @@
 
 Handler::Handler(Server &server): _server(server) {
 	_registration_commands();
+	std::string tmp[] = {"p", "o", "s", "i", "t", "n", "m", "l", "b", "v", "k"};
+	int tmp_size = 11;
+	for (int i = 0; i < tmp_size; i++)
+		_set_modes.insert(tmp[i]);
 	// std::cout << "handler constructor. server port: " << server.port << std::endl;
 }
 
