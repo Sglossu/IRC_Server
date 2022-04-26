@@ -24,5 +24,10 @@ void	Handler::_registration_commands() {
 
 void	Handler::_registration_modes() {
 	_modes['o'] = &Handler::_mode_o;
+	_modes['p'] = &Handler::_mode_p;
+	_modes['s'] = &Handler::_mode_s;
+	_modes['i'] = &Handler::_mode_i;
+	_modes['k'] = &Handler::_mode_k;
+	_modes['b'] = &Handler::_mode_b;
 }
 

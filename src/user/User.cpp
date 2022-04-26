@@ -26,7 +26,7 @@ void	User::join_channel(std::string &channel_name) {
 const unsigned char   User::get_flags() const {return _flags;}
 
 void User::del_flag(unsigned char flag) {
-	_flags &= ~PRINT_MOTD;
+	_flags &= ~flag;
 }
 
 const int User::getFdSock() const {

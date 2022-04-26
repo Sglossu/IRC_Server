@@ -127,3 +127,8 @@ void	Handler::clear_buf(int fd) {
 const YamlParser &Handler::getConfig() const {
 	return _config;
 }
+
+
+void Handler::setHost(const std::string &host) {
+	_host = host;
+}

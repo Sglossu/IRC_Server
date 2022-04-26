@@ -34,12 +34,13 @@ void Channel::_delete_user(std::string &username) {
 */
 void	Channel::_join_user(User &user, std::string pass, bool after_invite) {
 	// check if invite-only
-	if (!after_invite && (_flags & INVITE_ONLY))
+	if (!after_invite && (_flags & INVITE_ONLY)) {
 		_handler->_error_msg(user, 473);
-	// todo ban
-	/* 474     ERR_BANNEDFROMCHAN
-		"<channel> :Cannot join channel (+b)" */
-
+		return ;
+	}
+	// check ban
+	if (_flags & BAN_ALL)
+		_handler->_error_msg(user, 474);
 	// check pass
 	if (!after_invite && (_flags & HAS_PASS) && _pass.compare(pass))
 		_handler->_error_msg(user, 475);
@@ -105,6 +106,12 @@ bool	Channel::_is_user_operator(std::string nick) {
 	return false;
 }
 
+bool	Channel::_is_user_in_banlist(std::string nick) {
+	if (std::find(_ban_lists.begin(), _ban_lists.end(), nick) != _ban_lists.end())
+		return true;
+	return false;
+}
+
 const std::string &Channel::getName() const {
 	return _name;
 }
@@ -133,6 +140,14 @@ void Channel::setOperators(std::string &nick_user) {
 	_operators.push_back(nick_user);
 }
 
+void Channel::setInBanList(std::string &nick_user) {
+	_ban_lists.insert(nick_user);
+}
+
+void Channel::delFromBanList(std::string &nick_user) {
+	_ban_lists.erase(nick_user);
+}
+
 void Channel::delOperators(std::string &nick_user) {
 	for (std::vector<std::string>::iterator it = _operators.begin(); it != _operators.end(); it++) {
 		if (*it == nick_user) {
@@ -142,4 +157,15 @@ void Channel::delOperators(std::string &nick_user) {
 	}
 }
 
+void	Channel::delFlag(unsigned char flag) {
+	_flags &= ~flag;
+}
+
+const std::string &Channel::getPass() const {
+	return _pass;
+}
+
+void Channel::setPass(const std::string &pass) {
+	_pass = pass;
+}
 

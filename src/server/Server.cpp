@@ -77,7 +77,7 @@ void Server::write_to_client(int fd, const std::string &msg) {
 
 void Server::write_to_client(std::string nick, const std::string &msg) { // todo before using need fix segfault with unknown nicks
 	int nbytes = msg.size();
-	std::cout << "send by nick" << nick << std::endl;
+//	std::cout << "send by nick " << nick << std::endl;
 	User *recv =  mapnick_users[nick];
 	if (recv and recv->getFdSock() != -1) {
 		int fd = recv->getFdSock();

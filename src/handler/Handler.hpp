@@ -39,6 +39,11 @@ private:
 
 	// modes
 	void		_mode_o(const std::vector<std::string> &param, Channel &channel, User &user, bool flag);
+	void		_mode_p(const std::vector<std::string> &param, Channel &channel, User &user, bool flag);
+	void		_mode_s(const std::vector<std::string> &param, Channel &channel, User &user, bool flag);
+	void		_mode_i(const std::vector<std::string> &param, Channel &channel, User &user, bool flag);
+	void		_mode_k(const std::vector<std::string> &param, Channel &channel, User &user, bool flag);
+	void		_mode_b(const std::vector<std::string> &param, Channel &channel, User &user, bool flag);
 
 	// system
 	void		_cmd_ping_pong(Message &msg, User &user);

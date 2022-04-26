@@ -22,6 +22,12 @@ private:
 	std::string					_nick;
 	std::string					_message;
 	std::string					_pass;
+public:
+	bool isBanned() const;
+
+	void setBanned(bool banned);
+
+private:
 	unsigned char				_flags;
 	std::vector<std::string>	_chanels;
 	User();

@@ -22,6 +22,92 @@ void	Handler::_mode_o(const std::vector<std::string> &param, Channel &channel, U
 
 }
 
+void	Handler::_mode_p(const std::vector<std::string> &param, Channel &channel, User &user, bool flag) {
+	if (flag) {
+		channel.setFlags(PRIVATE);
+		_write_to_channel(channel.getName(), user, "MODE +p");
+	}
+	else {
+		channel.delFlag(PRIVATE);
+		_write_to_channel(channel.getName(), user, "MODE -p");
+	}
+}
+
+void	Handler::_mode_s(const std::vector<std::string> &param, Channel &channel, User &user, bool flag) {
+	if (flag) {
+		channel.setFlags(SECRET);
+		_write_to_channel(channel.getName(), user, "MODE +s");
+	}
+	else {
+		channel.delFlag(SECRET);
+		_write_to_channel(channel.getName(), user, "MODE -s");
+	}
+}
+
+void	Handler::_mode_i(const std::vector<std::string> &param, Channel &channel, User &user, bool flag) {
+	if (flag) {
+		channel.setFlags(INVITE_ONLY);
+		_write_to_channel(channel.getName(), user, "MODE +i");
+	}
+	else {
+		channel.delFlag(INVITE_ONLY);
+		_write_to_channel(channel.getName(), user, "MODE -i");
+	}
+}
+
+void	Handler::_mode_k(const std::vector<std::string> &param, Channel &channel, User &user, bool flag) {
+	if (param.size() < 3) {
+		_error_msg(user, 461);
+		return ;
+	}
+	std::string pass = param[2];
+	if (flag && (channel.getFlags() & HAS_PASS))
+		_error_msg(user, 467);
+	else if (flag && !(channel.getFlags() & HAS_PASS)) {
+		channel.setFlags(HAS_PASS);
+		channel.setPass(pass);
+		_write_to_channel(channel.getName(), user, "MODE +k");
+	}
+	else {
+		channel.delFlag(HAS_PASS);
+		channel.setPass("");
+		_write_to_channel(channel.getName(), user, "MODE -k");
+	}
+}
+
+void	Handler::_mode_b(const std::vector<std::string> &param, Channel &channel, User &user, bool flag) {
+	if (param.size() < 3) {
+		_error_msg(user, 461);
+		return ;
+	}
+	std::string maska_for_all = "*!*@*";
+	std::string new_ban = param[2];
+	if (new_ban == maska_for_all && flag) {
+		channel.setFlags(BAN_ALL);
+		_write_to_channel(channel.getName(), user, "MODE +b" + maska_for_all);
+	}
+	else if (new_ban == maska_for_all && !flag) {
+		channel.delFlag(BAN_ALL);
+		_write_to_channel(channel.getName(), user, "MODE -b " + maska_for_all);
+	}
+	// проверим что юзер, которого хотим забанить на нашем канале
+	else if (!channel._is_user_on_channel(new_ban))
+		_error_msg(user, 401);
+	// иначе просто бан на какого-то юзера
+	else {
+		// записать в бан
+		if (flag) {
+			channel.setInBanList(new_ban);
+			_write_to_channel(channel.getName(), user, "MODE +b " + new_ban);
+		}
+		// удалить из бана
+		else {
+			channel.delFromBanList(new_ban);
+			_write_to_channel(channel.getName(), user, "MODE -b " + new_ban);
+		}
+	}
+}
+
 void	Handler::_cmd_mode(Message &msg, User &user) {
 	std::cout << "cmd_mode " << user.getUsername() << std::endl;
 	// недостаточно аргументов
