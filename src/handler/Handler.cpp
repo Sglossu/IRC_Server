@@ -29,10 +29,9 @@ void	Handler::process_incomming_message(int fd, std::string buf) {
 		if (pos == _bufs[fd].npos)
 			break ;
 		msg_line = _bufs[fd].substr(0, pos);
-		msg_line = msg_line.substr(0, msg_line.find('\r'));
+		msg_line = msg_line.substr(0, msg_line.find(CR_LF));
 
-		_bufs[fd] = _bufs[fd].substr(pos + 1); // раскоменить когда считывается /r
-//		_bufs[fd] = _bufs[fd].substr(pos + 1); // закоментить, если верхняя строка раскоменчена
+		_bufs[fd] = _bufs[fd].substr(pos + strlen(CR_LF));
 
 		Message	msg(msg_line);
 		if (msg.get_cmd().empty() or !_commands.count(msg.get_cmd())) {

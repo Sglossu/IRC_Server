@@ -33,11 +33,11 @@ void Server::print_ip() {
 			addr = &(ipv6->sin6_addr);
 			ipver = "IPv6";
 		}
-		char ipstr[INET6_ADDRSTRLEN];
+		char buf_ipstr[INET6_ADDRSTRLEN];
 		// преобразуем IP в строку и выводим его:
-		inet_ntop(p->ai_family, addr, ipstr, sizeof ipstr);
-		this->ipstr.push_back(ipstr);
-		printf(" %s: %s\n", ipver, ipstr);
+		inet_ntop(p->ai_family, addr, buf_ipstr, sizeof buf_ipstr);
+		this->ipstr.push_back(buf_ipstr);
+		printf(" %s: %s\n", ipver, buf_ipstr);
 
 	}
 }
@@ -61,7 +61,7 @@ void Server::init_server() {
 		break;
 	}
 	print_ip();
-	handler->setHost(ipstr[1]);
+	handler->setHost(getLastIpstr());
 }
 
 Server::~Server() {
@@ -202,6 +202,13 @@ bool	Server::_is_user_on_channel(std::string channel, std::string nick) {
 	if (map_channels[channel]->_is_user_on_channel(nick))
 		return true;
 	return false;
+}
+
+// безопасно возвращает последний из полученых адресов сервера
+const std::string	&Server::getLastIpstr() const {
+	if (this->ipstr.size())
+		return this->ipstr[ipstr.size() - 1];
+	throw "Ip address not set";
 }
 
 bool	Server::is_nick_exist(std::string &nick) {

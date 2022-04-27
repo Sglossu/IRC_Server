@@ -77,7 +77,7 @@ void	Handler::_cmd_invite(Message &msg, User &user) {
 		_server.map_channels[msg.get_params()[1]]->
 			_join_user(*_server.mapnick_users[msg.get_params()[0]], "", true);
 		std::string nick = msg.get_params()[0];
-		std::string ms = user.getNick() + "!" + user.getNick() + "@" + _server.ipstr[1] + " INVITE " + nick + " :"+ msg.get_params()[1] + CR_LF;
+		std::string ms = user.getNick() + "!" + user.getNick() + "@" + _server.getLastIpstr() + " INVITE " + nick + " :"+ msg.get_params()[1] + CR_LF;
 		_write_to_channel(msg.get_params()[1], user, ms);
 	}
 
