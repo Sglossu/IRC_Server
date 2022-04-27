@@ -54,6 +54,7 @@ private:
 	void 		_cmd_user(Message &msg, User &user);
 	void		_cmd_oper(Message &msg, User &user);
 	void		_cmd_quit(Message &msg, User &user);
+	void		_cmd_part(Message &msg, User &user);
 
 	// user_cmd
 	void		_cmd_privmsg(Message &msg, User &user);
@@ -76,11 +77,12 @@ public:
 	const YamlParser	&getConfig() const;
 	bool				check_registration(Message *msg, User &user);
 	void				clear_buf(int fd);
-	void				_error_msg(User &user, int er);
+	void				_error_msg(User &user, int er, const std::string &msg);
 	void 				_cmd_responses(std::string mgs, User &user, int er);
 	void				_cmd_msgoftheday(User &user);
 	bool				_is_channel_exist(std::string name_channel);
 	bool				_is_nick_exist(std::string nick);
+	std::string			prefix_msg(const User &user);
 	void				_write_to_channel(std::string name_channel, User &user, std::string msg);
 };
 

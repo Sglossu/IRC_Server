@@ -3,8 +3,8 @@
 const std::string Handler::_form_privmsg(const Message &raw_msg, const User &sender, std::string &receiver_nick) {
     std::string privmsg;
 
-    privmsg = ":" + sender.getNick() + "!" + sender.getUsername() + "@" + _server.getLastIpstr();
-    privmsg += " PRIVMSG " + receiver_nick + " :" + raw_msg.get_params()[1];
+    privmsg = prefix_msg(sender);
+    privmsg += "PRIVMSG " + receiver_nick + " :" + raw_msg.get_params()[1];
     privmsg += CR_LF;
     return privmsg;
 }
@@ -13,9 +13,9 @@ void    Handler::_cmd_privmsg(Message &msg, User &user) {
     std::cout << "cmd_privmsg " << user.getNick() << std::endl;
 
     if (!msg.get_params().size())
-		return _error_msg(user, 411);
+		return _error_msg(user, 411, "");
     if (msg.get_params().size() < 2)
-        return _error_msg(user, 412);
+        return _error_msg(user, 412, "");
     
     std::string         receiver_nick;
     std::istringstream  receivers_stream(msg.get_params()[0]);

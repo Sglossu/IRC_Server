@@ -36,7 +36,7 @@ void	Handler::process_incomming_message(int fd, std::string buf) {
 		Message	msg(msg_line);
 		if (msg.get_cmd().empty() or !_commands.count(msg.get_cmd())) {
 			std::cout << "|!Unknown command: |" << msg.get_cmd() << std::endl;
-			_error_msg(*user, 421);
+			_error_msg(*user, 421, "");
 			continue ;
 		}
 
@@ -71,13 +71,13 @@ bool	Handler::check_registration(Message *msg, User &user) {
 		return true;
 	if (!msg->get_cmd().compare("USER") || !msg->get_cmd().compare("NICK"))
 		if (!(user.get_flags() & ENTER_PASS)) {
-			_error_msg(user, 502);
+			_error_msg(user, 502, "");
 			return false;
 		}
 	if (msg->get_cmd().compare("USER") && msg->get_cmd().compare("NICK")
 		&& msg->get_cmd().compare("PASS")) {
 		if (!(user.get_flags() & ENTER_PASS) || !(user.get_flags() & ENTER_NAME) || !(user.get_flags() & ENTER_NICK)) {
-				_error_msg(user, 451);
+				_error_msg(user, 451, "");
 				return false;
 			}
 		}
@@ -98,10 +98,14 @@ bool	Handler::_is_nick_exist(std::string nick) {
 	return false;
 }
 
+std::string Handler::prefix_msg(const User &user) {
+	std::string prefix = ":" + user.getNick() + "!" + user.getUsername() + "@" + _host + " ";
+	return prefix;
+}
+
+// send message to all users in channel
 void	Handler::_write_to_channel(std::string name_channel, User &user, std::string msg) {
-	std::string nick_user = user.getNick();
-	std::string preview = ":" + nick_user + "!" + user.getUsername() + "@" + _host + " ";
-	std::string res = preview + msg + CR_LF;
+	std::string res = prefix_msg(user) + msg + CR_LF;
 
 	std::vector<std::string>  users = _server.map_channels[name_channel]->getUsers();
 	for (size_t i = 0; i < users.size(); i++)
