@@ -70,9 +70,13 @@ Server::~Server() {
 
 void Server::write_to_client(int fd, const std::string &msg) {
 	int nbytes = msg.size();
-
-	if (send(fd, msg.c_str(), nbytes, 0) == -1)
-				throw "send";
+	try {
+		if (send(fd, msg.c_str(), nbytes, 0) == -1)
+				throw "fail send";
+	}
+	catch (const std::exception &e) {
+    	std::cerr << "possible broken pipe" << e.what();
+	}
 }
 
 void Server::write_to_client(std::string nick, const std::string &msg) { // todo before using need fix segfault with unknown nicks
@@ -81,8 +85,13 @@ void Server::write_to_client(std::string nick, const std::string &msg) { // todo
 	User *recv =  mapnick_users[nick];
 	if (recv and recv->getFdSock() != -1) {
 		int fd = recv->getFdSock();
-		if (send(fd, msg.c_str(), nbytes, 0) == -1)
-			throw "send";
+		try {
+			if (send(fd, msg.c_str(), nbytes, 0) == -1)
+				throw "send";
+		}
+		catch (const std::exception &e) { // хорошо бы добавить отлов исключения broken pipe
+    		std::cerr << "possible broken pipe" << e.what();
+		}
 	}
 }
 

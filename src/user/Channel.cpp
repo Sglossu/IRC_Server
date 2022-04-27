@@ -75,7 +75,7 @@ void Channel::_return_topic(User &user) {
 	else
 		_handler->_cmd_responses(_name + " :" + _topic, user, 332);
 
-	std::string names = "= " + _name + " :";
+	std::string names = user.getNick() + " = " + _name + " :";
 	for (size_t i = 0; i < _operators.size(); i++) {
 		if (i == 0)
 			names += "@" + _operators[i];

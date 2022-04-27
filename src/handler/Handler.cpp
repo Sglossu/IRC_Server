@@ -100,8 +100,8 @@ bool	Handler::_is_nick_exist(std::string nick) {
 
 void	Handler::_write_to_channel(std::string name_channel, User &user, std::string msg) {
 	std::string nick_user = user.getNick();
-	std::string preview = ":" + nick_user + "!" + nick_user + "@" + _host + " ";
-	std::string res = preview + msg + "\r\n";
+	std::string preview = ":" + nick_user + "!" + user.getUsername() + "@" + _host + " ";
+	std::string res = preview + msg + CR_LF;
 
 	std::vector<std::string>  users = _server.map_channels[name_channel]->getUsers();
 	for (size_t i = 0; i < users.size(); i++)
