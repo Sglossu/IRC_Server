@@ -57,6 +57,8 @@ private:
 	void		_cmd_part(Message &msg, User &user);
 
 	// user_cmd
+	void    	_cmd_privmsg_channel(User &user, const std::string &name, const std::string &msg);
+	void    	_cmd_privmsg_user(User &user, const std::string &name, const std::string &msg);
 	void		_cmd_privmsg(Message &msg, User &user);
 
 	// channels
@@ -84,5 +86,6 @@ public:
 	bool				_is_nick_exist(std::string nick);
 	std::string			prefix_msg(const User &user);
 	void				_write_to_channel(std::string name_channel, User &user, std::string msg);
+	void				_write_to_channel(Channel &channel, const std::string &complite_msg, const std::string &exclude_nick);
 };
 

@@ -9,6 +9,26 @@ const std::string Handler::_form_privmsg(const Message &raw_msg, const User &sen
     return privmsg;
 }
 
+void    Handler::_cmd_privmsg_channel(User &user, const std::string &name, const std::string &msg) {
+    Channel *channel = _server.map_channels[name];
+
+    if (!channel)
+        return _error_msg(user, 401, name);
+    if (channel->_is_user_in_banlist(user.getNick()))
+        return _error_msg(user, 404, name);
+    _write_to_channel(*channel, msg, user.getNick());
+}
+
+void    Handler::_cmd_privmsg_user(User &user, const std::string &name, const std::string &msg) {
+    User *recv = _server.mapnick_users[name];
+    if (!recv)
+        return _error_msg(user, 401, name);
+    if (recv->getRplAway().size())
+        return _server.write_to_client(user.getFdSock(), prefix_msg(user) + recv->getRplAway());
+    // todo можно добавить чек на "черный  список"
+    _server.write_to_client(name, msg);
+}
+
 void    Handler::_cmd_privmsg(Message &msg, User &user) {
     std::cout << "cmd_privmsg " << user.getNick() << std::endl;
 
@@ -17,6 +37,7 @@ void    Handler::_cmd_privmsg(Message &msg, User &user) {
     if (msg.get_params().size() < 2)
         return _error_msg(user, 412, "");
     
+    
     std::string         receiver_nick;
     std::istringstream  receivers_stream(msg.get_params()[0]);
     while (getline(receivers_stream, receiver_nick, ',')) {
@@ -24,10 +45,10 @@ void    Handler::_cmd_privmsg(Message &msg, User &user) {
             continue;
         std::string privmsg = _form_privmsg(msg, user, receiver_nick);
         std::cout << "formed msg to send| " << privmsg;
-        if (receiver_nick[0] == '@' or receiver_nick[0] == '#') {
-            // todo add send to channel
-        }
-        else 
-            _server.write_to_client(receiver_nick, privmsg);
+        if (receiver_nick[0] == '@' or receiver_nick[0] == '#')
+            _cmd_privmsg_channel(user, receiver_nick, privmsg);
+        else
+            _cmd_privmsg_user(user, receiver_nick, privmsg);
     }
 }
+

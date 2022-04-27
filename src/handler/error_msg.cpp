@@ -6,8 +6,9 @@ void	Handler::_error_msg(User &user, int er,const std::string &msg) {
 	std::string	error_msg;
 	error_msg = ":IrcServer " + numberToString(er) + " ";
 	switch (er) {
-		case 401: error_msg += user.getUsername() + " :No such nick/channel\r\n"; break;
+		case 401: error_msg += user.getNick() + " " + msg + ":No such nick/channel\r\n"; break;
 		case 403: error_msg += user.getNick() + " " + msg + " :No such channel\r\n"; break;
+		case 404: error_msg += user.getNick() + " " + msg + " :Cannot send to channel\r\n"; break;
 		case 405: error_msg += user.getUsername() + " :You have joined too many channelsl\r\n"; break;
         case 411: error_msg += user.getNick() + " :No recipient given (<command>)\r\n"; break;
         case 412: error_msg += user.getNick() + " :No text to send\r\n"; break;

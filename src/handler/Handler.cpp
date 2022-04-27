@@ -112,6 +112,16 @@ void	Handler::_write_to_channel(std::string name_channel, User &user, std::strin
 		_server.write_to_client(users[i], res);
 }
 
+// send complited msg to whole channel, exclude the owner message
+void	Handler::_write_to_channel(Channel &channel, const std::string &complite_msg, const std::string &exclude_nick) {
+
+	std::vector<std::string>  users = channel.getUsers();
+	for (size_t i = 0; i < users.size(); i++)
+		if (users[i] != exclude_nick)
+			_server.write_to_client(users[i], complite_msg);
+}
+
+;
 bool	Handler::_is_valid_nick(std::string	nick) {
 	// todo
 	return true;

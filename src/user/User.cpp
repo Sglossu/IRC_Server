@@ -73,6 +73,14 @@ void User::setRealname(const std::string &realname) {
 	_realname = realname;
 }
 
+const std::string &User::getRplAway() const {
+	return _rplAway;
+}
+
+void User::setRplAway(const std::string &rplAway) {
+	_rplAway = rplAway;
+}
+
 const std::string &User::getPass() const {
 	return _pass;
 }
