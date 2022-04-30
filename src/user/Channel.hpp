@@ -26,7 +26,7 @@ public:
 	Channel(std::string name, User &user, std::string pass, Handler *handler);
 	~Channel();
 
-	void				_delete_user(std::string &username);
+	void				_delete_user(const std::string &userNick);
 	void				_join_user(User &user, std::string pass, bool after_invite);
 	bool				_is_user_on_channel(std::string nick);
 	bool				_is_user_operator(std::string nick);

@@ -22,6 +22,8 @@ private:
 	std::string					_nick;
 	std::string					_message;
 	std::string					_pass;
+	std::string					_rplAway;
+
 public:
 	bool isBanned() const;
 
@@ -47,6 +49,9 @@ public:
 	void					setServername(const std::string &servername);
 	const std::string		&getRealname() const;
 	void					setRealname(const std::string &realname);
+	const std::string		&getRplAway() const;
+	void					setRplAway(const std::string &rplAway);
+	
 
 	void					set_flag(unsigned char flag);
 	void					del_flag(unsigned char flag);
