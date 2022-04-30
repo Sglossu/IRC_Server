@@ -15,10 +15,10 @@ Channel::~Channel() {
 }
 
 
-void Channel::_delete_user(std::string &username) {
+void Channel::_delete_user(const std::string &userNick) {
 	std::vector<std::string>::iterator it;
 
-	it = std::find(begin(_users), end(_users), username);
+	it = std::find(begin(_users), end(_users), userNick);
 	if (it != _users.end()) {
 		// todo: send user left the channel
 		_users.erase(it);
@@ -35,21 +35,21 @@ void Channel::_delete_user(std::string &username) {
 void	Channel::_join_user(User &user, std::string pass, bool after_invite) {
 	// check if invite-only
 	if (!after_invite && (_flags & INVITE_ONLY)) {
-		_handler->_error_msg(user, 473);
+		_handler->_error_msg(user, 473, "");
 		return ;
 	}
 	// check ban
 	if (_flags & BAN_ALL)
-		_handler->_error_msg(user, 474);
+		_handler->_error_msg(user, 474, "");
 	// check pass
 	if (!after_invite && (_flags & HAS_PASS) && _pass.compare(pass))
-		_handler->_error_msg(user, 475);
+		_handler->_error_msg(user, 475, "");
 	else if (user.getChanels().size() > 10) {
-		_handler->_error_msg(user, 405);
+		_handler->_error_msg(user, 405, "");
 	}
 	// если такой пользователь уже есть
 	else if(_is_user_on_channel(user.getNick()))
-		_handler->_error_msg(user, 443);
+		_handler->_error_msg(user, 443, _name);
 	else {
 		if (!_operators.size())
 			_operators.push_back(user.getNick());
@@ -75,7 +75,7 @@ void Channel::_return_topic(User &user) {
 	else
 		_handler->_cmd_responses(_name + " :" + _topic, user, 332);
 
-	std::string names = "= " + _name + " :";
+	std::string names = user.getNick() + " = " + _name + " :";
 	for (size_t i = 0; i < _operators.size(); i++) {
 		if (i == 0)
 			names += "@" + _operators[i];

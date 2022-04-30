@@ -53,6 +53,7 @@ public:
 	void							write_to_client(std::string nick, const std::string &msg);
 	bool							is_nick_exist(std::string &nick);
 	bool							_is_user_on_channel(std::string channel, std::string nick);
+	const std::string				&getLastIpstr() const;
 
 
 	const std::vector<std::string> &getIpstr() const;

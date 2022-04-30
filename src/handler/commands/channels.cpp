@@ -13,7 +13,7 @@ void	Handler::_cmd_join(Message &msg, User &user) {
 
 	// todo префикс нужен или пофиг?
 	if (!msg.get_params().size())
-		_error_msg(user, 461);
+		_error_msg(user, 461, "");
 
 	std::stringstream						ss_name(msg.get_params()[0]);
 	std::string								item;
@@ -40,7 +40,7 @@ void	Handler::_cmd_join(Message &msg, User &user) {
 	// отдаём каждый канал классу Channel для обработки
 	for (size_t i = 0; i < vector_arg.size(); i++) {
 		if (!is_channelname_correct(vector_arg[i]))
-			_error_msg(user, 403);
+			_error_msg(user, 403, "");
 		else {
 			if (!_is_channel_exist(vector_arg[i]))
 				// если канала ещё нет, создаём
@@ -51,33 +51,64 @@ void	Handler::_cmd_join(Message &msg, User &user) {
 	}
 }
 
+void	Handler::_cmd_part(Message &msg, User &user) {
+	std::cout << "cmd_part " << user.getUsername() << std::endl;
+
+	// todo префикс нужен или пофиг?
+	if (!msg.get_params().size())
+		_error_msg(user, 461, "");
+
+	std::stringstream						ss_name(msg.get_params()[0]);
+	std::string								item;
+	char									sep = ',';
+	std::vector<std::string>				channel_names;
+
+	// записываем в мапу названия каналов
+	while (std::getline(ss_name, item, sep))
+		channel_names.push_back(item);
+
+	// отдаём каждый канал классу Channel для обработки
+	for (size_t i = 0; i < channel_names.size(); i++) {
+		Channel *current_channel = _server.map_channels[channel_names[i]];
+		if (!current_channel)
+			_error_msg(user, 403, channel_names[i]);
+		else if (!current_channel->_is_user_on_channel(user.getNick()))
+			_error_msg(user, 442, channel_names[i]);
+		else {
+			_write_to_channel(channel_names[i], user, "PART " + channel_names[i]);
+			current_channel->_delete_user(user.getNick());
+		}
+
+	}
+}
+
 void	Handler::_cmd_invite(Message &msg, User &user) {
 //	Параметры: <nickname> <channel>
 
 	if (msg.get_params().size() < 2)
-		_error_msg(user, 461);
+		_error_msg(user, 461, "");
 	// канала нет
 	else if (!_is_channel_exist(msg.get_params()[1])) {
-		_error_msg(user, 401);
+		_error_msg(user, 401, "");
 	}
 	// приглашает неизвестного
 	else if (!_is_nick_exist(msg.get_params()[0])) {
-		_error_msg(user, 401);
+		_error_msg(user, 401, "");
 	}
 	// пригласивший сам не на канале
 	else if (!_server._is_user_on_channel(msg.get_params()[1], user.getNick()))
-		_error_msg(user, 442);
+		_error_msg(user, 442, "");
 	// если чел, кого приглашают, уже на канале - обрабатывается в канале в join user
 	// пригласивший - не оператор
 	else if (!_server.map_channels[msg.get_params()[1]]->_is_user_operator(user.getNick()))
-		_error_msg(user, 482);
+		_error_msg(user, 482, "");
 	// else DONE! подключить к каналу)
 	else {
 		_cmd_responses(msg.get_params()[1] + " " + msg.get_params()[0], user, 341);
 		_server.map_channels[msg.get_params()[1]]->
 			_join_user(*_server.mapnick_users[msg.get_params()[0]], "", true);
 		std::string nick = msg.get_params()[0];
-		std::string ms = user.getNick() + "!" + user.getNick() + "@" + _server.ipstr[1] + " INVITE " + nick + " :"+ msg.get_params()[1] + CR_LF;
+		std::string ms = prefix_msg(user) + "INVITE " + nick + " :"+ msg.get_params()[1] + CR_LF;
 		_write_to_channel(msg.get_params()[1], user, ms);
 	}
 
