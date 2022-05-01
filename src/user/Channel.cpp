@@ -69,6 +69,26 @@ void Channel::_return_topic(User &user) {
 	else
 		_handler->_cmd_responses(_name + " :" + _topic, user, 332);
 
+//	std::string names = user.getNick() + " = " + _name + " :";
+//	for (size_t i = 0; i < _operators.size(); i++) {
+//		if (i == 0)
+//			names += "@" + _operators[i];
+//		else
+//			names += " @" + _operators[i];
+//	}
+//	for (size_t i = _operators.size(); i < _users.size(); i++) {
+//		if (i == 0 && !_operators.size())
+//			names += _users[i];
+//		else
+//			names += " " + _users[i];
+//	}
+	std::string names = _namreply(user);
+	_handler->_cmd_responses(names, user, 353);
+	_handler->_cmd_responses(_name, user, 366);
+	return ;
+}
+
+std::string		Channel::_namreply(User &user) {
 	std::string names = user.getNick() + " = " + _name + " :";
 	for (size_t i = 0; i < _operators.size(); i++) {
 		if (i == 0)
@@ -82,9 +102,7 @@ void Channel::_return_topic(User &user) {
 		else
 			names += " " + _users[i];
 	}
-	_handler->_cmd_responses(names, user, 353);
-	_handler->_cmd_responses(_name, user, 366);
-	return ;
+	return names;
 }
 
 bool	Channel::_is_user_on_channel(std::string nick) {

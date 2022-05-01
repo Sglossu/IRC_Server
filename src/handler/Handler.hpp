@@ -56,6 +56,7 @@ private:
 	void		_cmd_quit(Message &msg, User &user);
 	void		_cmd_part(Message &msg, User &user);
 	void		_cmd_topic(Message &msg, User &user);
+	void		_cmd_names(Message &msg, User &user);
 
 	// user_cmd
 	void    	_cmd_privmsg_channel(User &user, const std::string &name, const std::string &msg);

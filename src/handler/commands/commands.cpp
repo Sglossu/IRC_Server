@@ -18,6 +18,7 @@ void	Handler::_registration_commands() {
 	_commands["MODE"] = &Handler::_cmd_mode;
 	_commands["PART"] = &Handler::_cmd_part;
 	_commands["TOPIC"] = &Handler::_cmd_topic;
+	_commands["NAMES"] = &Handler::_cmd_names;
 
 	// system
 	_commands["PING"] = &Handler::_cmd_ping_pong;

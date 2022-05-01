@@ -121,6 +121,7 @@ void	Handler::_cmd_kick(Message &msg, User &user) {
 	std::cout << "cmd_kick " << user.getUsername() << std::endl;
 	return ;
 }
+
 void	Handler::_cmd_topic(Message &msg, User &user) {
 	std::cout << "cmd_topic " << user.getUsername() << std::endl;
 	if (msg.get_params().size() < 1) {
@@ -146,5 +147,35 @@ void	Handler::_cmd_topic(Message &msg, User &user) {
 			std::string message = "TOPIC " + channel->getName() + " :" + msg.get_params()[1];
 			_write_to_channel(channel->getName(), user, message);
 		}
+	}
+}
+
+void	Handler::_cmd_names(Message &msg, User &user) {
+	std::cout << "cmd_names " << user.getUsername() << std::endl;
+	// todo добавить проверку что канал не приватный или секретный!
+	// only NAMES
+	if (msg.get_params().size() == 0) {
+		// вывод пользователей в каналах
+		std::map<std::string, Channel *>::iterator it_begin = _server.map_channels.begin();
+		std::map<std::string, Channel *>::iterator it_end = _server.map_channels.end();
+		while (it_begin != it_end) {
+			std::string names = it_begin->second->_namreply(user);
+			_cmd_responses(names, user, 353);
+		}
+		// вывести всех оставшихся юзеров
+		// end of names
+	}
+	// NAMES и параметры
+	else {
+		std::vector<std::string> channels = msg.get_params();
+		for (int i = 0; i < channels.size(); i++)
+		{
+			if (_is_channel_exist(channels[i]))
+			{
+				std::string names = _server.map_channels[channels[i]]->_namreply(user);
+				_cmd_responses(names, user, 353);
+			}
+		}
+		_cmd_responses(user.getNick(), user, 366);
 	}
 }
