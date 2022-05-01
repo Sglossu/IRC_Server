@@ -108,9 +108,11 @@ void Server::working_with_client(int fd)
 	if ((nbytes = recv(fd, buf, 512, 0)) <= 0)
 	{
 		// получена ошибка или соединение закрыто клиентом
-		if (nbytes == 0)
+		if (nbytes == 0) {
 			// соединение закрыто
-			std::cerr << "selectserver: socket"  << fd << " hung up"<<  std::endl;
+			mapfd_users[fd]->set_flag(DISCONNECTED);
+			std::cerr << "selectserver: socket" << fd << " hung up" << std::endl;
+		}
 		else{
 			std::cout << fd << std::endl;
 			throw "recv";
@@ -199,6 +201,19 @@ void	Server::clear_disconnected() {
 	it = act_set.begin();
 	for (size_t i = 1; i < act_set.size(); i++)
 		if (mapfd_users[act_set[i].fd]->get_flags() & DISCONNECTED) {
+
+			// удаление из каналов
+			std::vector<std::string>	channels_user = mapfd_users[act_set[i].fd]->getChanels();
+			std::string 				nick_user = mapfd_users[act_set[i].fd]->getNick();
+			for (int j = 0; j < channels_user.size(); j++) {
+				map_channels[channels_user[j]]->_delete_user(nick_user);
+				// если в канале больше никого не осталось
+				if (map_channels[channels_user[j]]->getUsers().size() == 0) {
+					delete map_channels[channels_user[j]];
+					map_channels.erase(channels_user[j]);
+				}
+			}
+
 			mapfd_users.erase(act_set[i].fd);
 			handler->clear_buf(act_set[i].fd);
 			close(act_set[i].fd);

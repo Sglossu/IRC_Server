@@ -11,7 +11,7 @@ bool	is_channelname_correct(std::string channel) {
 void	Handler::_cmd_join(Message &msg, User &user) {
 	std::cout << "cmd_join " << user.getUsername() << std::endl;
 
-	// todo префикс нужен или пофиг?
+	// todo префикс нужен или пофиг? - пофик (Саша)
 	if (!msg.get_params().size())
 		_error_msg(user, 461, "");
 
@@ -85,6 +85,7 @@ void	Handler::_cmd_part(Message &msg, User &user) {
 void	Handler::_cmd_invite(Message &msg, User &user) {
 //	Параметры: <nickname> <channel>
 
+	std::cout << "cmd_invite " << user.getUsername() << std::endl;
 	if (msg.get_params().size() < 2)
 		_error_msg(user, 461, "");
 	// канала нет
@@ -116,6 +117,34 @@ void	Handler::_cmd_invite(Message &msg, User &user) {
 
 void	Handler::_cmd_kick(Message &msg, User &user) {
 //	Параметры: <channel> <user> [<comment>]
+// не добавляла MODE +-t, то есть топик может ставить кто хочет
+	std::cout << "cmd_kick " << user.getUsername() << std::endl;
 	return ;
 }
-
+void	Handler::_cmd_topic(Message &msg, User &user) {
+	std::cout << "cmd_topic " << user.getUsername() << std::endl;
+	if (msg.get_params().size() < 1) {
+		_error_msg(user, 461, "");
+//		return ;
+	}
+	// check что пользователь на канале
+	else if (_server.map_channels.find(msg.get_params()[0]) == _server.map_channels.end() ||
+			!_server.map_channels[msg.get_params()[0]]->_is_user_on_channel(user.getNick())) {
+		_error_msg(user, 442, "");
+	}
+	else {
+		Channel *channel = _server.map_channels[msg.get_params()[0]];
+		// если только 2 аргумента - возвращаем топик
+		if (msg.get_params().size() == 1) {
+			channel->getTopic().empty() ?
+				_cmd_responses(channel->getName(), user, 331) :
+					_cmd_responses(channel->getName() + " :" + channel->getTopic(), user, 332);
+		}
+		// если 3 аргумента - устанавливаем топик
+		else {
+			channel->setTopic(msg.get_params()[1]);
+			std::string message = "TOPIC " + channel->getName() + " :" + msg.get_params()[1];
+			_write_to_channel(channel->getName(), user, message);
+		}
+	}
+}

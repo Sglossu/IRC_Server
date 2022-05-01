@@ -26,12 +26,6 @@ void Channel::_delete_user(const std::string &userNick) {
 
 }
 
-/*
-		  1.  Пользователь может быть приглашен, если канал invite-only;
-          2.  Никнейм/имя пользователя/имя хоста не должны быть
-              забанеными;
-          3.  Если установлен пароль, но должен быть верным.
-*/
 void	Channel::_join_user(User &user, std::string pass, bool after_invite) {
 	// check if invite-only
 	if (!after_invite && (_flags & INVITE_ONLY)) {
@@ -167,5 +161,13 @@ const std::string &Channel::getPass() const {
 
 void Channel::setPass(const std::string &pass) {
 	_pass = pass;
+}
+
+const std::string &Channel::getTopic() const {
+	return _topic;
+}
+
+void Channel::setTopic(const std::string &topic) {
+	_topic = topic;
 }
 
