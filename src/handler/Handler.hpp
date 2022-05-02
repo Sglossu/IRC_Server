@@ -19,6 +19,7 @@ private:
 	std::map<int, std::string>			_bufs; // буфер - содержит сообщения по кусочкам, если они таковыми пришли
 	std::map<std::string, cmd_func>		_commands;
 	YamlParser							_config;
+	std::set<std::string>				_set_nicks;
 public:
 	void setHost(const std::string &host);
 
@@ -69,8 +70,6 @@ private:
 	void				_cmd_kick(Message &msg, User &user);
 	void				_cmd_mode(Message &msg, User &user);
 
-	void				_mode_o();
-
 public:
 	Handler(Server &server);
 
@@ -89,5 +88,7 @@ public:
 	std::string			prefix_msg(const User &user);
 	void				_write_to_channel(std::string name_channel, User &user, std::string msg);
 	void				_write_to_channel(Channel &channel, const std::string &complite_msg, const std::string &exclude_nick);
+	void				_make_nicks_set();
+	void				_delete_nick_from_setnicks(Channel &channel);
 };
 
