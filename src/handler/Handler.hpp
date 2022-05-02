@@ -63,6 +63,8 @@ private:
 	void    	_cmd_privmsg_channel(User &user, const std::string &name, const std::string &msg);
 	void    	_cmd_privmsg_user(User &user, const std::string &name, const std::string &msg);
 	void		_cmd_privmsg(Message &msg, User &user);
+	void		_cmd_away(Message &msg, User &user);
+
 
 	// channels
 	void				_cmd_join(Message &msg, User &user);
