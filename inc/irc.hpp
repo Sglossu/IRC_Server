@@ -50,6 +50,7 @@
 // # define DEFAULT_MAX_BODY	1024 * 1024
 
 #define CR_LF	"\r\n"
+#define CR		"\n"
 //  #define CR_LF	"\n"
 # include <algorithm>
 

@@ -32,6 +32,7 @@ public:
 	bool				_is_user_operator(std::string nick);
 	bool				_is_user_in_banlist(std::string nick);
 	void 				_return_topic(User &user);
+	std::string			_namreply(User &user);
 
 	const std::string				&getName() const;
 	void							setName(const std::string &name);
@@ -44,6 +45,8 @@ public:
 	void 							setFlags(unsigned char flag);
 	void							delFlag(unsigned char flag);
 	const std::string				&getPass() const;
+	const std::string 				&getTopic() const;
+	void 							setTopic(const std::string &topic);
 	void							setPass(const std::string &pass);
 	void							setInBanList(std::string &nick_user);
 	void							delFromBanList(std::string &nick_user);

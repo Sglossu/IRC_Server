@@ -8,10 +8,26 @@ bool	is_channelname_correct(std::string channel) {
 	return true;
 }
 
+void	Handler::_delete_nick_from_setnicks(Channel &channel) {
+	for (int i = 0; i < channel.getUsers().size(); i++) {
+		_set_nicks.erase(channel.getUsers()[i]);
+	}
+}
+
+void	Handler::_make_nicks_set() {
+	_set_nicks.clear();
+	std::map<std::string, User *>::iterator it_begin = _server.mapnick_users.begin();
+	std::map<std::string, User *>::iterator it_end = _server.mapnick_users.end();
+	while (it_begin != it_end) {
+		_set_nicks.insert(it_begin->second->getNick());
+		it_begin++;
+	}
+}
+
 void	Handler::_cmd_join(Message &msg, User &user) {
 	std::cout << "cmd_join " << user.getUsername() << std::endl;
 
-	// todo префикс нужен или пофиг?
+	// todo префикс нужен или пофиг? - пофик (Саша)
 	if (!msg.get_params().size())
 		_error_msg(user, 461, "");
 
@@ -85,6 +101,7 @@ void	Handler::_cmd_part(Message &msg, User &user) {
 void	Handler::_cmd_invite(Message &msg, User &user) {
 //	Параметры: <nickname> <channel>
 
+	std::cout << "cmd_invite " << user.getUsername() << std::endl;
 	if (msg.get_params().size() < 2)
 		_error_msg(user, 461, "");
 	// канала нет
@@ -116,6 +133,97 @@ void	Handler::_cmd_invite(Message &msg, User &user) {
 
 void	Handler::_cmd_kick(Message &msg, User &user) {
 //	Параметры: <channel> <user> [<comment>]
+// не добавляла MODE +-t, то есть топик может ставить кто хочет
+	std::cout << "cmd_kick " << user.getUsername() << std::endl;
 	return ;
 }
 
+void	Handler::_cmd_topic(Message &msg, User &user) {
+	std::cout << "cmd_topic " << user.getUsername() << std::endl;
+	if (msg.get_params().size() < 1) {
+		_error_msg(user, 461, "");
+//		return ;
+	}
+	// check что пользователь на канале
+	else if (_server.map_channels.find(msg.get_params()[0]) == _server.map_channels.end() ||
+			!_server.map_channels[msg.get_params()[0]]->_is_user_on_channel(user.getNick())) {
+		_error_msg(user, 442, "");
+	}
+	else {
+		Channel *channel = _server.map_channels[msg.get_params()[0]];
+		// если только 2 аргумента - возвращаем топик
+		if (msg.get_params().size() == 1) {
+			channel->getTopic().empty() ?
+				_cmd_responses(channel->getName(), user, 331) :
+					_cmd_responses(channel->getName() + " :" + channel->getTopic(), user, 332);
+		}
+		// если 3 аргумента - устанавливаем топик
+		else {
+			channel->setTopic(msg.get_params()[1]);
+			std::string message = "TOPIC " + channel->getName() + " :" + msg.get_params()[1];
+			_write_to_channel(channel->getName(), user, message);
+		}
+	}
+}
+
+void	Handler::_cmd_names(Message &msg, User &user) {
+	std::cout << "cmd_names " << user.getUsername() << std::endl;
+	// only NAMES
+	if (msg.get_params().size() == 0) {
+		// вывод пользователей в каналах
+		_make_nicks_set();
+
+		std::map<std::string, Channel *>::iterator it;
+		for (it = _server.map_channels.begin(); it != _server.map_channels.end(); it++)
+		{
+			_delete_nick_from_setnicks(*it->second);
+			if (it->second->getFlags() & PRIVATE || it->second->getFlags() & SECRET)
+				continue;
+			std::string names = it->second->_namreply(user);
+			_cmd_responses(names, user, 353);
+		}
+		// собираем всех оставшихся юзеров
+		std::string 	remaining_users;
+		std::set<std::string>::iterator itr;
+		for (itr = _set_nicks.begin(); itr != _set_nicks.end(); itr++) {
+			remaining_users += *itr + " ";
+		}
+		_cmd_responses(user.getNick() + " * * :" + remaining_users, user, 353);
+		// end of names
+		_cmd_responses("", user, 366);
+	}
+	// NAMES и параметры
+	else {
+		std::vector<std::string> channels = msg.get_params();
+		for (int i = 0; i < channels.size(); i++)
+		{
+			if (_is_channel_exist(channels[i]))
+			{
+				std::string names = _server.map_channels[channels[i]]->_namreply(user);
+				_cmd_responses(names, user, 353);
+			}
+		}
+		_cmd_responses(user.getNick(), user, 366);
+	}
+}
+
+template<class InputIt1, class InputIt2,
+		class OutputIt, class Compare>
+OutputIt set_difference( InputIt1 first1, InputIt1 last1,
+						 InputIt2 first2, InputIt2 last2,
+						 OutputIt d_first, Compare comp)
+{
+	while (first1 != last1) {
+		if (first2 == last2) return std::copy(first1, last1, d_first);
+
+		if (comp(*first1, *first2)) {
+			*d_first++ = *first1++;
+		} else {
+			if (!comp(*first2, *first1)) {
+				++first1;
+			}
+			++first2;
+		}
+	}
+	return d_first;
+}

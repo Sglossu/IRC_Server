@@ -16,6 +16,7 @@ void	Handler::process_incomming_message(int fd, std::string buf) {
 	size_t      pos;
 	std::string msg_line;
 	User		*user;
+	int 		len_cr_cn = 2;
 
 	if (_bufs.count(fd))
 		_bufs[fd] += buf;
@@ -26,12 +27,19 @@ void	Handler::process_incomming_message(int fd, std::string buf) {
 			  << "> incoming msg(" << _bufs[fd].size() <<"): "  << _bufs[fd] << std::endl;
 	while (!_bufs[fd].empty()) {
 		pos = _bufs[fd].find(CR_LF);
-		if (pos == _bufs[fd].npos)
-			break ;
-		msg_line = _bufs[fd].substr(0, pos);
-		msg_line = msg_line.substr(0, msg_line.find(CR_LF));
+		if (pos == _bufs[fd].npos) {
+			pos = _bufs[fd].find(CR);
+			len_cr_cn = 1;
+			if (pos == _bufs[fd].npos)
+				break;
+		}
 
-		_bufs[fd] = _bufs[fd].substr(pos + strlen(CR_LF));
+		msg_line = _bufs[fd].substr(0, pos);
+		len_cr_cn == 2 ?
+			msg_line = msg_line.substr(0, msg_line.find(CR_LF)) :
+				msg_line = msg_line.substr(0, msg_line.find(CR));
+
+		_bufs[fd] = _bufs[fd].substr(pos + len_cr_cn);
 
 		Message	msg(msg_line);
 		if (msg.get_cmd().empty() or !_commands.count(msg.get_cmd())) {

@@ -26,12 +26,6 @@ void Channel::_delete_user(const std::string &userNick) {
 
 }
 
-/*
-		  1.  Пользователь может быть приглашен, если канал invite-only;
-          2.  Никнейм/имя пользователя/имя хоста не должны быть
-              забанеными;
-          3.  Если установлен пароль, но должен быть верным.
-*/
 void	Channel::_join_user(User &user, std::string pass, bool after_invite) {
 	// check if invite-only
 	if (!after_invite && (_flags & INVITE_ONLY)) {
@@ -75,6 +69,26 @@ void Channel::_return_topic(User &user) {
 	else
 		_handler->_cmd_responses(_name + " :" + _topic, user, 332);
 
+//	std::string names = user.getNick() + " = " + _name + " :";
+//	for (size_t i = 0; i < _operators.size(); i++) {
+//		if (i == 0)
+//			names += "@" + _operators[i];
+//		else
+//			names += " @" + _operators[i];
+//	}
+//	for (size_t i = _operators.size(); i < _users.size(); i++) {
+//		if (i == 0 && !_operators.size())
+//			names += _users[i];
+//		else
+//			names += " " + _users[i];
+//	}
+	std::string names = _namreply(user);
+	_handler->_cmd_responses(names, user, 353);
+	_handler->_cmd_responses(_name, user, 366);
+	return ;
+}
+
+std::string		Channel::_namreply(User &user) {
 	std::string names = user.getNick() + " = " + _name + " :";
 	for (size_t i = 0; i < _operators.size(); i++) {
 		if (i == 0)
@@ -88,9 +102,7 @@ void Channel::_return_topic(User &user) {
 		else
 			names += " " + _users[i];
 	}
-	_handler->_cmd_responses(names, user, 353);
-	_handler->_cmd_responses(_name, user, 366);
-	return ;
+	return names;
 }
 
 bool	Channel::_is_user_on_channel(std::string nick) {
@@ -167,5 +179,13 @@ const std::string &Channel::getPass() const {
 
 void Channel::setPass(const std::string &pass) {
 	_pass = pass;
+}
+
+const std::string &Channel::getTopic() const {
+	return _topic;
+}
+
+void Channel::setTopic(const std::string &topic) {
+	_topic = topic;
 }
 
