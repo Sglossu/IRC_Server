@@ -23,8 +23,11 @@ void    Handler::_cmd_privmsg_user(User &user, const std::string &name, const st
     User *recv = _server.mapnick_users[name];
     if (!recv)
         return _error_msg(user, 401, name);
-    if (recv->getRplAway().size())
-        return _server.write_to_client(user.getFdSock(), prefix_msg(user) + recv->getRplAway());
+    if (recv->getRplAway().size()) {
+        std::string awayMsg;
+        awayMsg = user.getNick() + " " + recv->getNick() + " " + recv->getRplAway();
+        return _cmd_responses(awayMsg, user, 301);
+    }
     // todo можно добавить чек на "черный  список"
     _server.write_to_client(name, msg);
 }
@@ -36,7 +39,6 @@ void    Handler::_cmd_privmsg(Message &msg, User &user) {
 		return _error_msg(user, 411, "");
     if (msg.get_params().size() < 2)
         return _error_msg(user, 412, "");
-    
     
     std::string         receiver_nick;
     std::istringstream  receivers_stream(msg.get_params()[0]);
@@ -50,5 +52,15 @@ void    Handler::_cmd_privmsg(Message &msg, User &user) {
         else
             _cmd_privmsg_user(user, receiver_nick, privmsg);
     }
+}
+
+void	Handler::_cmd_away(Message &msg, User &user) {
+	std::cout << "cmd_away " << user.getNick() << std::endl;
+	if (msg.get_params().size() < 1 or msg.get_params()[0].empty()) {
+        user.setRplAway("");
+		return _cmd_responses(user.getNick(), user, 305);
+    }
+	user.setRplAway(msg.get_params()[0]);
+	return _cmd_responses(user.getNick(), user, 306);
 }
 

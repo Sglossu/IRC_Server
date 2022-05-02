@@ -38,14 +38,19 @@ void	Handler::_error_msg(User &user, int er,const std::string &msg) {
 
 void Handler::_cmd_responses(std::string msg, User &user, int er) {
 	std::string	resp_msg;
+	resp_msg = ":IrcServer " + numberToString(er) + " ";
 	switch (er) {
-		case 331: resp_msg = ":IrcServer 331 " + msg + " :No topic is set\r\n"; break;
-		case 332: resp_msg = ":IrcServer 332 " + msg + "\r\n"; break; // сюда придет полный msg с сообщением
-		case 341: resp_msg = ":IrcServer 341 " + msg + "\r\n"; break; // сюда придет полный msg с сообщением
-		case 353: resp_msg = ":IrcServer 353 " + msg + "\r\n"; break; // сюда придет полный msg с сообщением
-		case 366: resp_msg = ":IrcServer 366 " + msg + " :End of /NAMES list\r\n"; break;
-		case 381: resp_msg = ":IrcServer 381 " + msg + " :You are now an IRC operator\r\n"; break;
+		case 301: resp_msg += msg; break;
+		case 305: resp_msg += msg + " :You are no longer marked as being away"; break;
+		case 306: resp_msg += msg + " :You have been marked as being away"; break;
+		case 331: resp_msg += msg + " :No topic is set"; break;
+		case 332: resp_msg += msg; break; // сюда придет полный msg с сообщением
+		case 341: resp_msg += msg; break; // сюда придет полный msg с сообщением
+		case 353: resp_msg += msg; break; // сюда придет полный msg с сообщением
+		case 366: resp_msg += msg + " :End of /NAMES list"; break;
+		case 381: resp_msg += msg + " :You are now an IRC operator"; break;
 	}
+	resp_msg += CR_LF;
 	_server.write_to_client(user.getFdSock(), resp_msg);
 }
 
