@@ -23,6 +23,7 @@ void	Handler::_registration_commands() {
 
 	// system
 	_commands["PING"] = &Handler::_cmd_ping_pong;
+	_commands["WHO"] = &Handler::_cmd_who;
 
 }
 

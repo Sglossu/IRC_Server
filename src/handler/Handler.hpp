@@ -48,6 +48,7 @@ private:
 
 	// system
 	void		_cmd_ping_pong(Message &msg, User &user);
+	void		_cmd_who(Message &msg, User &user);
 
 	// registration
 	void		_cmd_pass(Message &msg, User &user);

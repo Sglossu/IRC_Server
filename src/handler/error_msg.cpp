@@ -19,7 +19,7 @@ void	Handler::_error_msg(User &user, int er,const std::string &msg) {
 		case 442: error_msg += user.getUsername() + " :You're not on that channel\r\n"; break;
 		case 443: error_msg += user.getNick() + " " + msg + " :Is already on channel\r\n"; break;
 		case 451: error_msg += user.getUsername() + " :You have not registered\r\n"; break;
-		case 461: error_msg += user.getUsername() + " :Not enough parameters\r\n"; break;
+		case 461: error_msg += user.getNick() + " " + msg + " :Not enough parameters\r\n"; break;
 		case 462: error_msg += user.getUsername() + " :You may not reregister\r\n"; break;
 		case 464: error_msg += user.getUsername() + " :Password incorrect\r\n"; break;
 		case 467: error_msg += user.getUsername() + " :Channel key already set\r\n"; break;
@@ -43,9 +43,11 @@ void Handler::_cmd_responses(std::string msg, User &user, int er) {
 		case 301: resp_msg += msg; break;
 		case 305: resp_msg += msg + " :You are no longer marked as being away"; break;
 		case 306: resp_msg += msg + " :You have been marked as being away"; break;
+		case 315: resp_msg += msg + " :End of WHO list"; break;
 		case 331: resp_msg += msg + " :No topic is set"; break;
 		case 332: resp_msg += msg; break; // сюда придет полный msg с сообщением
 		case 341: resp_msg += msg; break; // сюда придет полный msg с сообщением
+		case 352: resp_msg += msg; break; // сюда придет полный msg с сообщением
 		case 353: resp_msg += msg; break; // сюда придет полный msg с сообщением
 		case 366: resp_msg += msg + " :End of /NAMES list"; break;
 		case 381: resp_msg += msg + " :You are now an IRC operator"; break;

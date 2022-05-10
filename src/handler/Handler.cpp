@@ -23,8 +23,9 @@ void	Handler::process_incomming_message(int fd, std::string buf) {
 	else
 		_bufs[fd] = buf;
 	user = _server.mapfd_users[fd];
-	std::cout << "User <" << fd << ", " << user->getUsername()
-			  << "> incoming msg(" << _bufs[fd].size() <<"): "  << _bufs[fd] << std::endl;
+	if (DEBUG)
+	std::cout << GREEN << "\nUser <" << fd << ", " << user->getUsername()
+			  << "> incoming msg(" << _bufs[fd].size() <<"): "  << _bufs[fd] << RESET;
 	while (!_bufs[fd].empty()) {
 		pos = _bufs[fd].find(CR_LF);
 		if (pos == _bufs[fd].npos) {

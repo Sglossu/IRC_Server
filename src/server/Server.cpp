@@ -69,7 +69,8 @@ Server::~Server() {
 }
 
 void Server::write_to_client(int fd, const std::string &msg) {
-	std::cout << "--> send by fd " << fd << ": " << msg;
+	if (DEBUG)
+		std::cout << "--> send by fd " << fd << ": " << msg;
 	int nbytes = msg.size();
 	try {
 		if (send(fd, msg.c_str(), nbytes, 0) == -1)
@@ -184,12 +185,15 @@ void Server::start() {
 						working_with_client(act_set[i].fd);
 					}
 				}
+				// ошибка на соединении
+				else if (act_set[i].revents & POLLNVAL or act_set[i].revents & POLLHUP or act_set[i].revents & POLLERR) {
+					if (act_set[i].fd != act_set[0].fd)
+						mapfd_users[act_set[i].fd]->set_flag(DISCONNECTED);
+				}
 			}
 		}
 		// Этнические чистки
 		clear_disconnected();
-
-
 	}
 }
 
