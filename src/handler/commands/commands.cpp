@@ -22,8 +22,9 @@ void	Handler::_registration_commands() {
 	_commands["NAMES"] = &Handler::_cmd_names;
 
 	// system
-	_commands["PING"] = &Handler::_cmd_ping_pong;
 	_commands["WHO"] = &Handler::_cmd_who;
+	_commands["ISON"] = &Handler::_cmd_ison;
+	_commands["PING"] = &Handler::_cmd_ping_pong;
 
 }
 

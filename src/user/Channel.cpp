@@ -3,6 +3,7 @@
 
 Channel::Channel(std::string name, User &user, std::string pass, Handler *handler) {
 	_name = name;
+	_flags = 0;
 	if (!pass.empty()) {
 		_flags |= HAS_PASS;
 		_pass = pass;

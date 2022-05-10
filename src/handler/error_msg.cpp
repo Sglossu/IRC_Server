@@ -41,6 +41,7 @@ void Handler::_cmd_responses(std::string msg, User &user, int er) {
 	resp_msg = ":IrcServer " + numberToString(er) + " ";
 	switch (er) {
 		case 301: resp_msg += msg; break;
+		case 303: resp_msg += msg; break;
 		case 305: resp_msg += msg + " :You are no longer marked as being away"; break;
 		case 306: resp_msg += msg + " :You have been marked as being away"; break;
 		case 315: resp_msg += msg + " :End of WHO list"; break;

@@ -10,19 +10,19 @@ const std::string Handler::_form_privmsg(const Message &raw_msg, const User &sen
 }
 
 void    Handler::_cmd_privmsg_channel(User &user, const std::string &name, const std::string &msg) {
-    Channel *channel = _server.map_channels[name];
 
-    if (!channel)
+    if (!_server.map_channels.count(name))
         return _error_msg(user, 401, name);
+    Channel *channel = _server.map_channels[name];
     if (channel->_is_user_in_banlist(user.getNick()))
         return _error_msg(user, 404, name);
     _write_to_channel(*channel, msg, user.getNick());
 }
 
 void    Handler::_cmd_privmsg_user(User &user, const std::string &name, const std::string &msg) {
-    User *recv = _server.mapnick_users[name];
-    if (!recv)
+    if (!_server.mapnick_users.count(name))
         return _error_msg(user, 401, name);
+    User *recv = _server.mapnick_users[name];
     if (recv->getRplAway().size()) {
         std::string awayMsg;
         awayMsg = user.getNick() + " " + recv->getNick() + " " + recv->getRplAway();

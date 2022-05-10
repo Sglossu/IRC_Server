@@ -85,10 +85,12 @@ void	Handler::_cmd_part(Message &msg, User &user) {
 
 	// отдаём каждый канал классу Channel для обработки
 	for (size_t i = 0; i < channel_names.size(); i++) {
-		Channel *current_channel = _server.map_channels[channel_names[i]];
-		if (!current_channel)
+		if (!_server.map_channels.count(channel_names[i])) {
 			_error_msg(user, 403, channel_names[i]);
-		else if (!current_channel->_is_user_on_channel(user.getNick()))
+			continue;
+		}
+		Channel *current_channel = _server.map_channels[channel_names[i]];
+		if (!current_channel->_is_user_on_channel(user.getNick()))
 			_error_msg(user, 442, channel_names[i]);
 		else {
 			_write_to_channel(channel_names[i], user, "PART " + channel_names[i]);
