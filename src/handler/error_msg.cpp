@@ -6,32 +6,33 @@ void	Handler::_error_msg(User &user, int er,const std::string &msg) {
 	std::string	error_msg;
 	error_msg = ":IrcServer " + numberToString(er) + " ";
 	switch (er) {
-		case 401: error_msg += user.getNick() + " " + msg + ":No such nick/channel\r\n"; break;
-		case 403: error_msg += user.getNick() + " " + msg + " :No such channel\r\n"; break;
-		case 404: error_msg += user.getNick() + " " + msg + " :Cannot send to channel\r\n"; break;
-		case 405: error_msg += user.getUsername() + " :You have joined too many channelsl\r\n"; break;
-        case 411: error_msg += user.getNick() + " :No recipient given (<command>)\r\n"; break;
-        case 412: error_msg += user.getNick() + " :No text to send\r\n"; break;
-		case 421: error_msg += user.getUsername() + " :Unknown command\r\n"; break;
-		case 431: error_msg += user.getUsername() + " :No nickname given\r\n"; break;
-		case 432: error_msg += user.getUsername() + " :Erroneus nickname\r\n"; break;
-		case 433: error_msg += user.getUsername() + " :Nickname is already in use\r\n"; break;
-		case 442: error_msg += user.getUsername() + " :You're not on that channel\r\n"; break;
-		case 443: error_msg += user.getNick() + " " + msg + " :Is already on channel\r\n"; break;
-		case 451: error_msg += user.getUsername() + " :You have not registered\r\n"; break;
-		case 461: error_msg += user.getNick() + " " + msg + " :Not enough parameters\r\n"; break;
-		case 462: error_msg += user.getUsername() + " :You may not reregister\r\n"; break;
-		case 464: error_msg += user.getUsername() + " :Password incorrect\r\n"; break;
-		case 467: error_msg += user.getUsername() + " :Channel key already set\r\n"; break;
-		case 473: error_msg += user.getUsername() + " :Cannot join channel (+i)\r\n"; break;
-		case 472: error_msg += user.getUsername() + " :is unknown mode char to me\r\n"; break;
-		case 474: error_msg += user.getUsername() + " :Cannot join channel (+b)\r\n"; break;
-		case 475: error_msg += user.getUsername() + " :Cannot join channel (+k)\r\n"; break;
-		case 482: error_msg += user.getUsername() + " :You're not channel operator\r\n"; break;
-		case 501: error_msg += user.getUsername() + " :Unknown MODE flag\r\n"; break;
-		case 502: error_msg += user.getNick() + " :Cant change mode for other users\r\n"; break;
-		case 0: error_msg  = ":IrcServer ERROR " + msg + CR_LF; break;
+		case 401: error_msg += user.getNick() + " " + msg + ":No such nick/channel"; break;
+		case 403: error_msg += user.getNick() + " " + msg + " :No such channel"; break;
+		case 404: error_msg += user.getNick() + " " + msg + " :Cannot send to channel"; break;
+		case 405: error_msg += user.getNick() + " " + msg + " :You have joined too many channelsl"; break;
+        case 411: error_msg += user.getNick() + " :No recipient given (<command>)"; break;
+        case 412: error_msg += user.getNick() + " :No text to send"; break;
+		case 421: error_msg += user.getNick() + " " + msg + " :Unknown command"; break;
+		case 431: error_msg += user.getNick() + " :No nickname given"; break;
+		case 432: error_msg += user.getNick() + " " + msg + " :Erroneus nickname"; break;
+		case 433: error_msg += user.getNick() + " " + msg + " :Nickname is already in use"; break;
+		case 442: error_msg += user.getNick() + " " + msg + " :You're not on that channel"; break;
+		case 443: error_msg += user.getNick() + " " + msg + " :Is already on channel"; break;
+		case 451: error_msg += user.getNick() + " :You have not registered"; break;
+		case 461: error_msg += user.getNick() + " " + msg + " :Not enough parameters"; break;
+		case 462: error_msg += user.getNick() + " :You may not reregister"; break;
+		case 464: error_msg += user.getNick() + " :Password incorrect"; break;
+		case 467: error_msg += user.getNick() + " " + msg + " :Channel key already set"; break;
+		case 472: error_msg += user.getNick() + " " + msg + " :is unknown mode char to me"; break;
+		case 473: error_msg += user.getNick() + " " + msg + " :Cannot join channel (+i)"; break;
+		case 474: error_msg += user.getNick() + " " + msg + " :Cannot join channel (+b)"; break;
+		case 475: error_msg += user.getNick() + " " + msg + " :Cannot join channel (+k)"; break;
+		case 482: error_msg += user.getNick() + " " + msg + " :You're not channel operator"; break;
+		case 501: error_msg += user.getNick() + " :Unknown MODE flag"; break;
+		case 502: error_msg += user.getNick() + " :Cant change mode for other users"; break;
+		case 1001: error_msg  = ":IrcServer ERROR " + msg; break;
 	}
+	error_msg += CR_LF;
 	_server.write_to_client(user.getFdSock(), error_msg);
 }
 

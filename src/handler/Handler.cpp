@@ -44,8 +44,9 @@ void	Handler::process_incomming_message(int fd, std::string buf) {
 
 		Message	msg(msg_line);
 		if (msg.get_cmd().empty() or !_commands.count(msg.get_cmd())) {
-			std::cout << "|!Unknown command: |" << msg.get_cmd() << std::endl;
-			_error_msg(*user, 421, "");
+			if (DEBUG)
+				std::cout << RED << "|!Unknown command: |" << msg.get_cmd() << RESET << std::endl;
+			_error_msg(*user, 421, msg.get_cmd());
 			continue ;
 		}
 
@@ -80,7 +81,7 @@ bool	Handler::check_registration(Message *msg, User &user) {
 		return true;
 	if (!msg->get_cmd().compare("USER") || !msg->get_cmd().compare("NICK"))
 		if (!(user.get_flags() & ENTER_PASS)) {
-			_error_msg(user, 502, ":Password is not entered");
+			_error_msg(user, 1001, ":Password is not entered");
 			user.set_flag(DISCONNECTED);
 			return false;
 		}
