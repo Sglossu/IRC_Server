@@ -24,10 +24,10 @@ private:
 	std::string					_message;
 	std::string					_pass;
 	std::string					_rplAway;
+	std::vector<std::string>	_to_send;
 
 public:
 	bool isBanned() const;
-
 	void setBanned(bool banned);
 
 private:
@@ -52,6 +52,13 @@ public:
 	void					setRealname(const std::string &realname);
 	const std::string		&getRplAway() const;
 	void					setRplAway(const std::string &rplAway);
+
+	void					addMsgToSend(const std::string &msg);
+	bool					haveMsgToSend() const;
+	void					clearFirstElementToSend();
+	const std::string		&getOneElementToSend() const;
+
+
 	
 
 	void					set_flag(unsigned char flag);
