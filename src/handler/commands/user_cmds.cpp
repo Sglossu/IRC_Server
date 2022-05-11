@@ -14,6 +14,8 @@ void    Handler::_cmd_privmsg_channel(User &user, const std::string &name, const
     if (!_server.map_channels.count(name))
         return _error_msg(user, 401, name);
     Channel *channel = _server.map_channels[name];
+	if (!_server._is_user_on_channel(name, user.getNick()))
+        return _error_msg(user, 404, name);
     if (channel->_is_user_in_banlist(user.getNick()))
         return _error_msg(user, 404, name);
     _write_to_channel(*channel, msg, user.getNick());

@@ -24,7 +24,13 @@ void Channel::_delete_user(const std::string &userNick) {
 		// todo: send user left the channel
 		_users.erase(it);
 	}
-
+	it = std::find(begin(_operators), end(_operators), userNick);
+	if (it != _operators.end()) {
+		// todo: send user left the channel
+		_operators.erase(it);
+	}
+	if (!_operators.size() and _users.size())
+		_operators.push_back(_users[0]);
 }
 
 void	Channel::_join_user(User &user, std::string pass, bool after_invite) {

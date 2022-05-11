@@ -22,7 +22,7 @@ void    Handler::_cmd_ison(Message &msg, User &user) {
 		std::string available_nicks = user.getNick() + " :";
 		for (size_t i = 0; i < msg.get_params().size(); ++i) {
 			std::string nick = msg.get_params()[i];
-			if (_server.mapnick_users[nick] and !(_server.mapnick_users[nick]->get_flags() & DISCONNECTED)) {
+			if (_server.mapnick_users.count(nick) and !(_server.mapnick_users[nick]->get_flags() & DISCONNECTED)) {
 				if (available_nicks[available_nicks.size() - 1] == ':')
 					available_nicks += nick;
 				else
@@ -40,10 +40,8 @@ void    Handler::_cmd_who(Message &msg, User &user) {
 
     // work only with channelname
 	if (!msg.get_params().size() or !msg.get_params()[0].size())
-		return ;
+		return _cmd_responses(" ", user, 315);;
 	std::string mask = msg.get_params()[0];
-	if (mask[0] != '@' and mask[0] != '#')
-		return ;
 	if (_server.map_channels.count(mask)) {
 		Channel *channel = _server.map_channels[mask];
 		std::string prefix, host_part;

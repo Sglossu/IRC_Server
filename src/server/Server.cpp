@@ -217,6 +217,8 @@ void	Server::clear_disconnected() {
 				if (map_channels[channels_user[j]]->getUsers().size() == 0) {
 					delete map_channels[channels_user[j]];
 					map_channels.erase(channels_user[j]);
+					if (DEBUG)
+						std::cout << RED"DELETE channel by disconnect last user" << channels_user[j] << RESET << std::endl;
 				}
 			}
 
@@ -226,6 +228,19 @@ void	Server::clear_disconnected() {
 			act_set.erase(it + i);
 			--i;
 		}
+	std::map<std::string, Channel *>:: iterator it_map = map_channels.begin();
+	while (it_map != map_channels.end()) {
+		if (!it_map->second->getOperators().size()) {
+			if (DEBUG)
+				std::cout << RED"DELETE channel from clear_disconnected " << it_map->second->getName() << RESET << std::endl;
+			it_map = map_channels.erase(it_map);
+		}
+		else
+			it_map++;
+
+	}
+
+
 	// printf("len pollfd after cleaning %zu\n len users %zu\n", act_set.size(), mapfd_users.size());
 }
 
