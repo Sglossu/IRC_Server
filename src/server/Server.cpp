@@ -216,6 +216,7 @@ void	Server::clear_disconnected() {
 					map_channels[channels_user[j]]->_delete_user(nick_user);
 					handler->_write_to_channel(channels_user[j], *mapfd_users[act_set[i].fd], "PART " + channels_user[j]);
 				}
+			delete mapfd_users[act_set[i].fd];
 			mapfd_users.erase(act_set[i].fd);
 			handler->clear_buf(act_set[i].fd);
 			close(act_set[i].fd);
@@ -227,6 +228,7 @@ void	Server::clear_disconnected() {
 		if (!it_map->second->getOperators().size()) {
 			if (DEBUG)
 				std::cout << RED"DELETE channel from clear_disconnected " << it_map->second->getName() << RESET << std::endl;
+			delete it_map->second;
 			it_map = map_channels.erase(it_map);
 		}
 		else
