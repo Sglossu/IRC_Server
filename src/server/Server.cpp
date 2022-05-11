@@ -211,17 +211,11 @@ void	Server::clear_disconnected() {
 			// удаление из каналов
 			std::vector<std::string>	channels_user = mapfd_users[act_set[i].fd]->getChanels();
 			std::string 				nick_user = mapfd_users[act_set[i].fd]->getNick();
-			for (int j = 0; j < channels_user.size(); j++) {
-				map_channels[channels_user[j]]->_delete_user(nick_user);
-				// если в канале больше никого не осталось
-				if (map_channels[channels_user[j]]->getUsers().size() == 0) {
-					delete map_channels[channels_user[j]];
-					map_channels.erase(channels_user[j]);
-					if (DEBUG)
-						std::cout << RED"DELETE channel by disconnect last user" << channels_user[j] << RESET << std::endl;
+			for (int j = 0; j < channels_user.size(); j++) 
+				if (map_channels.count(channels_user[j])) {
+					map_channels[channels_user[j]]->_delete_user(nick_user);
+					handler->_write_to_channel(channels_user[j], *mapfd_users[act_set[i].fd], "PART " + channels_user[j]);
 				}
-			}
-
 			mapfd_users.erase(act_set[i].fd);
 			handler->clear_buf(act_set[i].fd);
 			close(act_set[i].fd);
