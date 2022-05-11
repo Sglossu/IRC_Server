@@ -137,7 +137,40 @@ void	Handler::_cmd_kick(Message &msg, User &user) {
 //	Параметры: <channel> <user> [<comment>]
 // не добавляла MODE +-t, то есть топик может ставить кто хочет
 	std::cout << "cmd_kick " << user.getUsername() << std::endl;
-	return ;
+	if (msg.get_params().size() < 2)
+		return _error_msg(user, 461, "KICK");
+
+	std::string channel_name(msg.get_params()[0]);
+	if (!_server.map_channels.count(channel_name))
+		return _error_msg(user, 403, channel_name);
+
+	Channel *channel = _server.map_channels[channel_name];
+	
+	if (!channel->_is_user_on_channel(user.getNick()))
+		return _error_msg(user, 442, channel_name);
+	
+	if (!channel->_is_user_operator(user.getNick()))
+		return _error_msg(user, 482, channel_name);
+
+	std::stringstream			ss_nicks(msg.get_params()[1]);
+	std::string					nick;
+	// std::vector<std::string>	nicks;
+	// записываем в вектор пользователей
+	while (std::getline(ss_nicks, nick, ',')) {
+		if (!channel->_is_user_on_channel(nick)) {
+			_error_msg(user, 441, nick + " " + channel_name);
+			continue;
+		}
+		std::string kick_msg = "KICK " + channel_name + " " + nick + " :";
+		if (msg.get_params().size() == 3)
+			kick_msg += msg.get_params()[2];
+		else
+			kick_msg += "Because i can";
+		_write_to_channel(channel_name, user, kick_msg);
+		channel->_delete_user(nick);
+	}
+	
+
 }
 
 void	Handler::_cmd_topic(Message &msg, User &user) {

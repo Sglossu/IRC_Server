@@ -16,6 +16,7 @@ void	Handler::_error_msg(User &user, int er,const std::string &msg) {
 		case 431: error_msg += user.getNick() + " :No nickname given"; break;
 		case 432: error_msg += user.getNick() + " " + msg + " :Erroneus nickname"; break;
 		case 433: error_msg += user.getNick() + " " + msg + " :Nickname is already in use"; break;
+		case 441: error_msg += user.getNick() + " " + msg + " :They aren't on that channel"; break;
 		case 442: error_msg += user.getNick() + " " + msg + " :You're not on that channel"; break;
 		case 443: error_msg += user.getNick() + " " + msg + " :Is already on channel"; break;
 		case 451: error_msg += user.getNick() + " :You have not registered"; break;
