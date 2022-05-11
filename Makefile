@@ -19,7 +19,7 @@ SRCS_FILES		= main \
 				  handler/Handler \
 				  handler/commands/commands \
 				  handler/error_msg \
-				  handler/commands/ping \
+				  handler/commands/system \
 				  handler/commands/cmd_mode \
 				  handler/commands/registration \
 				  handler/commands/user_cmds \

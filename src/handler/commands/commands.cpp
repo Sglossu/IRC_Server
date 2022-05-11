@@ -10,6 +10,7 @@ void	Handler::_registration_commands() {
 
 	// user_cmd
     _commands["PRIVMSG"] = &Handler::_cmd_privmsg;
+    _commands["AWAY"] = &Handler::_cmd_away;
 
 	// channel
 	_commands["JOIN"] = &Handler::_cmd_join;
@@ -21,6 +22,8 @@ void	Handler::_registration_commands() {
 	_commands["NAMES"] = &Handler::_cmd_names;
 
 	// system
+	_commands["WHO"] = &Handler::_cmd_who;
+	_commands["ISON"] = &Handler::_cmd_ison;
 	_commands["PING"] = &Handler::_cmd_ping_pong;
 
 }

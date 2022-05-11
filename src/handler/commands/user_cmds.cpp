@@ -10,21 +10,26 @@ const std::string Handler::_form_privmsg(const Message &raw_msg, const User &sen
 }
 
 void    Handler::_cmd_privmsg_channel(User &user, const std::string &name, const std::string &msg) {
-    Channel *channel = _server.map_channels[name];
 
-    if (!channel)
+    if (!_server.map_channels.count(name))
         return _error_msg(user, 401, name);
+    Channel *channel = _server.map_channels[name];
+	if (!_server._is_user_on_channel(name, user.getNick()))
+        return _error_msg(user, 404, name);
     if (channel->_is_user_in_banlist(user.getNick()))
         return _error_msg(user, 404, name);
     _write_to_channel(*channel, msg, user.getNick());
 }
 
 void    Handler::_cmd_privmsg_user(User &user, const std::string &name, const std::string &msg) {
-    User *recv = _server.mapnick_users[name];
-    if (!recv)
+    if (!_server.mapnick_users.count(name))
         return _error_msg(user, 401, name);
-    if (recv->getRplAway().size())
-        return _server.write_to_client(user.getFdSock(), prefix_msg(user) + recv->getRplAway());
+    User *recv = _server.mapnick_users[name];
+    if (recv->getRplAway().size()) {
+        std::string awayMsg;
+        awayMsg = user.getNick() + " " + recv->getNick() + " " + recv->getRplAway();
+        return _cmd_responses(awayMsg, user, 301);
+    }
     // todo можно добавить чек на "черный  список"
     _server.write_to_client(name, msg);
 }
@@ -36,7 +41,6 @@ void    Handler::_cmd_privmsg(Message &msg, User &user) {
 		return _error_msg(user, 411, "");
     if (msg.get_params().size() < 2)
         return _error_msg(user, 412, "");
-    
     
     std::string         receiver_nick;
     std::istringstream  receivers_stream(msg.get_params()[0]);
@@ -50,5 +54,15 @@ void    Handler::_cmd_privmsg(Message &msg, User &user) {
         else
             _cmd_privmsg_user(user, receiver_nick, privmsg);
     }
+}
+
+void	Handler::_cmd_away(Message &msg, User &user) {
+	std::cout << "cmd_away " << user.getNick() << std::endl;
+	if (msg.get_params().size() < 1 or msg.get_params()[0].empty()) {
+        user.setRplAway("");
+		return _cmd_responses(user.getNick(), user, 305);
+    }
+	user.setRplAway(msg.get_params()[0]);
+	return _cmd_responses(user.getNick(), user, 306);
 }
 

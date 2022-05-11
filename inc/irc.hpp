@@ -41,22 +41,15 @@
 # define BgWHITE "\x1b[47m"
 
 # define MAX_CLIENT		256
-// # define BACKLOG 100 
-// # define BUFFER_SIZE 10240
+# define INCORRECT_ARGV	"Use\n./ircserv [host:port_network:password_network] <port> <password>"
 
-# define INCORRECT_ARGV		"Use\n./ircserv [host:port_network:password_network] <port> <password>"
-// # define DEFAULT_ERROR_PAGE	"errors/404.html"
-// # define DEFAULT_INDEX		"index.html"
-// # define DEFAULT_MAX_BODY	1024 * 1024
+# define CR_LF			"\r\n"
+# define CR				"\n"
 
-#define CR_LF	"\r\n"
-#define CR		"\n"
-//  #define CR_LF	"\n"
-# include <algorithm>
+# define DEBUG			1
 
 template <typename T>
-std::string numberToString ( T Number )
-{
+std::string numberToString ( T Number ) {
 	std::ostringstream ss;
 	ss << Number;
 	return ss.str();
@@ -65,8 +58,3 @@ std::string numberToString ( T Number )
 void		critErr(std::string msg);
 int			stringToNumber (std::string &text);
 bool 		exist_in_vector(std::vector<std::string> &vec, std::string &obj);
-
-
-// bool		isPositiveDigit(std::string &s);
-// void		readSemicolon(std::istream &ifs);
-// std::string	&cutSemicolon(std::string &line);

@@ -3,6 +3,7 @@
 
 Channel::Channel(std::string name, User &user, std::string pass, Handler *handler) {
 	_name = name;
+	_flags = 0;
 	if (!pass.empty()) {
 		_flags |= HAS_PASS;
 		_pass = pass;
@@ -18,28 +19,30 @@ Channel::~Channel() {
 void Channel::_delete_user(const std::string &userNick) {
 	std::vector<std::string>::iterator it;
 
-	it = std::find(begin(_users), end(_users), userNick);
-	if (it != _users.end()) {
-		// todo: send user left the channel
+	it = std::find(_users.begin(), _users.end(), userNick);
+	if (it != _users.end())
 		_users.erase(it);
-	}
-
+	it = std::find(_operators.begin(), _operators.end(), userNick);
+	if (it != _operators.end())
+		_operators.erase(it);
+	if (!_operators.size() and _users.size())
+		_operators.push_back(_users[0]);
 }
 
 void	Channel::_join_user(User &user, std::string pass, bool after_invite) {
 	// check if invite-only
 	if (!after_invite && (_flags & INVITE_ONLY)) {
-		_handler->_error_msg(user, 473, "");
+		_handler->_error_msg(user, 473, _name);
 		return ;
 	}
 	// check ban
 	if (_flags & BAN_ALL)
-		_handler->_error_msg(user, 474, "");
+		_handler->_error_msg(user, 474, _name);
 	// check pass
 	if (!after_invite && (_flags & HAS_PASS) && _pass.compare(pass))
-		_handler->_error_msg(user, 475, "");
+		_handler->_error_msg(user, 475, _name);
 	else if (user.getChanels().size() > 10) {
-		_handler->_error_msg(user, 405, "");
+		_handler->_error_msg(user, 405, _name);
 	}
 	// если такой пользователь уже есть
 	else if(_is_user_on_channel(user.getNick()))

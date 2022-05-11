@@ -69,7 +69,8 @@ Server::~Server() {
 }
 
 void Server::write_to_client(int fd, const std::string &msg) {
-	std::cout << "--> send by fd " << fd << ": " << msg;
+	if (DEBUG)
+		std::cout << "--> send by fd " << fd << ": " << msg;
 	int nbytes = msg.size();
 	try {
 		if (send(fd, msg.c_str(), nbytes, 0) == -1)
@@ -83,8 +84,10 @@ void Server::write_to_client(int fd, const std::string &msg) {
 void Server::write_to_client(std::string nick, const std::string &msg) { // todo before using need fix segfault with unknown nicks
 	int nbytes = msg.size();
 	std::cout << "--> send by nick " << nick << ": " << msg;
+	if (!mapnick_users.count(nick))
+		return ;
 	User *recv =  mapnick_users[nick];
-	if (recv and recv->getFdSock() != -1) {
+	if (recv->getFdSock() != -1) {
 		int fd = recv->getFdSock();
 		try {
 			if (send(fd, msg.c_str(), nbytes, 0) == -1)
@@ -184,12 +187,15 @@ void Server::start() {
 						working_with_client(act_set[i].fd);
 					}
 				}
+				// ошибка на соединении
+				else if (act_set[i].revents & POLLNVAL or act_set[i].revents & POLLHUP or act_set[i].revents & POLLERR) {
+					if (act_set[i].fd != act_set[0].fd)
+						mapfd_users[act_set[i].fd]->set_flag(DISCONNECTED);
+				}
 			}
 		}
 		// Этнические чистки
 		clear_disconnected();
-
-
 	}
 }
 
@@ -205,21 +211,32 @@ void	Server::clear_disconnected() {
 			// удаление из каналов
 			std::vector<std::string>	channels_user = mapfd_users[act_set[i].fd]->getChanels();
 			std::string 				nick_user = mapfd_users[act_set[i].fd]->getNick();
-			for (int j = 0; j < channels_user.size(); j++) {
-				map_channels[channels_user[j]]->_delete_user(nick_user);
-				// если в канале больше никого не осталось
-				if (map_channels[channels_user[j]]->getUsers().size() == 0) {
-					delete map_channels[channels_user[j]];
-					map_channels.erase(channels_user[j]);
+			for (int j = 0; j < channels_user.size(); j++) 
+				if (map_channels.count(channels_user[j])) {
+					map_channels[channels_user[j]]->_delete_user(nick_user);
+					handler->_write_to_channel(channels_user[j], *mapfd_users[act_set[i].fd], "PART " + channels_user[j]);
 				}
-			}
-
+			delete mapfd_users[act_set[i].fd];
 			mapfd_users.erase(act_set[i].fd);
 			handler->clear_buf(act_set[i].fd);
 			close(act_set[i].fd);
 			act_set.erase(it + i);
 			--i;
 		}
+	std::map<std::string, Channel *>:: iterator it_map = map_channels.begin();
+	while (it_map != map_channels.end()) {
+		if (!it_map->second->getOperators().size()) {
+			if (DEBUG)
+				std::cout << RED"DELETE channel from clear_disconnected " << it_map->second->getName() << RESET << std::endl;
+			delete it_map->second;
+			it_map = map_channels.erase(it_map);
+		}
+		else
+			it_map++;
+
+	}
+
+
 	// printf("len pollfd after cleaning %zu\n len users %zu\n", act_set.size(), mapfd_users.size());
 }
 

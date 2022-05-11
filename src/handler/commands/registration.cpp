@@ -14,7 +14,7 @@ void	Handler::_cmd_pass(Message &msg, User &user) {
 	std::cout << "cmd_pass " << user.getUsername() << std::endl;
 	std::cout << "Incoming pass: " << msg.get_params()[0] << " size (" << msg.get_params()[0].size() << ")" << std::endl;
 	if  (!msg.get_params().size())
-		_error_msg(user, 461, "");
+		_error_msg(user, 461, "PASS");
 	else if (msg.get_params()[0].compare(_server.getPass())) {
 		std::cout << "<User: fd " << user.getFdSock() << "> password is incorrect" << std::endl;
 		_error_msg(user, 464, "");
@@ -34,13 +34,13 @@ void	Handler::_cmd_nick(Message &msg, User &user) {
 	else if (!msg.get_params().size())
 		_error_msg(user, 431, "");
 	else if (!is_nickname_correct(msg.get_params()[0]))
-		_error_msg(user, 432, "");
+		_error_msg(user, 432, msg.get_params()[0]);
 	else
 	{
 		for (std::map<int, User *>::iterator it = _server.mapfd_users.begin(); it != _server.mapfd_users.end(); it++)
 		{
 			if (!it->second->getNick().compare(msg.get_params()[0])) {
-				_error_msg(user, 433, "");
+				_error_msg(user, 433, msg.get_params()[0]);
 				return ;
 			}
 		}
@@ -57,7 +57,7 @@ void	Handler::_cmd_user(Message &msg, User &user) {
 		return ;
 	}
 	else if (msg.get_params().size() < 4) {
-		_error_msg(user, 461, "");
+		_error_msg(user, 461, "USER");
 		return ;
 	}
 	user.setUsername(msg.get_params()[0]);
@@ -75,7 +75,7 @@ void	Handler::_cmd_oper(Message &msg, User &user) {
 	std::cout << "cmd_oper " << user.getUsername() << std::endl;
 
 	if (msg.get_params().size() < 2) {
-		_error_msg(user, 461, "");
+		_error_msg(user, 461, "OPER");
 		return ;
 	}
 	for (std::map<int, User *>::iterator it = _server.mapfd_users.begin(); it != _server.mapfd_users.end(); it++)

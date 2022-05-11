@@ -45,6 +45,7 @@ ircserv
 *.hex
 
 # Debug files
+build/
 *.dSYM/i
 .idea/
 .vscode/

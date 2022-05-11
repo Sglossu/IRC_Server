@@ -39,6 +39,8 @@ private:
 	void				_registration_modes();
 
 	// modes
+	void		_mode_user(User &user, const std::string &name, const std::string &mode);
+
 	void		_mode_o(const std::vector<std::string> &param, Channel &channel, User &user, bool flag);
 	void		_mode_p(const std::vector<std::string> &param, Channel &channel, User &user, bool flag);
 	void		_mode_s(const std::vector<std::string> &param, Channel &channel, User &user, bool flag);
@@ -48,6 +50,8 @@ private:
 
 	// system
 	void		_cmd_ping_pong(Message &msg, User &user);
+	void		_cmd_who(Message &msg, User &user);
+	void		_cmd_ison(Message &msg, User &user);
 
 	// registration
 	void		_cmd_pass(Message &msg, User &user);
@@ -63,12 +67,15 @@ private:
 	void    	_cmd_privmsg_channel(User &user, const std::string &name, const std::string &msg);
 	void    	_cmd_privmsg_user(User &user, const std::string &name, const std::string &msg);
 	void		_cmd_privmsg(Message &msg, User &user);
+	void		_cmd_away(Message &msg, User &user);
+
 
 	// channels
 	void				_cmd_join(Message &msg, User &user);
 	void				_cmd_invite(Message &msg, User &user);
 	void				_cmd_kick(Message &msg, User &user);
 	void				_cmd_mode(Message &msg, User &user);
+	
 
 public:
 	Handler(Server &server);
