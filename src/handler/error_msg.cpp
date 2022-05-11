@@ -29,7 +29,8 @@ void	Handler::_error_msg(User &user, int er,const std::string &msg) {
 		case 475: error_msg += user.getUsername() + " :Cannot join channel (+k)\r\n"; break;
 		case 482: error_msg += user.getUsername() + " :You're not channel operator\r\n"; break;
 		case 501: error_msg += user.getUsername() + " :Unknown MODE flag\r\n"; break;
-		case 502: error_msg += user.getUsername() + " :Password is not entered\r\n"; break;
+		case 502: error_msg += user.getNick() + " :Cant change mode for other users\r\n"; break;
+		case 0: error_msg  = ":IrcServer ERROR " + msg + CR_LF; break;
 	}
 	_server.write_to_client(user.getFdSock(), error_msg);
 }
@@ -40,6 +41,7 @@ void Handler::_cmd_responses(std::string msg, User &user, int er) {
 	std::string	resp_msg;
 	resp_msg = ":IrcServer " + numberToString(er) + " ";
 	switch (er) {
+		case 221: resp_msg += msg; break;
 		case 301: resp_msg += msg; break;
 		case 303: resp_msg += msg; break;
 		case 305: resp_msg += msg + " :You are no longer marked as being away"; break;

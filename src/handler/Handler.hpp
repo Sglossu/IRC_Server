@@ -39,6 +39,8 @@ private:
 	void				_registration_modes();
 
 	// modes
+	void		_mode_user(User &user, const std::string &name, const std::string &mode);
+
 	void		_mode_o(const std::vector<std::string> &param, Channel &channel, User &user, bool flag);
 	void		_mode_p(const std::vector<std::string> &param, Channel &channel, User &user, bool flag);
 	void		_mode_s(const std::vector<std::string> &param, Channel &channel, User &user, bool flag);
@@ -73,6 +75,7 @@ private:
 	void				_cmd_invite(Message &msg, User &user);
 	void				_cmd_kick(Message &msg, User &user);
 	void				_cmd_mode(Message &msg, User &user);
+	
 
 public:
 	Handler(Server &server);

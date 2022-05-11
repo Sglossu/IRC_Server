@@ -108,22 +108,50 @@ void	Handler::_mode_b(const std::vector<std::string> &param, Channel &channel, U
 	}
 }
 
+void	Handler::_mode_user(User &user, const std::string &name, const std::string &mode) {
+	if (!_server.mapnick_users.count(name))
+		return _error_msg(user, 401, "");
+	if (user.getNick() != name)
+		return _error_msg(user, 502, "");
+
+	if (mode.empty()) {
+		std::string msg = user.getNick() + " +";
+		unsigned char flags = user.get_flags();
+		if (flags & REGISTERED)
+			msg += "r";
+		if (flags & INVISIBLE)
+			msg += "i";
+		return _cmd_responses(msg, user, 221);
+	}
+	
+	// пока обаратываем только видимость/невидимость, которую многие клиенты шлют сразу после регистрации
+	if (mode.find("+") == 0 and mode.find("i") != std::string::npos)
+		user.set_flag(INVISIBLE);
+	else if (mode.find("-") == 0 and mode.find("i") != std::string::npos and user.get_flags() & INVISIBLE)
+		user.del_flag(INVISIBLE);
+	return _server.write_to_client(user.getFdSock(), ":IrcServer MODE " + mode + CR_LF);
+}
+
 void	Handler::_cmd_mode(Message &msg, User &user) {
-	std::cout << "cmd_mode " << user.getUsername() << std::endl;
-	// недостаточно аргументов
-	if (msg.get_params().size() < 2) {
-		_error_msg(user, 461, "");
-		return;
-	}
-		// проверка канала на существование
-	else if (_server.map_channels.find(msg.get_params()[0]) == _server.map_channels.end()) {
-		_error_msg(user, 403, "");
-		return;
-	}
+	std::cout << "cmd_mode " << user.getNick() << std::endl;
 
 	std::string name_channel = msg.get_params()[0];
-	std::string modes = msg.get_params()[1];
-	std::vector<std::string>::const_iterator it;
+	std::string modes;
+	if (msg.get_params().size() >= 2)
+		modes = msg.get_params()[1];
+
+	// проверка что это имя пользователя а не канала
+	if (!name_channel.empty() and name_channel[0] != '#' and name_channel[0] != '@')
+		return _mode_user(user, name_channel, modes);
+
+	// проверка канала на существование
+	else if (_server.map_channels.find(name_channel) == _server.map_channels.end())
+		return _error_msg(user, 403, "");
+
+	// недостаточно аргументов. todo вообще это не так работает. должны вернуться текущие права канала
+	if (msg.get_params().size() < 2)
+		return _error_msg(user, 461, "");
+
 	// проверка пользователя на оператора канала
 	if ( ! (_server.map_channels[name_channel]->_is_user_operator(user.getNick())) ) {
 		_error_msg(user, 482, "");
