@@ -101,8 +101,6 @@ void	Handler::_cmd_part(Message &msg, User &user) {
 }
 
 void	Handler::_cmd_invite(Message &msg, User &user) {
-//	Параметры: <nickname> <channel>
-
 	std::cout << "cmd_invite " << user.getUsername() << std::endl;
 	if (msg.get_params().size() < 2)
 		_error_msg(user, 461, "INVITE");
@@ -154,7 +152,6 @@ void	Handler::_cmd_kick(Message &msg, User &user) {
 
 	std::stringstream			ss_nicks(msg.get_params()[1]);
 	std::string					nick;
-	// std::vector<std::string>	nicks;
 	// записываем в вектор пользователей
 	while (std::getline(ss_nicks, nick, ',')) {
 		if (!channel->_is_user_on_channel(nick)) {
