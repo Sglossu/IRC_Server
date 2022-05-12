@@ -10,6 +10,7 @@ void	Handler::_registration_commands() {
 
 	// user_cmd
     _commands["PRIVMSG"] = &Handler::_cmd_privmsg;
+    _commands["NOTICE"] = &Handler::_cmd_notice;
     _commands["AWAY"] = &Handler::_cmd_away;
 
 	// channel

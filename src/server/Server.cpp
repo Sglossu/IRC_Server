@@ -27,11 +27,11 @@ void Server::print_ip() {
 		if (p->ai_family == AF_INET) { // IPv4
 			struct sockaddr_in *ipv4 = (struct sockaddr_in *)p->ai_addr;
 			addr = &(ipv4->sin_addr);
-			ipver = "IPv4";
+			ipver = (char *)"IPv4";
 		} else { // IPv6
 			struct sockaddr_in6 *ipv6 = (struct sockaddr_in6 *)p->ai_addr;
 			addr = &(ipv6->sin6_addr);
-			ipver = "IPv6";
+			ipver = (char *)"IPv6";
 		}
 		char buf_ipstr[INET6_ADDRSTRLEN];
 		// преобразуем IP в строку и выводим его:
@@ -211,7 +211,7 @@ void	Server::clear_disconnected() {
 			// удаление из каналов
 			std::vector<std::string>	channels_user = mapfd_users[act_set[i].fd]->getChanels();
 			std::string 				nick_user = mapfd_users[act_set[i].fd]->getNick();
-			for (int j = 0; j < channels_user.size(); j++) 
+			for (size_t j = 0; j < channels_user.size(); j++) 
 				if (map_channels.count(channels_user[j])) {
 					map_channels[channels_user[j]]->_delete_user(nick_user);
 					handler->_write_to_channel(channels_user[j], *mapfd_users[act_set[i].fd], "PART " + channels_user[j]);

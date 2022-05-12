@@ -167,7 +167,7 @@ void	Handler::_cmd_mode(Message &msg, User &user) {
 		modes[0] == '+' ? flag_plus_minus = true : flag_plus_minus = false;
 		modes.erase(0, 1);
 //		std::cout << "modes: " << modes <<std::endl;
-		for (int i = 0; i < modes.size(); i++) {
+		for (size_t i = 0; i < modes.size(); i++) {
 			if (_set_modes.count(modes[i]) == 0) {
 				std::string ch;
 				ch += modes[i];
@@ -176,7 +176,7 @@ void	Handler::_cmd_mode(Message &msg, User &user) {
 			}
 		}
 		// УРА! ЗАПУСКАЕМ МОДЫ!
-		for (int i = 0; i < modes.size(); i++) {
+		for (size_t i = 0; i < modes.size(); i++) {
 			(this->*_modes[modes[i]])(msg.get_params(), *_server.map_channels[name_channel], user, flag_plus_minus);
 		}
 	}
