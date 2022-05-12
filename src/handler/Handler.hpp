@@ -49,7 +49,8 @@ private:
 	void		_mode_b(const std::vector<std::string> &param, Channel &channel, User &user, bool flag);
 
 	// system
-	void		_cmd_ping_pong(Message &msg, User &user);
+	void		_cmd_ping(Message &msg, User &user);
+	void		_cmd_pong(Message &msg, User &user);
 	void		_cmd_who(Message &msg, User &user);
 	void		_cmd_ison(Message &msg, User &user);
 

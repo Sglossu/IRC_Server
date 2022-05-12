@@ -103,32 +103,33 @@ void	Handler::_cmd_part(Message &msg, User &user) {
 void	Handler::_cmd_invite(Message &msg, User &user) {
 	std::cout << "cmd_invite " << user.getUsername() << std::endl;
 	if (msg.get_params().size() < 2)
-		_error_msg(user, 461, "INVITE");
+		return _error_msg(user, 461, "INVITE");
+
+	std::string nick = msg.get_params()[0];
+	std::string channel_name = msg.get_params()[1];
+
 	// канала нет
-	else if (!_is_channel_exist(msg.get_params()[1])) {
-		_error_msg(user, 403, msg.get_params()[1]);
+	if (!_is_channel_exist(channel_name)) {
+		return _error_msg(user, 403, channel_name);
 	}
 	// приглашает неизвестного
-	else if (!_is_nick_exist(msg.get_params()[0])) {
-		_error_msg(user, 401, msg.get_params()[0]);
+	if (!_is_nick_exist(nick)) {
+		return _error_msg(user, 401, nick);
 	}
 	// пригласивший сам не на канале
-	else if (!_server._is_user_on_channel(msg.get_params()[1], user.getNick()))
-		_error_msg(user, 442, msg.get_params()[1]);
+	if (!_server._is_user_on_channel(channel_name, user.getNick()))
+		return _error_msg(user, 442, channel_name);
 	// если чел, кого приглашают, уже на канале - обрабатывается в канале в join user
 	// пригласивший - не оператор
-	else if (!_server.map_channels[msg.get_params()[1]]->_is_user_operator(user.getNick()))
-		_error_msg(user, 482, msg.get_params()[1]);
+	if (!_server.map_channels[channel_name]->_is_user_operator(user.getNick()))
+		return _error_msg(user, 482, channel_name);
 	// else DONE! подключить к каналу)
-	else {
-		_cmd_responses(msg.get_params()[1] + " " + msg.get_params()[0], user, 341);
-		_server.map_channels[msg.get_params()[1]]->
-			_join_user(*_server.mapnick_users[msg.get_params()[0]], "", true);
-		std::string nick = msg.get_params()[0];
-		std::string ms = prefix_msg(user) + "INVITE " + nick + " :"+ msg.get_params()[1] + CR_LF;
-		_write_to_channel(msg.get_params()[1], user, ms);
-	}
-
+	_cmd_responses(channel_name + " " + nick, user, 341);
+	
+	_server.map_channels[channel_name]->
+		_join_user(*_server.mapnick_users[nick], "", true);
+	std::string ms = prefix_msg(user) + "INVITE " + nick + " :"+ channel_name + CR_LF;
+	_write_to_channel(channel_name, user, ms);
 }
 
 void	Handler::_cmd_kick(Message &msg, User &user) {

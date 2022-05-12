@@ -1,15 +1,27 @@
 #include "../Handler.hpp"
 
-void    Handler::_cmd_ping_pong(Message &msg, User &user) {
+void    Handler::_cmd_ping(Message &msg, User &user) {
 	if (DEBUG > 1)
-    	std::cout << "ping_pong msg" << user.getNick() << std::endl;
+    	std::cout << "ping msg" << user.getNick() << std::endl;
 
     if (!msg.get_params().size())
-		_error_msg(user, 461, "PONG");
+		_error_msg(user, 461, "PING");
 	else {
 		std::string privmsg = "PONG :" + msg.get_params()[0] + CR_LF;
 	    _server.write_to_client(user.getFdSock(), privmsg);
 	}
+}
+
+void    Handler::_cmd_pong(Message &msg, User &user) {
+	if (DEBUG > 1)
+    	std::cout << "pong msg" << user.getNick() << std::endl;
+
+    if (!msg.get_params().size())
+		_error_msg(user, 461, "PONG");
+	// else {
+	// 	std::string privmsg = "PING :" + msg.get_params()[0] + CR_LF;
+	//     _server.write_to_client(user.getFdSock(), privmsg);
+	// }
 }
 
 void    Handler::_cmd_ison(Message &msg, User &user) {
