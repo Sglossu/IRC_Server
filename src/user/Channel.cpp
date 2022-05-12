@@ -127,6 +127,16 @@ bool	Channel::_is_user_in_banlist(std::string nick) {
 	return false;
 }
 
+void	Channel::changeNick(const std::string &old_nick, const std::string &new_nick) {
+	std::replace(_users.begin(), _users.end(), old_nick, new_nick);
+	std::replace(_operators.begin(), _operators.end(), old_nick, new_nick);
+	if (_ban_lists.count(old_nick)) {
+		_ban_lists.erase(old_nick);
+		_ban_lists.insert(new_nick);
+	}
+}
+
+
 const std::string &Channel::getName() const {
 	return _name;
 }

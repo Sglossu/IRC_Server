@@ -28,13 +28,12 @@ private:
 	std::map<char, modes_func>			_modes;
 	std::string 						_host;
 
-	// std::map<int, User *>			*_pmapfd_users;
-
 	bool		_is_valid_nick(std::string nick);
 	bool		_is_valid_channelname(std::string	name);
 
-    const std::string _form_privmsg(const Message &raw_msg, const User &sender, std::string &receiver_nick);
-    const std::string _form_notice(const Message &raw_msg, const User &sender, std::string &receiver_nick);
+    const std::string	_form_privmsg(const Message &raw_msg, const User &sender, std::string &receiver_nick);
+    const std::string	_form_notice(const Message &raw_msg, const User &sender, std::string &receiver_nick);
+	void				_change_old_nick(User &user, std::string new_nick);
 
 	void				_registration_commands();
 	void				_registration_modes();

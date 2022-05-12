@@ -99,6 +99,11 @@ void Server::write_to_client(std::string nick, const std::string &msg) { // todo
 	}
 }
 
+void Server::broadcast_message(std::string &msg) {
+	for (size_t i = 1; i < act_set.size(); i++)
+		write_to_client(act_set[i].fd, msg);
+}
+
 void Server::working_with_client(int fd)
 {
 	int		nbytes;
