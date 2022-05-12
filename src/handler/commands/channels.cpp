@@ -9,7 +9,7 @@ bool	is_channelname_correct(std::string channel) {
 }
 
 void	Handler::_delete_nick_from_setnicks(Channel &channel) {
-	for (int i = 0; i < channel.getUsers().size(); i++) {
+	for (size_t i = 0; i < channel.getUsers().size(); i++) {
 		_set_nicks.erase(channel.getUsers()[i]);
 	}
 }
@@ -230,7 +230,7 @@ void	Handler::_cmd_names(Message &msg, User &user) {
 	// NAMES и параметры
 	else {
 		std::vector<std::string> channels = msg.get_params();
-		for (int i = 0; i < channels.size(); i++)
+		for (size_t i = 0; i < channels.size(); i++)
 		{
 			if (_is_channel_exist(channels[i]))
 			{
