@@ -25,7 +25,8 @@ void	Handler::_registration_commands() {
 	// system
 	_commands["WHO"] = &Handler::_cmd_who;
 	_commands["ISON"] = &Handler::_cmd_ison;
-	_commands["PING"] = &Handler::_cmd_ping_pong;
+	_commands["PING"] = &Handler::_cmd_ping;
+	_commands["PONG"] = &Handler::_cmd_pong;
 
 }
 
