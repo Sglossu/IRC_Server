@@ -50,4 +50,6 @@ public:
 	void							setPass(const std::string &pass);
 	void							setInBanList(std::string &nick_user);
 	void							delFromBanList(std::string &nick_user);
+	void							changeNick(const std::string &old_nick, const std::string &new_nick);
+
 };
