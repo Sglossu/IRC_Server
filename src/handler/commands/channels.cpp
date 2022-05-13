@@ -121,15 +121,16 @@ void	Handler::_cmd_invite(Message &msg, User &user) {
 		return _error_msg(user, 442, channel_name);
 	// если чел, кого приглашают, уже на канале - обрабатывается в канале в join user
 	// пригласивший - не оператор
-	if (!_server.map_channels[channel_name]->_is_user_operator(user.getNick()))
+	if (_server.map_channels[channel_name]->getFlags() & INVITE_ONLY
+		and !_server.map_channels[channel_name]->_is_user_operator(user.getNick()))
 		return _error_msg(user, 482, channel_name);
 	// else DONE! подключить к каналу)
-	_cmd_responses(channel_name + " " + nick, user, 341);
+	_cmd_responses(nick + " " + channel_name, user, 341);
 	
 	_server.map_channels[channel_name]->
 		_join_user(*_server.mapnick_users[nick], "", true);
-	std::string ms = prefix_msg(user) + "INVITE " + nick + " :"+ channel_name + CR_LF;
-	_write_to_channel(channel_name, user, ms);
+	std::string ms = prefix_msg(user) + "INVITE " + nick + " " + channel_name + CR_LF;
+	_server.write_to_client(nick, ms);
 }
 
 void	Handler::_cmd_kick(Message &msg, User &user) {

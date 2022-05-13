@@ -51,7 +51,7 @@ void Handler::_cmd_responses(std::string msg, User &user, int er) {
 		case 315: resp_msg += msg + " :End of WHO list"; break;
 		case 331: resp_msg += msg + " :No topic is set"; break;
 		case 332: resp_msg += msg; break; // сюда придет полный msg с сообщением
-		case 341: resp_msg += msg; break; // сюда придет полный msg с сообщением
+		case 341: resp_msg += user.getNick() + " " + msg; break; // сюда придет полный msg с сообщением
 		case 352: resp_msg += msg; break; // сюда придет полный msg с сообщением
 		case 353: resp_msg += msg; break; // сюда придет полный msg с сообщением
 		case 366: resp_msg += msg + " :End of /NAMES list"; break;
