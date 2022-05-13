@@ -1,5 +1,3 @@
-# import socket
-# import os, sys
 import asyncio
 
 conf = {
@@ -34,10 +32,15 @@ def parce_line(msg: str):
     
     return prefix, args
 
+async def handler(recv, msg):
+    if {"boobs", "tits", "сиськи"} & set(msg.split()):
+        return f"NOTICE {recv} :(.)(.)"
+    return None
+        
 async def handlers(prefix, args):
     match args:
-        case "PRIVMSG", recv, msg:
-            return f"PRIVMSG {recv} :get msg '{msg}'"
+        case "PRIVMSG"|"NOTICE", recv, msg:
+            return await handler(recv, msg)
     return None
 
 async def main(conf: dict):
@@ -67,10 +70,9 @@ async def main(conf: dict):
         if not line:
             break   
         prefix, args = parce_line(line)
-        # print(line)
         if len(args):
             msg = await handlers(prefix, args)
-            if msg:
+            if msg is not None:
                 send(msg)
     writer.close()
 
