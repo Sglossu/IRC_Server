@@ -1,12 +1,7 @@
 import asyncio
+from configs import tits, conf, weather_keys
 
-conf = {
-    "host": "localhost",
-    "port": 6667,
-    "pasw": "1234",
-    "nick": "ded",
-    "name": "Maksim"
-}
+
 
 def parce_line(msg: str):
     msg = msg.decode('utf-8').rstrip('\r\n')
@@ -32,15 +27,25 @@ def parce_line(msg: str):
     
     return prefix, args
 
-async def handler(recv, msg):
-    if {"boobs", "tits", "сиськи"} & set(msg.split()):
-        return f"NOTICE {recv} :(.)(.)"
-    return None
+async def handler_tits(recv, msg):
+    return f"NOTICE {recv} :(.)(.)"
+
+async def handler_weater(recv, msg):
+    msg = msg.replace(',', ' ').rstrip('?')
+    msg = msg.split()
+    if len(msg) >= 2:
+        city_name = msg[1].lower()
+    url_w = f"https://api.openweathermap.org/data/2.5/weather?q={city_name}&appid={conf['k']}"
+
+    return f"NOTICE {recv} :url {url_w}"
         
 async def handlers(prefix, args):
     match args:
-        case "PRIVMSG"|"NOTICE", recv, msg:
-            return await handler(recv, msg)
+        case "PRIVMSG"|"NOTICE", recv, msg if set(msg.split()) & tits:
+            return await handler_tits(recv, msg)
+        case "PRIVMSG"|"NOTICE", recv, msg if set(msg.split()) & weather_keys:
+            return await handler_weater(recv, msg)
+        
     return None
 
 async def main(conf: dict):
@@ -50,7 +55,7 @@ async def main(conf: dict):
         writer.write(msg.encode() + b'\r\n')
     
     send("PASS " + conf['pasw'])
-    send("NICK " + conf['nick'])
+    send("NICK " + conf['nick'])    
     send("USER " + conf['name'] + " " + conf['host'] + " " + conf['host'] + " " + conf['name'])
     while True:
         line = await reader.readline()
@@ -64,7 +69,7 @@ async def main(conf: dict):
         writer.close()
         exit(1)
 
-    print("succes connect")
+    print("Succes connect")
     while True:
         line = await reader.readline()
         if not line:
