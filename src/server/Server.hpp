@@ -38,7 +38,9 @@ private:
 	std::vector<std::string>			ipstr;
 
 	void							working_with_client(int fd);
+	void							send_msg_to_client(int fd);
 	void							clear_disconnected();
+	void							add_clients_to_send();
 	void							print_ip();
 
 public:
