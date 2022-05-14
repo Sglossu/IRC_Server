@@ -49,6 +49,8 @@ build/
 *.dSYM/i
 .idea/
 .vscode/
+__pycache__/
+bots/venv
 /cmake-build-debug/
 *.su
 *.idb
