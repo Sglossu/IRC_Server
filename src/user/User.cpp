@@ -93,7 +93,14 @@ const std::vector<std::string> &User::getChanels() const {
 	return _chanels;
 }
 
-// добавляет сообщение для отправки пользователю. Максимально за раз отправляется до 512 байт
+size_t	&User::getAttemp() {
+	return _attemp;
+}
+void	User::setAttemp(size_t n) {
+	_attemp = n;
+}
+
+// добавляет сообщение для отправки пользователю. Максимально заc раз отправляется до 512 байт
 void	User::addMsgToSend(const std::string &msg) {
 	if (_to_send.size() and (_to_send[_to_send.size() - 1].size() + msg.size() < 512))
 		_to_send[_to_send.size() - 1] += msg;

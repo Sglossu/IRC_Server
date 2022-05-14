@@ -163,7 +163,7 @@ void Server::start() {
 	act_set.push_back(new_Pollfd);
 
 	struct sockaddr_in remoteaddr;
-	socklen_t 				size_client = sizeof (remoteaddr);
+	socklen_t	size_client = sizeof (remoteaddr);
 
 	while (true)
 	{
@@ -232,16 +232,23 @@ void	Server::clear_disconnected() {
 	it = act_set.begin();
 	for (size_t i = 1; i < act_set.size(); i++)
 		if (mapfd_users[act_set[i].fd]->get_flags() & DISCONNECTED) {
-
+			User *user = mapfd_users[act_set[i].fd];
+			
+			// если есть неотправленные сообщения для юзера - то не отключаем сразу
+			// а даем несколько попыток для отправки сообщения
+			if (user->haveMsgToSend() and user->getAttemp() < ATTEMP_TO_DISCONNECT) {
+				user->setAttemp(user->getAttemp() + 1);
+				continue;
+			}
 			// удаление из каналов
-			std::vector<std::string>	channels_user = mapfd_users[act_set[i].fd]->getChanels();
-			std::string 				nick_user = mapfd_users[act_set[i].fd]->getNick();
+			std::vector<std::string>	channels_user = user->getChanels();
+			std::string 				nick_user = user->getNick();
 			for (size_t j = 0; j < channels_user.size(); j++) 
 				if (map_channels.count(channels_user[j])) {
 					map_channels[channels_user[j]]->_delete_user(nick_user);
-					handler->_write_to_channel(channels_user[j], *mapfd_users[act_set[i].fd], "PART " + channels_user[j]);
+					handler->_write_to_channel(channels_user[j], *user, "PART " + channels_user[j]);
 				}
-			delete mapfd_users[act_set[i].fd];
+			delete user;
 			mapfd_users.erase(act_set[i].fd);
 			mapnick_users.erase(nick_user);
 			handler->clear_buf(act_set[i].fd);
