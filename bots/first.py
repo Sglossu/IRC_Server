@@ -1,4 +1,4 @@
-import asyncio
+import asyncio, aiohttp
 from configs import tits, conf, weather_keys
 
 
@@ -35,9 +35,19 @@ async def handler_weater(recv, msg):
     msg = msg.split()
     if len(msg) >= 2:
         city_name = msg[1].lower()
-    url_w = f"https://api.openweathermap.org/data/2.5/weather?q={city_name}&appid={conf['k']}"
+    url_w = f"https://api.openweathermap.org/data/2.5/weather?q={city_name}&appid={conf['k']}&units=metric&lang=ru"
+    async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(ssl=False)) as session:
+        async with session.get(url_w) as resp:
+            if resp.status != 200:
+                return f"NOTICE {recv} :cannot get weather for city_name"
+            data = await resp.json()
+            # print()
+            tip = data["weather"][0]["description"]
+            tmp = data["main"]["temp"]
+            wind = data["wind"]["speed"]
+            pogoda = f"Сейчас в {city_name} {tip}, {tmp} градусов. Сила ветра {wind}."
 
-    return f"NOTICE {recv} :url {url_w}"
+    return f"NOTICE {recv} :{pogoda}"
         
 async def handlers(prefix, args):
     match args:
