@@ -128,7 +128,7 @@ void	Handler::_write_to_channel(Channel &channel, const std::string &complite_ms
 
 	std::vector<std::string>  users = channel.getUsers();
 	for (size_t i = 0; i < users.size(); i++)
-		if (users[i] != exclude_nick)
+		if (users[i] != exclude_nick) // for exclude double messages in some clients
 			_server.write_to_client(users[i], complite_msg);
 }
 

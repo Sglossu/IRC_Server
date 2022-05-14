@@ -38,7 +38,9 @@ private:
 	std::vector<std::string>			ipstr;
 
 	void							working_with_client(int fd);
+	void							send_msg_to_client(int fd);
 	void							clear_disconnected();
+	void							add_clients_to_send();
 	void							print_ip();
 
 public:
@@ -51,6 +53,7 @@ public:
 	const std::string 				&getPass() const;
 	void							write_to_client(int fd, const std::string &msg);
 	void							write_to_client(std::string nick, const std::string &msg);
+	void							broadcast_message(std::string &msg);
 	bool							is_nick_exist(std::string &nick);
 	bool							_is_user_on_channel(std::string channel, std::string nick);
 	const std::string				&getLastIpstr() const;

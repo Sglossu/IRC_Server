@@ -2,6 +2,7 @@
 #include "../../inc/irc.hpp"
 // #include "Channel.hpp"
 
+#define ATTEMP_TO_DISCONNECT 2
 
 #define DISCONNECTED	0b10000000
 #define ENTER_PASS		0b01000000
@@ -24,10 +25,11 @@ private:
 	std::string					_message;
 	std::string					_pass;
 	std::string					_rplAway;
+	std::vector<std::string>	_to_send;
+	size_t						_attemp;
 
 public:
 	bool isBanned() const;
-
 	void setBanned(bool banned);
 
 private:
@@ -52,6 +54,15 @@ public:
 	void					setRealname(const std::string &realname);
 	const std::string		&getRplAway() const;
 	void					setRplAway(const std::string &rplAway);
+	size_t					&getAttemp();
+	void					setAttemp(size_t n);
+
+	void					addMsgToSend(const std::string &msg);
+	bool					haveMsgToSend() const;
+	void					clearFirstElementToSend();
+	const std::string		&getOneElementToSend() const;
+
+
 	
 
 	void					set_flag(unsigned char flag);

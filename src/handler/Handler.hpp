@@ -28,12 +28,12 @@ private:
 	std::map<char, modes_func>			_modes;
 	std::string 						_host;
 
-	// std::map<int, User *>			*_pmapfd_users;
-
 	bool		_is_valid_nick(std::string nick);
 	bool		_is_valid_channelname(std::string	name);
 
-    const std::string _form_privmsg(const Message &raw_msg, const User &sender, std::string &receiver_nick);
+    const std::string	_form_privmsg(const Message &raw_msg, const User &sender, std::string &receiver_nick);
+    const std::string	_form_notice(const Message &raw_msg, const User &sender, std::string &receiver_nick);
+	void				_change_old_nick(User &user, std::string new_nick);
 
 	void				_registration_commands();
 	void				_registration_modes();
@@ -49,7 +49,8 @@ private:
 	void		_mode_b(const std::vector<std::string> &param, Channel &channel, User &user, bool flag);
 
 	// system
-	void		_cmd_ping_pong(Message &msg, User &user);
+	void		_cmd_ping(Message &msg, User &user);
+	void		_cmd_pong(Message &msg, User &user);
 	void		_cmd_who(Message &msg, User &user);
 	void		_cmd_ison(Message &msg, User &user);
 
@@ -67,6 +68,9 @@ private:
 	void    	_cmd_privmsg_channel(User &user, const std::string &name, const std::string &msg);
 	void    	_cmd_privmsg_user(User &user, const std::string &name, const std::string &msg);
 	void		_cmd_privmsg(Message &msg, User &user);
+	void    	_cmd_notice_channel(User &user, const std::string &name, const std::string &msg);
+	void    	_cmd_notice_user(User &user, const std::string &name, const std::string &msg);
+	void		_cmd_notice(Message &msg, User &user);
 	void		_cmd_away(Message &msg, User &user);
 
 

@@ -26,28 +26,46 @@ void	Handler::_cmd_pass(Message &msg, User &user) {
 	}
 }
 
+void	Handler::_change_old_nick(User &user, std::string new_nick) {
+	// шлем всем сообщение о смене ника
+	std::string change_nick_msg = prefix_msg(user) + "NICK " + new_nick + CR_LF;
+	_server.broadcast_message(change_nick_msg);
+
+	_server.mapnick_users.erase(user.getNick());
+	_server.mapnick_users[new_nick] = &user;
+
+	// change nick to new in all user channels
+	const std::vector<std::string> uchannels = user.getChanels();
+	for (size_t i = 0; i < uchannels.size(); ++i){
+
+		if (!_server.map_channels.count(uchannels[i]))
+			continue;
+		
+		Channel *channel = _server.map_channels[uchannels[i]];
+		channel->changeNick(user.getNick(), new_nick);
+	}
+}
+
 void	Handler::_cmd_nick(Message &msg, User &user) {
 	std::cout << "cmd_nick " << user.getUsername() << std::endl;
 
 	if (!(user.get_flags() & ENTER_NICK) && !msg.get_prefix().empty())
-		_error_msg(user, 462, "");
-	else if (!msg.get_params().size())
-		_error_msg(user, 431, "");
-	else if (!is_nickname_correct(msg.get_params()[0]))
-		_error_msg(user, 432, msg.get_params()[0]);
-	else
-	{
-		for (std::map<int, User *>::iterator it = _server.mapfd_users.begin(); it != _server.mapfd_users.end(); it++)
-		{
-			if (!it->second->getNick().compare(msg.get_params()[0])) {
-				_error_msg(user, 433, msg.get_params()[0]);
-				return ;
-			}
-		}
-		user.setNick(msg.get_params()[0]);
-		user.set_flag(ENTER_NICK);
-		std::cout << "<User: fd " << user.getFdSock() << "> has nick {" << user.getNick() << "}" <<std::endl;
-	}
+		return _error_msg(user, 462, "");
+	if (!msg.get_params().size())
+		return _error_msg(user, 431, "");
+	std::string new_nick = msg.get_params()[0];
+	if (!is_nickname_correct(new_nick))
+		return _error_msg(user, 432, new_nick);
+
+	for (std::map<int, User *>::iterator it = _server.mapfd_users.begin(); it != _server.mapfd_users.end(); it++)
+		if (!it->second->getNick().compare(new_nick))
+			return _error_msg(user, 433, new_nick);
+	// если это смена ника, то меняем в мапе, в группах, и оповещаем всех пользователей
+	if (user.get_flags() & ENTER_NICK) 
+		_change_old_nick(user, new_nick);
+	user.setNick(new_nick);
+	user.set_flag(ENTER_NICK);
+	std::cout << "<User: fd " << user.getFdSock() << "> has nick {" << user.getNick() << "}" <<std::endl;
 }
 
 void	Handler::_cmd_user(Message &msg, User &user) {

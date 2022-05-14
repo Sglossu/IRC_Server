@@ -27,11 +27,11 @@ void Server::print_ip() {
 		if (p->ai_family == AF_INET) { // IPv4
 			struct sockaddr_in *ipv4 = (struct sockaddr_in *)p->ai_addr;
 			addr = &(ipv4->sin_addr);
-			ipver = "IPv4";
+			ipver = (char *)"IPv4";
 		} else { // IPv6
 			struct sockaddr_in6 *ipv6 = (struct sockaddr_in6 *)p->ai_addr;
 			addr = &(ipv6->sin6_addr);
-			ipver = "IPv6";
+			ipver = (char *)"IPv6";
 		}
 		char buf_ipstr[INET6_ADDRSTRLEN];
 		// преобразуем IP в строку и выводим его:
@@ -71,32 +71,43 @@ Server::~Server() {
 void Server::write_to_client(int fd, const std::string &msg) {
 	if (DEBUG)
 		std::cout << "--> send by fd " << fd << ": " << msg;
-	int nbytes = msg.size();
-	try {
-		if (send(fd, msg.c_str(), nbytes, 0) == -1)
-				throw "fail send";
-	}
-	catch (const std::exception &e) {
-    	std::cerr << "possible broken pipe" << e.what();
-	}
+	User *recv =  mapfd_users[fd];
+	if (recv->getFdSock() != -1) 
+		recv->addMsgToSend(msg);
+
+	// int nbytes = msg.size();
+	// try {
+	// 	if (send(fd, msg.c_str(), nbytes, 0) == -1)
+	// 			throw "fail send";
+	// }
+	// catch (const std::exception &e) {
+    // 	std::cerr << "possible broken pipe" << e.what();
+	// }
 }
 
 void Server::write_to_client(std::string nick, const std::string &msg) { // todo before using need fix segfault with unknown nicks
-	int nbytes = msg.size();
+	// int nbytes = msg.size();
 	std::cout << "--> send by nick " << nick << ": " << msg;
 	if (!mapnick_users.count(nick))
 		return ;
 	User *recv =  mapnick_users[nick];
 	if (recv->getFdSock() != -1) {
-		int fd = recv->getFdSock();
-		try {
-			if (send(fd, msg.c_str(), nbytes, 0) == -1)
-				throw "send";
-		}
-		catch (const std::exception &e) { // хорошо бы добавить отлов исключения broken pipe
-    		std::cerr << "possible broken pipe" << e.what();
-		}
+		recv->addMsgToSend(msg);
+		// int fd = recv->getFdSock();
+
+		// try {
+		// 	if (send(fd, msg.c_str(), nbytes, 0) == -1)
+		// 		throw "send";
+		// }
+		// catch (const std::exception &e) { // хорошо бы добавить отлов исключения broken pipe
+    	// 	std::cerr << "possible broken pipe" << e.what();
+		// }
 	}
+}
+
+void Server::broadcast_message(std::string &msg) {
+	for (size_t i = 1; i < act_set.size(); i++)
+		write_to_client(act_set[i].fd, msg);
 }
 
 void Server::working_with_client(int fd)
@@ -108,8 +119,7 @@ void Server::working_with_client(int fd)
 		std::cout << "Unprocees errors: not found user with this fd-key" << std::endl;
 		return ;
 	}
-	if ((nbytes = recv(fd, buf, 512, 0)) <= 0)
-	{
+	if ((nbytes = recv(fd, buf, 512, 0)) <= 0) {
 		// получена ошибка или соединение закрыто клиентом
 		if (nbytes == 0) {
 			// соединение закрыто
@@ -122,33 +132,38 @@ void Server::working_with_client(int fd)
 		}
 		mapfd_users[fd]->set_flag(DISCONNECTED);
 	}
-	else
-	{
+	else {
 		// у нас есть какие-то данные от клиента
 		buf[nbytes] = 0;
 		if (!(mapfd_users[fd]->get_flags() & DISCONNECTED))
 			handler->process_incomming_message(fd, buf);
-
-//		 for(size_t j = 1; j < act_set.size(); j++)
-//		 {
-//		 	// отсылаем данные всем!
-//		 	if (act_set[j].fd != fd)
-//		 		if (send(act_set[j].fd, buf, nbytes, 0) == -1)
-//		 			throw "send";
-//		 }
 	}
 }
 
+void	Server::send_msg_to_client(int fd) {
+	std::string msg = mapfd_users[fd]->getOneElementToSend();
+	int nbytes = msg.size();
+	try {
+		if (send(fd, msg.c_str(), nbytes, 0) == -1)
+			throw "fail send";
+		mapfd_users[fd]->clearFirstElementToSend();
+	}
+	catch (const std::exception &e) {
+    	std::cerr << "possible broken pipe" << e.what();
+	}
+
+}
 
 void Server::start() {
 	if (listen(listener, 10) < 0)
 		throw "listen";
 
+	fcntl(listener, F_SETFL, O_NONBLOCK);
 	pollfd	new_Pollfd = {listener, POLLIN, 0};
 	act_set.push_back(new_Pollfd);
 
 	struct sockaddr_in remoteaddr;
-	socklen_t 				size_client = sizeof (remoteaddr);
+	socklen_t	size_client = sizeof (remoteaddr);
 
 	while (true)
 	{
@@ -156,16 +171,18 @@ void Server::start() {
 		int ret = poll(act_set_pointer, act_set.size(), -1);
 		if (ret < 0)
 			throw "server: poll failure";
-		else if (ret == 0)
-		{
+		else if (ret == 0) {
 			std::cout << "Timeout" << std::endl;
-			continue;
 		}
 
 		else if (ret > 0)
 		{
 			for (size_t i = 0; i < act_set.size(); i++)
 			{
+				if (act_set[i].revents & POLLOUT) {
+					send_msg_to_client(act_set[i].fd);
+					act_set[i].events = POLLIN;
+				}
 				if (act_set[i].revents & POLLIN)
 				{
 					std::cout << "POLLINT at fd " << act_set[i].fd << std::endl;
@@ -174,6 +191,7 @@ void Server::start() {
 					{
 						// обработка нового соединения
 						new_sock_fd = accept(act_set[0].fd, (struct sockaddr*)&remoteaddr, &size_client);
+						fcntl(new_sock_fd, F_SETFL, O_NONBLOCK);
                         std::cout << "user pi " << remoteaddr.sin_addr.s_addr << std::endl;
 						// а он может кривой инт вернуть? не помню
 						mapfd_users[new_sock_fd] = new User(new_sock_fd);
@@ -196,9 +214,16 @@ void Server::start() {
 		}
 		// Этнические чистки
 		clear_disconnected();
+		add_clients_to_send();
 	}
 }
 
+// отмечаем клиентов для отправки, если для них есть сообщения
+void	Server::add_clients_to_send() {
+	for (size_t i = 1; i < act_set.size(); i++)
+		if (mapfd_users[act_set[i].fd]->haveMsgToSend())
+			act_set[i].events |= POLLOUT;
+}
 
 // Удаляет сломанные фдшники и отключенных пользователей
 void	Server::clear_disconnected() {
@@ -207,17 +232,25 @@ void	Server::clear_disconnected() {
 	it = act_set.begin();
 	for (size_t i = 1; i < act_set.size(); i++)
 		if (mapfd_users[act_set[i].fd]->get_flags() & DISCONNECTED) {
-
+			User *user = mapfd_users[act_set[i].fd];
+			
+			// если есть неотправленные сообщения для юзера - то не отключаем сразу
+			// а даем несколько попыток для отправки сообщения
+			if (user->haveMsgToSend() and user->getAttemp() < ATTEMP_TO_DISCONNECT) {
+				user->setAttemp(user->getAttemp() + 1);
+				continue;
+			}
 			// удаление из каналов
-			std::vector<std::string>	channels_user = mapfd_users[act_set[i].fd]->getChanels();
-			std::string 				nick_user = mapfd_users[act_set[i].fd]->getNick();
-			for (int j = 0; j < channels_user.size(); j++) 
+			std::vector<std::string>	channels_user = user->getChanels();
+			std::string 				nick_user = user->getNick();
+			for (size_t j = 0; j < channels_user.size(); j++) 
 				if (map_channels.count(channels_user[j])) {
 					map_channels[channels_user[j]]->_delete_user(nick_user);
-					handler->_write_to_channel(channels_user[j], *mapfd_users[act_set[i].fd], "PART " + channels_user[j]);
+					handler->_write_to_channel(channels_user[j], *user, "PART " + channels_user[j]);
 				}
-			delete mapfd_users[act_set[i].fd];
+			delete user;
 			mapfd_users.erase(act_set[i].fd);
+			mapnick_users.erase(nick_user);
 			handler->clear_buf(act_set[i].fd);
 			close(act_set[i].fd);
 			act_set.erase(it + i);

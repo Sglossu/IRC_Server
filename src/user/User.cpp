@@ -92,3 +92,32 @@ void User::setPass(const std::string &pass) {
 const std::vector<std::string> &User::getChanels() const {
 	return _chanels;
 }
+
+size_t	&User::getAttemp() {
+	return _attemp;
+}
+void	User::setAttemp(size_t n) {
+	_attemp = n;
+}
+
+// добавляет сообщение для отправки пользователю. Максимально заc раз отправляется до 512 байт
+void	User::addMsgToSend(const std::string &msg) {
+	if (_to_send.size() and (_to_send[_to_send.size() - 1].size() + msg.size() < 512))
+		_to_send[_to_send.size() - 1] += msg;
+	else
+		_to_send.push_back(msg);
+}
+
+// удаляет уже отправленное сообщение из очереди
+void	User::clearFirstElementToSend() {
+	if (_to_send.size())
+		_to_send.erase(_to_send.begin());
+}
+
+bool	User::haveMsgToSend() const{
+	return bool(_to_send.size());
+}
+
+const std::string	&User::getOneElementToSend() const {
+	return _to_send[0];
+}
